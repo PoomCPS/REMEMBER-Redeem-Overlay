@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMEMBER - Twitch First Redeemer Overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- 1. GUEST / LANDING VIEW (Shown if not logged in) -->
+  <div id="guestView" class="view-container hidden">
+    <div class="hero-section">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="badge-icon">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        <span>TWITCH FIRST REDEEMER OVERLAY</span>
+      </div>
+
+      <h1 class="hero-title">แสดงผู้ชมที่แลกแต้ม <span class="highlight">คนแรกของสตรีม</span> บน OBS</h1>
+      <p class="hero-subtitle">
+        เชื่อมต่อตรงกับ Twitch Channel Points โดยไม่ต้องใช้บอทคนกลาง ปรับแต่ง Badge ประจำตัว และระบุชื่อแต้ม (Whitelist) ที่อนุญาตให้แสดงได้อิสระสำหรับสตรีมเมอร์ทุกคน
+      </p>
+
+      <div class="hero-actions">
+        <a href="/auth/twitch/login" class="btn btn-twitch-lg">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="twitch-icon">
+            <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+          </svg>
+          Sign in with Twitch
+        </a>
+      </div>
+
+      <!-- Feature grid preview -->
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👑</div>
+          <h3>1ST Redeemer Detect</h3>
+          <p>ตรวจจับคนแรกที่แลกแต้มในรอบสตรีมนั้นอัตโนมัติ พร้อมป้ายมงกุฎสีทอง</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Custom Whitelist</h3>
+          <p>เลือกได้ว่าจะให้แสดงเฉพาะแต้มชื่อไหน แต้มอื่นจะไม่ขึ้นกวนบนจอ</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Custom Badge & Theme</h3>
+          <p>ตั้งข้อความ Badge และเลือกสีให้เข้ากับธีมช่องสตรีมของคุณได้เอง</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. USER DASHBOARD VIEW (Shown when logged in) -->
+  <div id="dashboardView" class="view-container hidden">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">REMEMBER <span class="highlight">Overlay</span></h1>
+          <p class="brand-subtitle">Twitch First Redeemer Control Center</p>
+        </div>
+      </div>
+
+      <div class="header-user">
+        <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+        <div class="user-meta">
+          <div id="userDisplayName" class="user-name">Streamer</div>
+          <div id="userLogin" class="user-handle">@streamer</div>
+        </div>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+      <!-- 1. OBS Browser Source URL Card -->
+      <section class="card url-card">
+        <div class="card-header-row">
+          <div>
+            <h2 class="card-title">OBS Browser Source URL</h2>
+            <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 600 x สูง 250)</p>
+          </div>
+          <button id="regenerateTokenBtn" class="btn btn-ghost btn-sm" title="สร้าง Token ใหม่กรณีทำลิงก์หลุด">
+            🔄 Regenerate Token
+          </button>
+        </div>
+
+        <div class="url-input-group">
+          <input type="text" id="overlayUrlInput" class="url-input" readonly>
+          <button id="copyUrlBtn" class="btn btn-primary">
+            <span id="copyUrlText">Copy URL</span>
+          </button>
+          <a id="openOverlayLink" href="#" target="_blank" class="btn btn-secondary">
+            Open Preview
+          </a>
+        </div>
+      </section>
+
+      <!-- 2. Settings Form: Custom Badge & Whitelist Words -->
+      <section class="card settings-card">
+        <h2 class="card-title">การปรับแต่ง Overlay ประจำช่องของคุณ</h2>
+        <p class="card-desc">ปรับเปลี่ยนข้อความป้าย สี และรายการแต้มที่อนุญาตให้แสดง</p>
+
+        <form id="settingsForm">
+          <div class="settings-grid">
+            <!-- Custom Badge Text -->
+            <div class="form-group">
+              <label for="badgeTextInput">ข้อความ Badge (คนแรกของสตรีม)</label>
+              <input type="text" id="badgeTextInput" placeholder="เช่น 👑 1ST REDEEMER, 👑 คนแรกของสตรีม" required>
+            </div>
+
+            <!-- Badge Color -->
+            <div class="form-group">
+              <label>สีของป้าย Badge</label>
+              <div class="color-picker-row">
+                <input type="color" id="badgeColorPicker" value="#fbbf24" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="color-chip" data-color="#fbbf24" style="background: #fbbf24;" title="Gold"></button>
+                  <button type="button" class="color-chip" data-color="#c084fc" style="background: #c084fc;" title="Neon Violet"></button>
+                  <button type="button" class="color-chip" data-color="#38bdf8" style="background: #38bdf8;" title="Sky Cyan"></button>
+                  <button type="button" class="color-chip" data-color="#fb7185" style="background: #fb7185;" title="Rose Pink"></button>
+                  <button type="button" class="color-chip" data-color="#34d399" style="background: #34d399;" title="Emerald"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Theme -->
+            <div class="form-group">
+              <label for="cardThemeSelect">ธีมการ์ด Overlay</label>
+              <select id="cardThemeSelect" class="form-select">
+                <option value="purple">Dark Violet (ค่าเริ่มต้น)</option>
+                <option value="midnight">Midnight Obsidian</option>
+                <option value="cyberpunk">Cyberpunk Slate</option>
+              </select>
+            </div>
+
+            <!-- Sound Alert Toggle -->
+            <div class="form-group">
+              <label>เสียงแจ้งเตือน</label>
+              <label class="toggle-label">
+                <input type="checkbox" id="soundToggle" checked>
+                <span>เล่นเสียงกริ่งเบาๆ เมื่อมีคนแลกแต้มคนแรก</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Whitelist Reward Words (Wishlist) -->
+          <div class="whitelist-section">
+            <label class="section-label">
+              <span>รายการแต้มที่อนุญาตให้แสดง (Reward Whitelist)</span>
+              <span class="label-hint">เฉพาะแต้มที่มีชื่อในนี้เท่านั้นที่จะแสดงบนจอ</span>
+            </label>
+
+            <!-- Tags Container -->
+            <div id="whitelistTagsContainer" class="tags-container"></div>
+
+            <!-- Add Tag Input -->
+            <div class="add-tag-row">
+              <input type="text" id="newTagInput" placeholder="พิมพ์ชื่อแต้มที่ต้องการ เช่น รักแรกมันแยกยาก แล้วกด Enter หรือคลิกเพิ่ม">
+              <button type="button" id="addTagBtn" class="btn btn-secondary">
+                + เพิ่มแต้ม
+              </button>
+            </div>
+          </div>
+
+          <div class="form-submit-row">
+            <button type="submit" class="btn btn-primary btn-save">
+              💾 บันทึกการตั้งค่า (Save Settings)
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 3. Live Preview & Testing Stage -->
+      <section class="card preview-card">
+        <div class="card-header-row">
+          <div>
+            <h2 class="card-title">Live Preview &amp; ทดสอบ</h2>
+            <p class="card-desc">ตัวอย่างการแสดงผลบน OBS ตามการตั้งค่าปัจจุบันของคุณ</p>
+          </div>
+          <div class="preview-actions">
+            <button id="resetOverlayBtn" class="btn btn-danger btn-sm">Reset Overlay</button>
+          </div>
+        </div>
+
+        <div class="preview-stage">
+          <div id="previewCard" class="redeem-card theme-purple">
+            <div class="card-glow"></div>
+            <div class="card-content">
+              <div class="card-header">
+                <div class="channel-points-badge">
+                  <svg class="points-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                  </svg>
+                  <span class="badge-text">CHANNEL POINT REDEEM</span>
+                </div>
+                <div id="previewLiveIndicator" class="live-indicator first-redeemer">
+                  <span class="dot"></span>
+                  <span id="previewIndicatorLabel" class="indicator-label">👑 1ST REDEEMER</span>
+                </div>
+              </div>
+
+              <div class="viewer-section">
+                <div id="previewViewer" class="viewer-name">ViewerName</div>
+              </div>
+
+              <div class="reward-section">
+                <span class="reward-prefix">Reward:</span>
+                <span id="previewRewardTitle" class="reward-title">รักแรกมันแยกยาก</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-controls-row">
+          <button id="sendTestRedeemBtn" class="btn btn-secondary">
+            ▶️ ส่งทดสอบแต้ม (Test Redemption)
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
+

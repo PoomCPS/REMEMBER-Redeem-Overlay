@@ -1,0 +1,20 @@
+{
+  "isStreaming": false,
+  "sessionId": null,
+  "streamStartedAt": null,
+  "latestRedemption": {
+    "id": "d8099476-c1ee-4379-a6ce-66f8e48fc5c5",
+    "rewardId": "bf3d697c-d726-4b83-9556-696189a64c24",
+    "rewardTitle": "กระผมมาเป็นคนแรกเลยนะ",
+    "userId": "444671539",
+    "userName": "lil_usalia",
+    "displayName": "Lil_Usalia",
+    "userInput": "",
+    "redeemedAt": "2026-11-19T18:26:18.655461047Z",
+    "isTest": false,
+    "isFirst": false,
+    "order": 2
+  },
+  "redemptionCount": 2,
+  "updatedAt": "2026-11-19T18:26:18.919Z"
+}

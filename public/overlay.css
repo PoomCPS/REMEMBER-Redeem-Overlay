@@ -1,0 +1,239 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  overflow: hidden;
+  font-family: 'Outfit', 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.overlay-container {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  max-width: 540px;
+  width: calc(100% - 48px);
+  pointer-events: none;
+}
+
+/* Card Container */
+.redeem-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(28, 16, 48, 0.92) 0%, rgba(18, 10, 32, 0.96) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.28);
+  border-radius: 16px;
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.6),
+    0 0 25px -2px rgba(167, 139, 250, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 16px 20px;
+  color: #ffffff;
+  transform-origin: top left;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.redeem-card.theme-purple {
+  background: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
+  border-color: rgba(196, 181, 253, 0.28);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(167, 139, 250, 0.28);
+}
+
+.redeem-card.theme-midnight {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.25);
+}
+
+.redeem-card.theme-cyberpunk {
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+  border-color: rgba(244, 63, 94, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(244, 63, 94, 0.25);
+}
+
+/* Hidden state for smooth entry/exit */
+.redeem-card.hidden {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+  pointer-events: none;
+}
+
+/* Ambient glow orb behind card */
+.card-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(168, 85, 247, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(10px);
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Top Header Bar */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.channel-points-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.points-icon {
+  width: 16px;
+  height: 16px;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
+}
+
+.badge-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+  text-shadow: 0 0 8px rgba(196, 181, 253, 0.4);
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.live-indicator .dot {
+  width: 6px;
+  height: 6px;
+  background: #a78bfa;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #a78bfa;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.indicator-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ddd6fe;
+}
+
+.live-indicator.first-redeemer {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(251, 191, 36, 0.65);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+.live-indicator.first-redeemer .dot {
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+}
+
+.live-indicator.first-redeemer .indicator-label {
+  color: #fef08a;
+  font-weight: 800;
+}
+
+/* Viewer Name Section */
+.viewer-section {
+  display: flex;
+  align-items: baseline;
+}
+
+.viewer-name {
+  font-family: 'Kanit', 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #ffffff;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(100deg, #ffffff 40%, #e9d5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Reward Title Section */
+.reward-section {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(196, 181, 253, 0.12);
+  word-break: break-word;
+}
+
+.reward-prefix {
+  font-weight: 600;
+  color: #a78bfa;
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.reward-title {
+  font-weight: 500;
+  color: #f1f5f9;
+  overflow-wrap: anywhere;
+}
+
+/* Pulse animation on new redemption replacement */
+.redeem-card.pulse {
+  animation: redeem-pulse 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes redeem-pulse {
+  0% {
+    transform: scale(0.98);
+    box-shadow: 0 0 0 rgba(167, 139, 250, 0.8);
+  }
+  40% {
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(167, 139, 250, 0.6), inset 0 0 15px rgba(196, 181, 253, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px -2px rgba(167, 139, 250, 0.28);
+  }
+}
+

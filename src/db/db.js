@@ -1,0 +1,300 @@
+import { DatabaseSync } from 'node:sqlite';
+import path from 'path';
+import fs from 'fs';
+import crypto from 'crypto';
+import { config } from '../config.js';
+
+const dbDir = config.paths.dataDir;
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const dbPath = path.join(dbDir, 'app.db');
+export const db = new DatabaseSync(dbPath);
+
+// Initialize schema
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    login TEXT NOT NULL,
+    display_name TEXT NOT NULL,
+    profile_image_url TEXT,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    token_expires_at INTEGER NOT NULL,
+    overlay_token TEXT UNIQUE NOT NULL,
+    badge_text TEXT DEFAULT '👑 1ST REDEEMER',
+    badge_color TEXT DEFAULT '#fbbf24',
+    card_theme TEXT DEFAULT 'purple',
+    whitelist_words TEXT DEFAULT '["รักแรกมันแยกยาก","คนแรกเลยล่ะ","กระผมมาเป็นคนแรกเลยนะ"]',
+    sound_enabled INTEGER DEFAULT 1,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS user_sessions (
+    user_id TEXT PRIMARY KEY,
+    session_id TEXT,
+    is_streaming INTEGER DEFAULT 0,
+    stream_started_at TEXT,
+    latest_redemption TEXT,
+    redemption_count INTEGER DEFAULT 0,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS auth_sessions (
+    token TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+`);
+
+export const userRepo = {
+  findUserById(id) {
+    const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
+    return stmt.get(id);
+  },
+
+  findUserByOverlayToken(overlayToken) {
+    const stmt = db.prepare('SELECT * FROM users WHERE overlay_token = ?');
+    return stmt.get(overlayToken);
+  },
+
+  getAllUsers() {
+    const stmt = db.prepare('SELECT * FROM users');
+    return stmt.all();
+  },
+
+  upsertUser(userData) {
+    const now = new Date().toISOString();
+    const existing = this.findUserById(userData.id);
+
+    if (existing) {
+      const stmt = db.prepare(`
+        UPDATE users SET
+          login = ?,
+          display_name = ?,
+          profile_image_url = COALESCE(?, profile_image_url),
+          access_token = ?,
+          refresh_token = ?,
+          token_expires_at = ?,
+          updated_at = ?
+        WHERE id = ?
+      `);
+      stmt.run(
+        userData.login,
+        userData.displayName || userData.login,
+        userData.profileImageUrl || null,
+        userData.accessToken,
+        userData.refreshToken,
+        userData.tokenExpiresAt || (Date.now() + 3600 * 1000),
+        now,
+        userData.id
+      );
+      return this.findUserById(userData.id);
+    } else {
+      const overlayToken = `usr_${crypto.randomBytes(16).toString('hex')}`;
+      const defaultWhitelist = JSON.stringify(['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
+      const stmt = db.prepare(`
+        INSERT INTO users (
+          id, login, display_name, profile_image_url, access_token, refresh_token,
+          token_expires_at, overlay_token, badge_text, badge_color, card_theme,
+          whitelist_words, sound_enabled, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      stmt.run(
+        userData.id,
+        userData.login,
+        userData.displayName || userData.login,
+        userData.profileImageUrl || '',
+        userData.accessToken,
+        userData.refreshToken,
+        userData.tokenExpiresAt || (Date.now() + 3600 * 1000),
+        overlayToken,
+        '👑 1ST REDEEMER',
+        '#fbbf24',
+        'purple',
+        defaultWhitelist,
+        1,
+        now,
+        now
+      );
+
+      // Create initial stream session
+      sessionRepo.initSession(userData.id);
+      return this.findUserById(userData.id);
+    }
+  },
+
+  updateUserSettings(userId, { badgeText, badgeColor, cardTheme, whitelistWords, soundEnabled }) {
+    const now = new Date().toISOString();
+    const cleanWords = Array.isArray(whitelistWords) 
+      ? JSON.stringify(whitelistWords.map(w => String(w).trim()).filter(Boolean))
+      : undefined;
+
+    const current = this.findUserById(userId);
+    if (!current) return null;
+
+    const stmt = db.prepare(`
+      UPDATE users SET
+        badge_text = COALESCE(?, badge_text),
+        badge_color = COALESCE(?, badge_color),
+        card_theme = COALESCE(?, card_theme),
+        whitelist_words = COALESCE(?, whitelist_words),
+        sound_enabled = COALESCE(?, sound_enabled),
+        updated_at = ?
+      WHERE id = ?
+    `);
+
+    stmt.run(
+      badgeText !== undefined ? String(badgeText).trim() : null,
+      badgeColor !== undefined ? String(badgeColor).trim() : null,
+      cardTheme !== undefined ? String(cardTheme).trim() : null,
+      cleanWords !== undefined ? cleanWords : null,
+      soundEnabled !== undefined ? (soundEnabled ? 1 : 0) : null,
+      now,
+      userId
+    );
+
+    return this.findUserById(userId);
+  },
+
+  regenerateOverlayToken(userId) {
+    const newToken = `usr_${crypto.randomBytes(16).toString('hex')}`;
+    const stmt = db.prepare('UPDATE users SET overlay_token = ?, updated_at = ? WHERE id = ?');
+    stmt.run(newToken, new Date().toISOString(), userId);
+    return newToken;
+  }
+};
+
+export const sessionRepo = {
+  getSession(userId) {
+    const stmt = db.prepare('SELECT * FROM user_sessions WHERE user_id = ?');
+    const row = stmt.get(userId);
+    if (!row) return this.initSession(userId);
+
+    return {
+      userId: row.user_id,
+      sessionId: row.session_id,
+      isStreaming: Boolean(row.is_streaming),
+      streamStartedAt: row.stream_started_at,
+      latestRedemption: row.latest_redemption ? JSON.parse(row.latest_redemption) : null,
+      redemptionCount: Number(row.redemption_count) || 0,
+      updatedAt: row.updated_at,
+    };
+  },
+
+  initSession(userId) {
+    const now = new Date().toISOString();
+    const stmt = db.prepare(`
+      INSERT OR IGNORE INTO user_sessions (user_id, session_id, is_streaming, stream_started_at, latest_redemption, redemption_count, updated_at)
+      VALUES (?, NULL, 0, NULL, NULL, 0, ?)
+    `);
+    stmt.run(userId, now);
+    return {
+      userId,
+      sessionId: null,
+      isStreaming: false,
+      streamStartedAt: null,
+      latestRedemption: null,
+      redemptionCount: 0,
+      updatedAt: now,
+    };
+  },
+
+  startStream(userId) {
+    const now = new Date().toISOString();
+    const newSessionId = `stream_${Date.now()}`;
+    const stmt = db.prepare(`
+      INSERT INTO user_sessions (user_id, session_id, is_streaming, stream_started_at, latest_redemption, redemption_count, updated_at)
+      VALUES (?, ?, 1, ?, NULL, 0, ?)
+      ON CONFLICT(user_id) DO UPDATE SET
+        session_id = excluded.session_id,
+        is_streaming = 1,
+        stream_started_at = excluded.stream_started_at,
+        latest_redemption = NULL,
+        redemption_count = 0,
+        updated_at = excluded.updated_at
+    `);
+    stmt.run(userId, newSessionId, now, now);
+    return this.getSession(userId);
+  },
+
+  endStream(userId) {
+    const now = new Date().toISOString();
+    const stmt = db.prepare(`
+      UPDATE user_sessions SET
+        is_streaming = 0,
+        latest_redemption = NULL,
+        redemption_count = 0,
+        updated_at = ?
+      WHERE user_id = ?
+    `);
+    stmt.run(now, userId);
+    return this.getSession(userId);
+  },
+
+  setLatestRedemption(userId, redemption) {
+    const current = this.getSession(userId);
+    const newCount = (current.redemptionCount || 0) + 1;
+    const isFirst = newCount === 1;
+
+    const formatted = {
+      ...redemption,
+      isFirst,
+      order: newCount,
+    };
+
+    const now = new Date().toISOString();
+    const stmt = db.prepare(`
+      UPDATE user_sessions SET
+        latest_redemption = ?,
+        redemption_count = ?,
+        updated_at = ?
+      WHERE user_id = ?
+    `);
+    stmt.run(JSON.stringify(formatted), newCount, now, userId);
+    return formatted;
+  },
+
+  resetOverlay(userId) {
+    const now = new Date().toISOString();
+    const stmt = db.prepare(`
+      UPDATE user_sessions SET
+        latest_redemption = NULL,
+        updated_at = ?
+      WHERE user_id = ?
+    `);
+    stmt.run(now, userId);
+    return this.getSession(userId);
+  }
+};
+
+export const authRepo = {
+  createSession(userId) {
+    const token = crypto.randomBytes(32).toString('hex');
+    // Session valid for 30 days
+    const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
+    const stmt = db.prepare('INSERT INTO auth_sessions (token, user_id, expires_at) VALUES (?, ?, ?)');
+    stmt.run(token, userId, expiresAt);
+    return token;
+  },
+
+  getUserBySessionToken(token) {
+    if (!token) return null;
+    const stmt = db.prepare(`
+      SELECT users.* FROM auth_sessions
+      JOIN users ON auth_sessions.user_id = users.id
+      WHERE auth_sessions.token = ? AND auth_sessions.expires_at > ?
+    `);
+    return stmt.get(token, Date.now());
+  },
+
+  deleteSession(token) {
+    if (!token) return;
+    const stmt = db.prepare('DELETE FROM auth_sessions WHERE token = ?');
+    stmt.run(token);
+  }
+};
