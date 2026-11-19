@@ -26,39 +26,74 @@ html, body {
 /* Card Container */
 .redeem-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(28, 16, 48, 0.92) 0%, rgba(18, 10, 32, 0.96) 100%);
-  border: 1px solid rgba(196, 181, 253, 0.28);
-  border-radius: 16px;
+  font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
+  transform: scale(var(--overlay-scale, 1.0));
+  transform-origin: top left;
+  background: var(--card-bg, linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%));
+  border: 1px solid var(--card-border, rgba(196, 181, 253, 0.28));
+  border-radius: var(--card-radius, 16px);
   box-shadow: 
     0 10px 30px -5px rgba(0, 0, 0, 0.6),
-    0 0 25px -2px rgba(167, 139, 250, 0.28),
+    0 0 25px -2px var(--card-glow, rgba(167, 139, 250, 0.28)),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   padding: 16px 20px;
   color: #ffffff;
-  transform-origin: top left;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
   overflow: hidden;
 }
 
 .redeem-card.theme-purple {
-  background: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
-  border-color: rgba(196, 181, 253, 0.28);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(167, 139, 250, 0.28);
+  --card-bg: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
+  --card-border: rgba(196, 181, 253, 0.28);
+  --card-glow: rgba(167, 139, 250, 0.28);
+  --card-glow-ambient: rgba(168, 85, 247, 0.35);
+  --card-radius: 16px;
 }
 
 .redeem-card.theme-midnight {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.25);
+  --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+  --card-border: rgba(56, 189, 248, 0.3);
+  --card-glow: rgba(56, 189, 248, 0.25);
+  --card-glow-ambient: rgba(56, 189, 248, 0.35);
+  --card-radius: 16px;
 }
 
 .redeem-card.theme-cyberpunk {
-  background: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
-  border-color: rgba(244, 63, 94, 0.35);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(244, 63, 94, 0.25);
+  --card-bg: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+  --card-border: rgba(244, 63, 94, 0.35);
+  --card-glow: rgba(244, 63, 94, 0.25);
+  --card-glow-ambient: rgba(244, 63, 94, 0.35);
+  --card-radius: 8px;
+}
+
+.redeem-card.theme-emerald {
+  --card-bg: linear-gradient(135deg, rgba(2, 44, 34, 0.94) 0%, rgba(1, 20, 15, 0.98) 100%);
+  --card-border: rgba(52, 211, 153, 0.35);
+  --card-glow: rgba(16, 185, 129, 0.28);
+  --card-glow-ambient: rgba(16, 185, 129, 0.35);
+  --card-radius: 16px;
+}
+
+.redeem-card.theme-sunset {
+  --card-bg: linear-gradient(135deg, rgba(39, 20, 6, 0.94) 0%, rgba(20, 10, 3, 0.98) 100%);
+  --card-border: rgba(251, 191, 36, 0.38);
+  --card-glow: rgba(245, 158, 11, 0.28);
+  --card-glow-ambient: rgba(245, 158, 11, 0.35);
+  --card-radius: 16px;
+}
+
+.redeem-card.theme-stealth {
+  --card-bg: linear-gradient(135deg, rgba(9, 9, 11, 0.98) 0%, rgba(4, 4, 6, 0.99) 100%);
+  --card-border: rgba(255, 255, 255, 0.16);
+  --card-glow: rgba(255, 255, 255, 0.08);
+  --card-glow-ambient: rgba(255, 255, 255, 0.12);
+  --card-radius: 12px;
 }
 
 /* Hidden state for smooth entry/exit */
@@ -75,10 +110,11 @@ html, body {
   right: -40px;
   width: 140px;
   height: 140px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(168, 85, 247, 0) 70%);
+  background: radial-gradient(circle, var(--card-glow-ambient, rgba(168, 85, 247, 0.35)) 0%, rgba(168, 85, 247, 0) 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(10px);
+  transition: background 0.3s ease;
 }
 
 .card-content {
@@ -153,18 +189,18 @@ html, body {
 }
 
 .live-indicator.first-redeemer {
-  background: rgba(245, 158, 11, 0.22);
-  border-color: rgba(251, 191, 36, 0.65);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+  background: var(--badge-bg, rgba(245, 158, 11, 0.22));
+  border-color: var(--badge-color, rgba(251, 191, 36, 0.65));
+  box-shadow: 0 0 12px var(--badge-glow, rgba(245, 158, 11, 0.4));
 }
 
 .live-indicator.first-redeemer .dot {
-  background: #fbbf24;
-  box-shadow: 0 0 10px #fbbf24;
+  background: var(--badge-color, #fbbf24);
+  box-shadow: 0 0 10px var(--badge-color, #fbbf24);
 }
 
 .live-indicator.first-redeemer .indicator-label {
-  color: #fef08a;
+  color: var(--badge-color, #fef08a);
   font-weight: 800;
 }
 
@@ -175,17 +211,14 @@ html, body {
 }
 
 .viewer-name {
-  font-family: 'Kanit', 'Outfit', sans-serif;
+  font-family: inherit;
   font-size: 1.45rem;
   font-weight: 700;
   line-height: 1.25;
-  color: #ffffff;
+  color: var(--viewer-color, #ffffff);
   word-break: break-word;
   overflow-wrap: anywhere;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  background: linear-gradient(100deg, #ffffff 40%, #e9d5ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* Reward Title Section */
@@ -193,7 +226,7 @@ html, body {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  font-family: 'Kanit', sans-serif;
+  font-family: inherit;
   font-size: 0.95rem;
   line-height: 1.35;
   background: rgba(255, 255, 255, 0.04);

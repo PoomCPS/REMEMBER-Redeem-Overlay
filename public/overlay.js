@@ -10,9 +10,40 @@
   let currentUser = {
     badgeText: '👑 1ST REDEEMER',
     badgeColor: '#fbbf24',
+    badgeBgColor: 'rgba(245, 158, 11, 0.22)',
+    fontFamily: 'Kanit',
+    fontSizeScale: 1.0,
+    viewerColor: '#ffffff',
     cardTheme: 'purple',
+    cardBgColor: '#1c1030',
+    cardBgOpacity: 0.94,
+    cardBorderColor: '#c4b5fd',
+    cardGlowColor: '#a855f7',
+    cardRadius: '16px',
     soundEnabled: true,
   };
+
+  const THEME_PRESETS = {
+    purple: { bg: '#1c1030', opacity: 0.94, border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
+    midnight: { bg: '#0f172a', opacity: 0.95, border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
+    cyberpunk: { bg: '#18181b', opacity: 0.95, border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
+    emerald: { bg: '#022c22', opacity: 0.94, border: '#34d399', glow: '#10b981', radius: '16px' },
+    sunset: { bg: '#271406', opacity: 0.94, border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
+    stealth: { bg: '#09090b', opacity: 0.98, border: '#475569', glow: '#64748b', radius: '12px' },
+  };
+
+  function hexToRgba(hex, alpha = 1.0) {
+    if (!hex) return `rgba(28, 16, 48, ${alpha})`;
+    if (hex.startsWith('rgba') || hex.startsWith('rgb')) return hex;
+    let c = hex.replace('#', '');
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const num = parseInt(c, 16);
+    if (isNaN(num)) return `rgba(28, 16, 48, ${alpha})`;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
 
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
@@ -84,7 +115,7 @@
       case 'INIT':
         if (data?.user) {
           currentUser = { ...currentUser, ...data.user };
-          applyTheme(currentUser.cardTheme);
+          applyCustomStyles();
         }
         if (data?.session?.latestRedemption) {
           displayRedemption(data.session.latestRedemption, false);
@@ -95,7 +126,7 @@
 
       case 'SETTINGS_UPDATED':
         currentUser = { ...currentUser, ...data };
-        applyTheme(currentUser.cardTheme);
+        applyCustomStyles();
         break;
 
       case 'REDEMPTION':
@@ -117,6 +148,40 @@
         }
         break;
     }
+  }
+
+  function applyCustomStyles() {
+    applyTheme(currentUser.cardTheme);
+    cardElement.style.setProperty('--overlay-font', currentUser.fontFamily || 'Kanit');
+    cardElement.style.setProperty('--overlay-scale', currentUser.fontSizeScale || 1.0);
+    cardElement.style.setProperty('--badge-color', currentUser.badgeColor || '#fbbf24');
+    cardElement.style.setProperty('--badge-bg', currentUser.badgeBgColor || 'rgba(245, 158, 11, 0.22)');
+    cardElement.style.setProperty('--badge-glow', `${currentUser.badgeColor || '#fbbf24'}66`);
+    cardElement.style.setProperty('--viewer-color', currentUser.viewerColor || '#ffffff');
+
+    // Theme & custom card properties
+    const themeKey = currentUser.cardTheme || 'purple';
+    const preset = THEME_PRESETS[themeKey];
+
+    const bgColor = currentUser.cardBgColor || preset?.bg || '#1c1030';
+    const bgOpacity = currentUser.cardBgOpacity !== undefined && currentUser.cardBgOpacity !== null 
+      ? Number(currentUser.cardBgOpacity) 
+      : (preset?.opacity ?? 0.94);
+    const borderColor = currentUser.cardBorderColor || preset?.border || '#c4b5fd';
+    const glowColor = currentUser.cardGlowColor || preset?.glow || '#a855f7';
+    const radius = currentUser.cardRadius || preset?.radius || '16px';
+
+    const bgRgba = hexToRgba(bgColor, bgOpacity);
+    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
+    const borderRgba = hexToRgba(borderColor, 0.35);
+    const glowBoxRgba = hexToRgba(glowColor, 0.28);
+    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
+
+    cardElement.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
+    cardElement.style.setProperty('--card-border', borderRgba);
+    cardElement.style.setProperty('--card-glow', glowBoxRgba);
+    cardElement.style.setProperty('--card-glow-ambient', glowAmbientRgba);
+    cardElement.style.setProperty('--card-radius', radius);
   }
 
   function applyTheme(theme) {

@@ -5,8 +5,12 @@
 node_modules/
 
 # Local data and secrets
-data/tokens.json
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.json
 data/*.tmp
+!data/.gitkeep
 
 # OS & Logs
 npm-debug.log*

@@ -6,7 +6,7 @@
   <title>REMEMBER - Twitch First Redeemer Overlay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Kanit:wght@300;400;500;600;700&family=Mitr:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -106,6 +106,15 @@
             Open Preview
           </a>
         </div>
+
+        <div class="obs-quick-guide">
+          <div class="guide-title">📖 วิธีนำไปใส่ใน OBS Studio ใน 3 ขั้นตอน:</div>
+          <ol class="guide-steps">
+            <li>คลิกปุ่ม <strong>Copy URL</strong> สีม่วงด้านบนนี้</li>
+            <li>ในโปรแกรม <strong>OBS Studio</strong>: ดูที่กล่อง <em>Sources (แหล่งสัญญาณ)</em> กดปุ่ม <strong>+</strong> แล้วเลือก <strong>Browser (เบราว์เซอร์)</strong></li>
+            <li>วางลิงก์ที่ก๊อปปี้มาลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>600</strong>, Height: <strong>250</strong>) แล้วกด <strong>OK</strong> จบเลย!</li>
+          </ol>
+        </div>
       </section>
 
       <!-- 2. Settings Form: Custom Badge & Whitelist Words -->
@@ -121,9 +130,9 @@
               <input type="text" id="badgeTextInput" placeholder="เช่น 👑 1ST REDEEMER, 👑 คนแรกของสตรีม" required>
             </div>
 
-            <!-- Badge Color -->
+            <!-- Badge Accent Color -->
             <div class="form-group">
-              <label>สีของป้าย Badge</label>
+              <label>สีตัวอักษร &amp; เส้นขอบ Badge</label>
               <div class="color-picker-row">
                 <input type="color" id="badgeColorPicker" value="#fbbf24" class="color-picker">
                 <div class="color-presets">
@@ -136,13 +145,141 @@
               </div>
             </div>
 
-            <!-- Card Theme -->
+            <!-- Badge Background Color -->
             <div class="form-group">
-              <label for="cardThemeSelect">ธีมการ์ด Overlay</label>
+              <label>สีพื้นหลังกล่อง Badge</label>
+              <div class="color-picker-row">
+                <input type="color" id="badgeBgColorPicker" value="#451a03" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="color-bg-chip" data-bgcolor="rgba(245, 158, 11, 0.22)" style="background: rgba(245, 158, 11, 0.4);" title="Amber Glass"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="rgba(147, 51, 234, 0.25)" style="background: rgba(147, 51, 234, 0.5);" title="Violet Glass"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="rgba(14, 165, 233, 0.25)" style="background: rgba(14, 165, 233, 0.5);" title="Cyan Glass"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="rgba(244, 63, 94, 0.25)" style="background: rgba(244, 63, 94, 0.5);" title="Rose Glass"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="rgba(0, 0, 0, 0.5)" style="background: rgba(0, 0, 0, 0.7); border-color: #888;" title="Dark Solid"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Font Family -->
+            <div class="form-group">
+              <label for="fontFamilySelect">ฟอนต์ตัวอักษร (Font Family)</label>
+              <select id="fontFamilySelect" class="form-select">
+                <option value="Kanit" selected>Kanit (คานิท - ยอดนิยม คมชัด ทันสมัย)</option>
+                <option value="Prompt">Prompt (พร้อมท์ - เรียบหรู สะอาดตา)</option>
+                <option value="Mitr">Mitr (มิตร - โค้งมน นุ่มนวล น่ารัก)</option>
+                <option value="Chakra Petch">Chakra Petch (จักรเพชร - สไตล์เกมมิ่ง Sci-Fi)</option>
+                <option value="Sarabun">Sarabun (สารบัญ - คลาสสิก อ่านง่าย)</option>
+                <option value="Outfit">Outfit (เอาต์ฟิต - สากล พรีเมียม)</option>
+              </select>
+            </div>
+
+            <!-- Size Scale -->
+            <div class="form-group">
+              <label for="fontSizeScaleSelect">ขนาดการ์ด Overlay (Size Scale)</label>
+              <select id="fontSizeScaleSelect" class="form-select">
+                <option value="0.85">85% (กะทัดรัด เหมาะกับจอ 720p / มุมจอ)</option>
+                <option value="1.0" selected>100% (ขนาดปกติ มาตรฐาน - ค่าเริ่มต้น)</option>
+                <option value="1.2">120% (ขนาดใหญ่ ตัวหนังสือเด่น)</option>
+                <option value="1.4">140% (ขนาดใหญ่พิเศษ ชัดเต็มตา 1080p/4K)</option>
+              </select>
+            </div>
+
+            <!-- Viewer Name Color -->
+            <div class="form-group">
+              <label>สีชื่อผู้ชม (Viewer Name)</label>
+              <div class="color-picker-row">
+                <input type="color" id="viewerColorPicker" value="#ffffff" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="viewer-color-chip" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#fef08a" style="background: #fef08a;" title="Light Gold"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#e9d5ff" style="background: #e9d5ff;" title="Lavender"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#a5f3fc" style="background: #a5f3fc;" title="Ice Cyan"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#fbcfe8" style="background: #fbcfe8;" title="Pastel Pink"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Theme Preset Selector -->
+            <div class="form-group">
+              <label for="cardThemeSelect">ธีมการ์ด Overlay (Theme Presets)</label>
               <select id="cardThemeSelect" class="form-select">
-                <option value="purple">Dark Violet (ค่าเริ่มต้น)</option>
-                <option value="midnight">Midnight Obsidian</option>
-                <option value="cyberpunk">Cyberpunk Slate</option>
+                <option value="purple" selected>🟣 Dark Violet (ม่วงนีออนคลาสสิก - ค่าเริ่มต้น)</option>
+                <option value="midnight">🔵 Midnight Obsidian (น้ำเงินเข้มขอบฟ้า)</option>
+                <option value="cyberpunk">🔴 Cyberpunk Slate (ดำด้านขอบชมพูนีออน)</option>
+                <option value="emerald">🟢 Emerald Matrix (เขียวมรกตนีออน)</option>
+                <option value="sunset">🟠 Sunset Amber (อำพันส้มเรืองแสง)</option>
+                <option value="stealth">⚫ Stealth Black (ดำสนิทมินิมอล)</option>
+                <option value="custom">🎨 Custom (กำหนดสีเองอิสระ)</option>
+              </select>
+            </div>
+
+            <!-- Custom Card Background Color & Opacity -->
+            <div class="form-group">
+              <label>สีพื้นหลังการ์ด (Card Background)</label>
+              <div class="color-picker-row">
+                <input type="color" id="cardBgColorPicker" value="#1c1030" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="card-bg-chip" data-color="#1c1030" style="background: #1c1030;" title="Dark Violet"></button>
+                  <button type="button" class="card-bg-chip" data-color="#0f172a" style="background: #0f172a;" title="Midnight Slate"></button>
+                  <button type="button" class="card-bg-chip" data-color="#18181b" style="background: #18181b;" title="Cyberpunk Black"></button>
+                  <button type="button" class="card-bg-chip" data-color="#022c22" style="background: #022c22;" title="Emerald Green"></button>
+                  <button type="button" class="card-bg-chip" data-color="#271406" style="background: #271406;" title="Sunset Amber"></button>
+                  <button type="button" class="card-bg-chip" data-color="#09090b" style="background: #09090b;" title="Pitch Dark"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Background Opacity -->
+            <div class="form-group">
+              <label for="cardBgOpacitySelect">ความโปร่งใสพื้นหลัง (Glass Opacity)</label>
+              <select id="cardBgOpacitySelect" class="form-select">
+                <option value="0.94" selected>94% (กระจกมัว คมชัด สวยงาม - แนะนำ)</option>
+                <option value="0.85">85% (กระจกโปร่งแสงปานกลาง)</option>
+                <option value="0.70">70% (โปร่งแสงสูง เห็นภาพเกมด้านหลังชัด)</option>
+                <option value="1.0">100% (ทึบแสง ไม่โปร่งใส)</option>
+              </select>
+            </div>
+
+            <!-- Custom Card Border Color -->
+            <div class="form-group">
+              <label>สีเส้นขอบการ์ด (Card Border)</label>
+              <div class="color-picker-row">
+                <input type="color" id="cardBorderColorPicker" value="#c4b5fd" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="card-border-chip" data-color="#c4b5fd" style="background: #c4b5fd;" title="Violet"></button>
+                  <button type="button" class="card-border-chip" data-color="#38bdf8" style="background: #38bdf8;" title="Sky Cyan"></button>
+                  <button type="button" class="card-border-chip" data-color="#f43f5e" style="background: #f43f5e;" title="Rose Pink"></button>
+                  <button type="button" class="card-border-chip" data-color="#34d399" style="background: #34d399;" title="Emerald"></button>
+                  <button type="button" class="card-border-chip" data-color="#fbbf24" style="background: #fbbf24;" title="Gold"></button>
+                  <button type="button" class="card-border-chip" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom Card Glow Color -->
+            <div class="form-group">
+              <label>สีแสงนีออนเรืองรอบการ์ด (Glow / Neon Light)</label>
+              <div class="color-picker-row">
+                <input type="color" id="cardGlowColorPicker" value="#a855f7" class="color-picker">
+                <div class="color-presets">
+                  <button type="button" class="card-glow-chip" data-color="#a855f7" style="background: #a855f7;" title="Purple Glow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#38bdf8" style="background: #38bdf8;" title="Cyan Glow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#f43f5e" style="background: #f43f5e;" title="Rose Glow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#10b981" style="background: #10b981;" title="Green Glow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#f59e0b" style="background: #f59e0b;" title="Amber Glow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#64748b" style="background: #64748b;" title="Subtle Slate"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Corner Radius -->
+            <div class="form-group">
+              <label for="cardRadiusSelect">ความโค้งมนของมุมการ์ด (Corner Radius)</label>
+              <select id="cardRadiusSelect" class="form-select">
+                <option value="4px">4px (เหลี่ยมคม สไตล์ Retro / FPS / Arcade)</option>
+                <option value="8px">8px (เหลี่ยมมนเล็กน้อย สไตล์ Sci-Fi)</option>
+                <option value="16px" selected>16px (โค้งมนมาตรฐาน - ค่าเริ่มต้น)</option>
+                <option value="24px">24px (โค้งมนมาก มินิมอล สมูท)</option>
               </select>
             </div>
 

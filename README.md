@@ -13,8 +13,12 @@ A complete, production-ready, **multi-user Web Application** for Twitch streamer
   - Each streamer gets their own private dashboard, unique Overlay URL with secret token (`/overlay.html?token=usr_...`), and isolated settings.
 - **Custom Badge & Theme Builder**:
   - **Custom Badge Text**: Freely set your 1st redeemer badge text (e.g. `👑 1ST REDEEMER`, `✨ ผู้เปิดพิธี`, `คนแรกเลยล่ะ`).
-  - **Badge Accent Color**: Choose from color presets (Gold, Neon Violet, Sky Cyan, Rose Pink, Emerald) or custom hex color.
-  - **Card Theme**: Pick between *Dark Violet*, *Midnight Obsidian*, or *Cyberpunk Slate*.
+  - **Badge Accent & Background Colors**: Custom text, border, and translucent glass background colors for the badge.
+  - **Full Card Theme Customization**:
+    - **6 Curated Theme Presets**: *Dark Violet*, *Midnight Obsidian*, *Cyberpunk Slate*, *Emerald Matrix*, *Sunset Amber*, and *Stealth Black*.
+    - **Full Custom Colors**: Customize Card Background color, Glass Opacity (70%-100%), Card Border color, and Neon Ambient Glow color.
+    - **Corner Roundness (Radius)**: Choose between 4px (sharp arcade/FPS), 8px (sci-fi), 16px (standard), or 24px (smooth modern).
+  - **Typography & Scale**: Choose from 6 Thai & English Google Fonts (*Kanit, Prompt, Mitr, Chakra Petch, Sarabun, Outfit*) and scale sizes (85%, 100%, 120%, 140%).
   - **Sound Chime**: Optional soft chime alert when the first redemption occurs.
 - **Dynamic Reward Whitelist (Wishlist Words)**:
   - Add or remove custom reward titles on the fly via a tag manager.

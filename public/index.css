@@ -291,6 +291,39 @@ body {
   color: var(--accent-lavender);
 }
 
+.obs-quick-guide {
+  margin-top: 18px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+
+.guide-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-lavender);
+  margin-bottom: 8px;
+}
+
+.guide-steps {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.guide-steps strong {
+  color: #fff;
+}
+
+.guide-steps em {
+  color: var(--accent-lavender);
+  font-style: normal;
+}
+
 /* Settings Grid */
 .settings-grid {
   display: grid;
@@ -348,7 +381,7 @@ input[type="text"]:focus, .form-select:focus {
   gap: 8px;
 }
 
-.color-chip {
+.color-chip, .color-bg-chip, .viewer-color-chip, .card-bg-chip, .card-border-chip, .card-glow-chip {
   width: 26px;
   height: 26px;
   border-radius: 50%;
@@ -357,7 +390,7 @@ input[type="text"]:focus, .form-select:focus {
   transition: var(--transition);
 }
 
-.color-chip:hover {
+.color-chip:hover, .color-bg-chip:hover, .viewer-color-chip:hover, .card-bg-chip:hover, .card-border-chip:hover, .card-glow-chip:hover {
   transform: scale(1.15);
   border-color: #fff;
 }
@@ -521,31 +554,80 @@ input[type="text"]:focus, .form-select:focus {
 /* Overlay card styles used in preview */
 .redeem-card {
   position: relative;
-  border-radius: 16px;
+  font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
+  transform: scale(var(--overlay-scale, 1.0));
+  transform-origin: center center;
+  background: var(--card-bg, linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%));
+  border: 1px solid var(--card-border, rgba(196, 181, 253, 0.28));
+  border-radius: var(--card-radius, 16px);
   padding: 16px 20px;
   color: #ffffff;
   max-width: 520px;
   width: 100%;
   overflow: hidden;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px -2px var(--card-glow, rgba(167, 139, 250, 0.28));
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, var(--card-glow-ambient, rgba(168, 85, 247, 0.35)) 0%, rgba(168, 85, 247, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(10px);
+  transition: background 0.3s ease;
 }
 
 .redeem-card.theme-purple {
-  background: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
-  border: 1px solid rgba(196, 181, 253, 0.28);
-  box-shadow: 0 0 25px rgba(167, 139, 250, 0.28);
+  --card-bg: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
+  --card-border: rgba(196, 181, 253, 0.28);
+  --card-glow: rgba(167, 139, 250, 0.28);
+  --card-glow-ambient: rgba(168, 85, 247, 0.35);
+  --card-radius: 16px;
 }
 
 .redeem-card.theme-midnight {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+  --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+  --card-border: rgba(56, 189, 248, 0.28);
+  --card-glow: rgba(56, 189, 248, 0.25);
+  --card-glow-ambient: rgba(56, 189, 248, 0.35);
+  --card-radius: 16px;
 }
 
 .redeem-card.theme-cyberpunk {
-  background: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
-  border: 1px solid rgba(244, 63, 94, 0.35);
-  box-shadow: 0 0 25px rgba(244, 63, 94, 0.25);
+  --card-bg: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
+  --card-border: rgba(244, 63, 94, 0.35);
+  --card-glow: rgba(244, 63, 94, 0.25);
+  --card-glow-ambient: rgba(244, 63, 94, 0.35);
+  --card-radius: 8px;
+}
+
+.redeem-card.theme-emerald {
+  --card-bg: linear-gradient(135deg, rgba(2, 44, 34, 0.94) 0%, rgba(1, 20, 15, 0.98) 100%);
+  --card-border: rgba(52, 211, 153, 0.35);
+  --card-glow: rgba(16, 185, 129, 0.28);
+  --card-glow-ambient: rgba(16, 185, 129, 0.35);
+  --card-radius: 16px;
+}
+
+.redeem-card.theme-sunset {
+  --card-bg: linear-gradient(135deg, rgba(39, 20, 6, 0.94) 0%, rgba(20, 10, 3, 0.98) 100%);
+  --card-border: rgba(251, 191, 36, 0.38);
+  --card-glow: rgba(245, 158, 11, 0.28);
+  --card-glow-ambient: rgba(245, 158, 11, 0.35);
+  --card-radius: 16px;
+}
+
+.redeem-card.theme-stealth {
+  --card-bg: linear-gradient(135deg, rgba(9, 9, 11, 0.98) 0%, rgba(4, 4, 6, 0.99) 100%);
+  --card-border: rgba(255, 255, 255, 0.16);
+  --card-glow: rgba(255, 255, 255, 0.08);
+  --card-glow-ambient: rgba(255, 255, 255, 0.12);
+  --card-radius: 12px;
 }
 
 .card-content {

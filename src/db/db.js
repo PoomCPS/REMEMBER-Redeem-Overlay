@@ -25,7 +25,16 @@ db.exec(`
     overlay_token TEXT UNIQUE NOT NULL,
     badge_text TEXT DEFAULT '👑 1ST REDEEMER',
     badge_color TEXT DEFAULT '#fbbf24',
+    badge_bg_color TEXT DEFAULT 'rgba(245, 158, 11, 0.22)',
+    font_family TEXT DEFAULT 'Kanit',
+    font_size_scale REAL DEFAULT 1.0,
+    viewer_color TEXT DEFAULT '#ffffff',
     card_theme TEXT DEFAULT 'purple',
+    card_bg_color TEXT DEFAULT '#1c1030',
+    card_bg_opacity REAL DEFAULT 0.94,
+    card_border_color TEXT DEFAULT '#c4b5fd',
+    card_glow_color TEXT DEFAULT '#a855f7',
+    card_radius TEXT DEFAULT '16px',
     whitelist_words TEXT DEFAULT '["รักแรกมันแยกยาก","คนแรกเลยล่ะ","กระผมมาเป็นคนแรกเลยนะ"]',
     sound_enabled INTEGER DEFAULT 1,
     created_at TEXT NOT NULL,
@@ -50,6 +59,17 @@ db.exec(`
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
   );
 `);
+
+// Safe migrations for newly added columns
+try { db.exec("ALTER TABLE users ADD COLUMN badge_bg_color TEXT DEFAULT 'rgba(245, 158, 11, 0.22)';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN font_family TEXT DEFAULT 'Kanit';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN font_size_scale REAL DEFAULT 1.0;"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN viewer_color TEXT DEFAULT '#ffffff';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN card_bg_color TEXT DEFAULT '#1c1030';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN card_bg_opacity REAL DEFAULT 0.94;"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN card_border_color TEXT DEFAULT '#c4b5fd';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN card_glow_color TEXT DEFAULT '#a855f7';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN card_radius TEXT DEFAULT '16px';"); } catch {}
 
 export const userRepo = {
   findUserById(id) {
@@ -128,7 +148,22 @@ export const userRepo = {
     }
   },
 
-  updateUserSettings(userId, { badgeText, badgeColor, cardTheme, whitelistWords, soundEnabled }) {
+  updateUserSettings(userId, {
+    badgeText,
+    badgeColor,
+    badgeBgColor,
+    fontFamily,
+    fontSizeScale,
+    viewerColor,
+    cardTheme,
+    cardBgColor,
+    cardBgOpacity,
+    cardBorderColor,
+    cardGlowColor,
+    cardRadius,
+    whitelistWords,
+    soundEnabled,
+  }) {
     const now = new Date().toISOString();
     const cleanWords = Array.isArray(whitelistWords) 
       ? JSON.stringify(whitelistWords.map(w => String(w).trim()).filter(Boolean))
@@ -141,7 +176,16 @@ export const userRepo = {
       UPDATE users SET
         badge_text = COALESCE(?, badge_text),
         badge_color = COALESCE(?, badge_color),
+        badge_bg_color = COALESCE(?, badge_bg_color),
+        font_family = COALESCE(?, font_family),
+        font_size_scale = COALESCE(?, font_size_scale),
+        viewer_color = COALESCE(?, viewer_color),
         card_theme = COALESCE(?, card_theme),
+        card_bg_color = COALESCE(?, card_bg_color),
+        card_bg_opacity = COALESCE(?, card_bg_opacity),
+        card_border_color = COALESCE(?, card_border_color),
+        card_glow_color = COALESCE(?, card_glow_color),
+        card_radius = COALESCE(?, card_radius),
         whitelist_words = COALESCE(?, whitelist_words),
         sound_enabled = COALESCE(?, sound_enabled),
         updated_at = ?
@@ -151,7 +195,16 @@ export const userRepo = {
     stmt.run(
       badgeText !== undefined ? String(badgeText).trim() : null,
       badgeColor !== undefined ? String(badgeColor).trim() : null,
+      badgeBgColor !== undefined ? String(badgeBgColor).trim() : null,
+      fontFamily !== undefined ? String(fontFamily).trim() : null,
+      fontSizeScale !== undefined ? Number(fontSizeScale) : null,
+      viewerColor !== undefined ? String(viewerColor).trim() : null,
       cardTheme !== undefined ? String(cardTheme).trim() : null,
+      cardBgColor !== undefined ? String(cardBgColor).trim() : null,
+      cardBgOpacity !== undefined ? Number(cardBgOpacity) : null,
+      cardBorderColor !== undefined ? String(cardBorderColor).trim() : null,
+      cardGlowColor !== undefined ? String(cardGlowColor).trim() : null,
+      cardRadius !== undefined ? String(cardRadius).trim() : null,
       cleanWords !== undefined ? cleanWords : null,
       soundEnabled !== undefined ? (soundEnabled ? 1 : 0) : null,
       now,

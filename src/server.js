@@ -67,6 +67,11 @@ app.get('/', optionalAuth, (req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
+// Health check endpoint for UptimeRobot / Keep-alive monitors
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 // Overlay page
 app.get('/overlay', (req, res) => {
   res.sendFile(path.join(publicDir, 'overlay.html'));
@@ -138,7 +143,16 @@ app.get('/api/me', requireAuth, (req, res) => {
       overlayToken: user.overlay_token,
       badgeText: user.badge_text,
       badgeColor: user.badge_color,
-      cardTheme: user.card_theme,
+      badgeBgColor: user.badge_bg_color || 'rgba(245, 158, 11, 0.22)',
+      fontFamily: user.font_family || 'Kanit',
+      fontSizeScale: Number(user.font_size_scale) || 1.0,
+      viewerColor: user.viewer_color || '#ffffff',
+      cardTheme: user.card_theme || 'purple',
+      cardBgColor: user.card_bg_color || '#1c1030',
+      cardBgOpacity: user.card_bg_opacity !== null && user.card_bg_opacity !== undefined ? Number(user.card_bg_opacity) : 0.94,
+      cardBorderColor: user.card_border_color || '#c4b5fd',
+      cardGlowColor: user.card_glow_color || '#a855f7',
+      cardRadius: user.card_radius || '16px',
       whitelistWords,
       soundEnabled: Boolean(user.sound_enabled),
     },
@@ -146,14 +160,38 @@ app.get('/api/me', requireAuth, (req, res) => {
   });
 });
 
-// 5. Update User Settings (Badge Text, Color, Whitelist Words, Theme)
+// 5. Update User Settings (Badge Text, Colors, Fonts, Sizes, Whitelist, Theme, Custom Cards)
 app.post('/api/settings', requireAuth, (req, res) => {
-  const { badgeText, badgeColor, cardTheme, whitelistWords, soundEnabled } = req.body;
+  const {
+    badgeText,
+    badgeColor,
+    badgeBgColor,
+    fontFamily,
+    fontSizeScale,
+    viewerColor,
+    cardTheme,
+    cardBgColor,
+    cardBgOpacity,
+    cardBorderColor,
+    cardGlowColor,
+    cardRadius,
+    whitelistWords,
+    soundEnabled,
+  } = req.body;
 
   const updated = userRepo.updateUserSettings(req.user.id, {
     badgeText,
     badgeColor,
+    badgeBgColor,
+    fontFamily,
+    fontSizeScale,
+    viewerColor,
     cardTheme,
+    cardBgColor,
+    cardBgOpacity,
+    cardBorderColor,
+    cardGlowColor,
+    cardRadius,
     whitelistWords,
     soundEnabled,
   });
@@ -162,7 +200,16 @@ app.post('/api/settings', requireAuth, (req, res) => {
   broadcaster.broadcastSettingsUpdate(req.user.id, {
     badgeText: updated.badge_text,
     badgeColor: updated.badge_color,
+    badgeBgColor: updated.badge_bg_color,
+    fontFamily: updated.font_family,
+    fontSizeScale: Number(updated.font_size_scale) || 1.0,
+    viewerColor: updated.viewer_color,
     cardTheme: updated.card_theme,
+    cardBgColor: updated.card_bg_color,
+    cardBgOpacity: Number(updated.card_bg_opacity) || 0.94,
+    cardBorderColor: updated.card_border_color,
+    cardGlowColor: updated.card_glow_color,
+    cardRadius: updated.card_radius,
     soundEnabled: Boolean(updated.sound_enabled),
   });
 
@@ -226,7 +273,16 @@ app.get('/api/overlay-data', (req, res) => {
       displayName: user.display_name,
       badgeText: user.badge_text,
       badgeColor: user.badge_color,
-      cardTheme: user.card_theme,
+      badgeBgColor: user.badge_bg_color || 'rgba(245, 158, 11, 0.22)',
+      fontFamily: user.font_family || 'Kanit',
+      fontSizeScale: Number(user.font_size_scale) || 1.0,
+      viewerColor: user.viewer_color || '#ffffff',
+      cardTheme: user.card_theme || 'purple',
+      cardBgColor: user.card_bg_color || '#1c1030',
+      cardBgOpacity: user.card_bg_opacity !== null && user.card_bg_opacity !== undefined ? Number(user.card_bg_opacity) : 0.94,
+      cardBorderColor: user.card_border_color || '#c4b5fd',
+      cardGlowColor: user.card_glow_color || '#a855f7',
+      cardRadius: user.card_radius || '16px',
       soundEnabled: Boolean(user.sound_enabled),
     },
     session,

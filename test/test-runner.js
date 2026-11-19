@@ -69,26 +69,51 @@ async function runAsyncTest(description, fn) {
     assert.deepStrictEqual(whitelist1, ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
   });
 
-  // Test 2: Custom Badge & Whitelist Word Updates per User
-  runTest('Update custom badge text, color, theme, and whitelist for User 1 without affecting User 2', () => {
+  // Test 2: Custom Badge, Colors, Fonts, Sizes, Theme & Custom Card Properties per User
+  runTest('Update custom badge text, colors, font family, scale, theme, custom card properties, and whitelist for User 1 without affecting User 2', () => {
     const updatedUser1 = userRepo.updateUserSettings(user1.id, {
       badgeText: '✨ ผู้เปิดพิธี',
       badgeColor: '#c084fc',
+      badgeBgColor: 'rgba(192, 132, 252, 0.25)',
+      fontFamily: 'Chakra Petch',
+      fontSizeScale: 1.2,
+      viewerColor: '#fef08a',
       cardTheme: 'midnight',
+      cardBgColor: '#022c22',
+      cardBgOpacity: 0.85,
+      cardBorderColor: '#34d399',
+      cardGlowColor: '#10b981',
+      cardRadius: '24px',
       whitelistWords: ['รักแรกมันแยกยาก', 'แต้มพิเศษประจำวัน'],
       soundEnabled: false,
     });
 
     assert.strictEqual(updatedUser1.badge_text, '✨ ผู้เปิดพิธี');
     assert.strictEqual(updatedUser1.badge_color, '#c084fc');
+    assert.strictEqual(updatedUser1.badge_bg_color, 'rgba(192, 132, 252, 0.25)');
+    assert.strictEqual(updatedUser1.font_family, 'Chakra Petch');
+    assert.strictEqual(Number(updatedUser1.font_size_scale), 1.2);
+    assert.strictEqual(updatedUser1.viewer_color, '#fef08a');
     assert.strictEqual(updatedUser1.card_theme, 'midnight');
+    assert.strictEqual(updatedUser1.card_bg_color, '#022c22');
+    assert.strictEqual(Number(updatedUser1.card_bg_opacity), 0.85);
+    assert.strictEqual(updatedUser1.card_border_color, '#34d399');
+    assert.strictEqual(updatedUser1.card_glow_color, '#10b981');
+    assert.strictEqual(updatedUser1.card_radius, '24px');
     assert.strictEqual(updatedUser1.sound_enabled, 0);
     assert.deepStrictEqual(JSON.parse(updatedUser1.whitelist_words), ['รักแรกมันแยกยาก', 'แต้มพิเศษประจำวัน']);
 
     // Verify User 2 remains untouched
     const freshUser2 = userRepo.findUserById(user2.id);
     assert.strictEqual(freshUser2.badge_text, '👑 1ST REDEEMER');
+    assert.strictEqual(freshUser2.font_family, 'Kanit');
+    assert.strictEqual(Number(freshUser2.font_size_scale), 1.0);
     assert.strictEqual(freshUser2.card_theme, 'purple');
+    assert.strictEqual(freshUser2.card_bg_color, '#1c1030');
+    assert.strictEqual(Number(freshUser2.card_bg_opacity), 0.94);
+    assert.strictEqual(freshUser2.card_border_color, '#c4b5fd');
+    assert.strictEqual(freshUser2.card_glow_color, '#a855f7');
+    assert.strictEqual(freshUser2.card_radius, '16px');
   });
 
   // Test 3: Session Stream Start & 1st Redeemer Order

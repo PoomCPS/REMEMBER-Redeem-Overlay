@@ -21,7 +21,16 @@
   const settingsForm = document.getElementById('settingsForm');
   const badgeTextInput = document.getElementById('badgeTextInput');
   const badgeColorPicker = document.getElementById('badgeColorPicker');
+  const badgeBgColorPicker = document.getElementById('badgeBgColorPicker');
+  const fontFamilySelect = document.getElementById('fontFamilySelect');
+  const fontSizeScaleSelect = document.getElementById('fontSizeScaleSelect');
+  const viewerColorPicker = document.getElementById('viewerColorPicker');
   const cardThemeSelect = document.getElementById('cardThemeSelect');
+  const cardBgColorPicker = document.getElementById('cardBgColorPicker');
+  const cardBgOpacitySelect = document.getElementById('cardBgOpacitySelect');
+  const cardBorderColorPicker = document.getElementById('cardBorderColorPicker');
+  const cardGlowColorPicker = document.getElementById('cardGlowColorPicker');
+  const cardRadiusSelect = document.getElementById('cardRadiusSelect');
   const soundToggle = document.getElementById('soundToggle');
   const whitelistTagsContainer = document.getElementById('whitelistTagsContainer');
   const newTagInput = document.getElementById('newTagInput');
@@ -39,6 +48,28 @@
   let currentUser = null;
   let currentWhitelist = [];
   let toastTimer = null;
+
+  const THEME_PRESETS = {
+    purple: { bg: '#1c1030', opacity: '0.94', border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
+    midnight: { bg: '#0f172a', opacity: '0.95', border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
+    cyberpunk: { bg: '#18181b', opacity: '0.95', border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
+    emerald: { bg: '#022c22', opacity: '0.94', border: '#34d399', glow: '#10b981', radius: '16px' },
+    sunset: { bg: '#271406', opacity: '0.94', border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
+    stealth: { bg: '#09090b', opacity: '0.98', border: '#475569', glow: '#64748b', radius: '12px' },
+  };
+
+  function hexToRgba(hex, alpha = 1.0) {
+    if (!hex) return `rgba(28, 16, 48, ${alpha})`;
+    if (hex.startsWith('rgba') || hex.startsWith('rgb')) return hex;
+    let c = hex.replace('#', '');
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const num = parseInt(c, 16);
+    if (isNaN(num)) return `rgba(28, 16, 48, ${alpha})`;
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
 
   function showToast(message, duration = 3000) {
     if (toastTimer) clearTimeout(toastTimer);
@@ -83,7 +114,16 @@
 
     badgeTextInput.value = currentUser.badgeText || '👑 1ST REDEEMER';
     badgeColorPicker.value = currentUser.badgeColor || '#fbbf24';
+    if (badgeBgColorPicker) badgeBgColorPicker.value = currentUser.badgeBgColor?.startsWith('#') ? currentUser.badgeBgColor : '#451a03';
+    if (fontFamilySelect) fontFamilySelect.value = currentUser.fontFamily || 'Kanit';
+    if (fontSizeScaleSelect) fontSizeScaleSelect.value = String(currentUser.fontSizeScale || 1.0);
+    if (viewerColorPicker) viewerColorPicker.value = currentUser.viewerColor || '#ffffff';
     cardThemeSelect.value = currentUser.cardTheme || 'purple';
+    if (cardBgColorPicker) cardBgColorPicker.value = currentUser.cardBgColor || '#1c1030';
+    if (cardBgOpacitySelect) cardBgOpacitySelect.value = String(currentUser.cardBgOpacity ?? 0.94);
+    if (cardBorderColorPicker) cardBorderColorPicker.value = currentUser.cardBorderColor || '#c4b5fd';
+    if (cardGlowColorPicker) cardGlowColorPicker.value = currentUser.cardGlowColor || '#a855f7';
+    if (cardRadiusSelect) cardRadiusSelect.value = currentUser.cardRadius || '16px';
     soundToggle.checked = Boolean(currentUser.soundEnabled);
 
     renderTags();
@@ -154,19 +194,128 @@
     });
   });
 
+  document.querySelectorAll('.color-bg-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const bgcolor = chip.getAttribute('data-bgcolor');
+      if (badgeBgColorPicker) {
+        badgeBgColorPicker.dataset.chosenBg = bgcolor;
+      }
+      updateLivePreview();
+    });
+  });
+
+  document.querySelectorAll('.viewer-color-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const color = chip.getAttribute('data-color');
+      if (viewerColorPicker) viewerColorPicker.value = color;
+      updateLivePreview();
+    });
+  });
+
+  // Card theme chips
+  document.querySelectorAll('.card-bg-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const color = chip.getAttribute('data-color');
+      if (cardBgColorPicker) cardBgColorPicker.value = color;
+      if (cardThemeSelect) cardThemeSelect.value = 'custom';
+      updateLivePreview();
+    });
+  });
+
+  document.querySelectorAll('.card-border-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const color = chip.getAttribute('data-color');
+      if (cardBorderColorPicker) cardBorderColorPicker.value = color;
+      if (cardThemeSelect) cardThemeSelect.value = 'custom';
+      updateLivePreview();
+    });
+  });
+
+  document.querySelectorAll('.card-glow-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const color = chip.getAttribute('data-color');
+      if (cardGlowColorPicker) cardGlowColorPicker.value = color;
+      if (cardThemeSelect) cardThemeSelect.value = 'custom';
+      updateLivePreview();
+    });
+  });
+
+  // Theme preset change
+  cardThemeSelect.addEventListener('change', () => {
+    const selectedTheme = cardThemeSelect.value;
+    const preset = THEME_PRESETS[selectedTheme];
+    if (preset) {
+      if (cardBgColorPicker) cardBgColorPicker.value = preset.bg;
+      if (cardBgOpacitySelect) cardBgOpacitySelect.value = preset.opacity;
+      if (cardBorderColorPicker) cardBorderColorPicker.value = preset.border;
+      if (cardGlowColorPicker) cardGlowColorPicker.value = preset.glow;
+      if (cardRadiusSelect) cardRadiusSelect.value = preset.radius;
+    }
+    updateLivePreview();
+  });
+
+  // Custom theme controls change -> switch theme to 'custom'
+  function onCustomCardStyleChange() {
+    if (cardThemeSelect.value !== 'custom') {
+      cardThemeSelect.value = 'custom';
+    }
+    updateLivePreview();
+  }
+
+  if (cardBgColorPicker) cardBgColorPicker.addEventListener('input', onCustomCardStyleChange);
+  if (cardBgOpacitySelect) cardBgOpacitySelect.addEventListener('change', onCustomCardStyleChange);
+  if (cardBorderColorPicker) cardBorderColorPicker.addEventListener('input', onCustomCardStyleChange);
+  if (cardGlowColorPicker) cardGlowColorPicker.addEventListener('input', onCustomCardStyleChange);
+  if (cardRadiusSelect) cardRadiusSelect.addEventListener('change', onCustomCardStyleChange);
+
   // Real-time preview updates
   badgeTextInput.addEventListener('input', updateLivePreview);
   badgeColorPicker.addEventListener('input', updateLivePreview);
-  cardThemeSelect.addEventListener('change', updateLivePreview);
+  if (badgeBgColorPicker) badgeBgColorPicker.addEventListener('input', updateLivePreview);
+  if (fontFamilySelect) fontFamilySelect.addEventListener('change', updateLivePreview);
+  if (fontSizeScaleSelect) fontSizeScaleSelect.addEventListener('change', updateLivePreview);
+  if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
     const badgeText = badgeTextInput.value.trim() || '👑 1ST REDEEMER';
     const badgeColor = badgeColorPicker.value || '#fbbf24';
+    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || 'rgba(245, 158, 11, 0.22)';
+    const fontFamily = fontFamilySelect?.value || 'Kanit';
+    const fontScale = fontSizeScaleSelect?.value || '1.0';
+    const viewerColor = viewerColorPicker?.value || '#ffffff';
     const theme = cardThemeSelect.value || 'purple';
+
+    const bgColor = cardBgColorPicker?.value || '#1c1030';
+    const bgOpacity = parseFloat(cardBgOpacitySelect?.value || '0.94');
+    const borderColor = cardBorderColorPicker?.value || '#c4b5fd';
+    const glowColor = cardGlowColorPicker?.value || '#a855f7';
+    const radius = cardRadiusSelect?.value || '16px';
+
+    const bgRgba = hexToRgba(bgColor, bgOpacity);
+    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
+    const borderRgba = hexToRgba(borderColor, 0.35);
+    const glowBoxRgba = hexToRgba(glowColor, 0.28);
+    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
 
     previewIndicatorLabel.textContent = badgeText;
     previewIndicatorLabel.style.color = badgeColor;
     previewLiveIndicator.style.borderColor = badgeColor;
+    previewLiveIndicator.style.background = badgeBg;
+
+    previewViewer.style.color = viewerColor;
+
+    previewCard.style.setProperty('--overlay-font', fontFamily);
+    previewCard.style.setProperty('--overlay-scale', fontScale);
+    previewCard.style.setProperty('--badge-color', badgeColor);
+    previewCard.style.setProperty('--badge-bg', badgeBg);
+    previewCard.style.setProperty('--viewer-color', viewerColor);
+
+    // Custom card theme variables
+    previewCard.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
+    previewCard.style.setProperty('--card-border', borderRgba);
+    previewCard.style.setProperty('--card-glow', glowBoxRgba);
+    previewCard.style.setProperty('--card-glow-ambient', glowAmbientRgba);
+    previewCard.style.setProperty('--card-radius', radius);
 
     previewCard.className = `redeem-card theme-${theme}`;
 
@@ -215,7 +364,16 @@
     const payload = {
       badgeText: badgeTextInput.value.trim(),
       badgeColor: badgeColorPicker.value,
+      badgeBgColor: badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || 'rgba(245, 158, 11, 0.22)',
+      fontFamily: fontFamilySelect?.value || 'Kanit',
+      fontSizeScale: parseFloat(fontSizeScaleSelect?.value || '1.0'),
+      viewerColor: viewerColorPicker?.value || '#ffffff',
       cardTheme: cardThemeSelect.value,
+      cardBgColor: cardBgColorPicker?.value || '#1c1030',
+      cardBgOpacity: parseFloat(cardBgOpacitySelect?.value || '0.94'),
+      cardBorderColor: cardBorderColorPicker?.value || '#c4b5fd',
+      cardGlowColor: cardGlowColorPicker?.value || '#a855f7',
+      cardRadius: cardRadiusSelect?.value || '16px',
       soundEnabled: soundToggle.checked,
       whitelistWords: currentWhitelist,
     };
