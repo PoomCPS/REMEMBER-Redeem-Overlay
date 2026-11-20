@@ -100,6 +100,11 @@
   function renderGuest() {
     guestView.classList.remove('hidden');
     dashboardView.classList.add('hidden');
+
+    const devLoginBtn = document.getElementById('devLoginBtn');
+    if (devLoginBtn && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      devLoginBtn.style.display = 'inline-flex';
+    }
   }
 
   function renderDashboard() {

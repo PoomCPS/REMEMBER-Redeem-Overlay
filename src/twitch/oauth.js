@@ -6,38 +6,43 @@ export class TwitchOAuth {
     this.csrfStates = new Map();
   }
 
-  generateStateToken() {
+  generateStateToken(data = {}) {
     const state = crypto.randomBytes(24).toString('hex');
-    this.csrfStates.set(state, Date.now() + 10 * 60 * 1000);
+    this.csrfStates.set(state, {
+      expiresAt: Date.now() + 10 * 60 * 1000,
+      ...data,
+    });
     this.cleanupStates();
     return state;
   }
 
   validateStateToken(state) {
-    if (!state) return false;
-    const expiresAt = this.csrfStates.get(state);
-    if (!expiresAt) return false;
+    if (!state) return null;
+    const entry = this.csrfStates.get(state);
+    if (!entry) return null;
     this.csrfStates.delete(state);
-    return Date.now() < expiresAt;
+    if (Date.now() > entry.expiresAt) return null;
+    return entry;
   }
 
   cleanupStates() {
     const now = Date.now();
-    for (const [state, expiresAt] of this.csrfStates.entries()) {
-      if (now > expiresAt) {
+    for (const [state, entry] of this.csrfStates.entries()) {
+      if (now > entry.expiresAt) {
         this.csrfStates.delete(state);
       }
     }
   }
 
-  getAuthorizationUrl() {
+  getAuthorizationUrl(customRedirectUri) {
     if (!config.twitch.clientId) {
-      throw new Error('TWITCH_CLIENT_ID is not configured in .env');
+      throw new Error('TWITCH_CLIENT_ID is not configured. Please add TWITCH_CLIENT_ID to .env or Environment Variables.');
     }
-    const state = this.generateStateToken();
+    const redirectUri = customRedirectUri || config.twitch.redirectUri;
+    const state = this.generateStateToken({ redirectUri });
     const params = new URLSearchParams({
       client_id: config.twitch.clientId,
-      redirect_uri: config.twitch.redirectUri,
+      redirect_uri: redirectUri,
       response_type: 'code',
       scope: 'channel:read:redemptions',
       state,
@@ -50,17 +55,18 @@ export class TwitchOAuth {
     };
   }
 
-  async exchangeCodeForTokens(code) {
+  async exchangeCodeForTokens(code, customRedirectUri) {
     if (!config.twitch.clientId || !config.twitch.clientSecret) {
       throw new Error('Twitch Client ID and Client Secret must be configured.');
     }
+    const redirectUri = customRedirectUri || config.twitch.redirectUri;
 
     const params = new URLSearchParams({
       client_id: config.twitch.clientId,
       client_secret: config.twitch.clientSecret,
       code,
       grant_type: 'authorization_code',
-      redirect_uri: config.twitch.redirectUri,
+      redirect_uri: redirectUri,
     });
 
     const res = await fetch('https://id.twitch.tv/oauth2/token', {

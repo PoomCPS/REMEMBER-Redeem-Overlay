@@ -111,11 +111,12 @@ export class TwitchMultiUserManager extends EventEmitter {
   }
 
   async handleOAuthCallback(code, state) {
-    if (!twitchOAuth.validateStateToken(state)) {
+    const stateData = twitchOAuth.validateStateToken(state);
+    if (!stateData) {
       throw new Error('Invalid or expired OAuth state token.');
     }
 
-    const tokenData = await twitchOAuth.exchangeCodeForTokens(code);
+    const tokenData = await twitchOAuth.exchangeCodeForTokens(code, stateData.redirectUri);
     const profile = await twitchOAuth.getUserProfile(tokenData.access_token);
 
     if (!profile) {

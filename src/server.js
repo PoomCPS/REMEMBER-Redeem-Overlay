@@ -80,11 +80,43 @@ app.get('/overlay', (req, res) => {
 // 1. Twitch OAuth Login Initiation
 app.get('/auth/twitch/login', (req, res) => {
   try {
-    const { url } = twitchOAuth.getAuthorizationUrl();
+    const host = req.get('host') || 'localhost:3000';
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+    const redirectUri = isLocal
+      ? `http://${host}/auth/twitch/callback`
+      : config.twitch.redirectUri;
+
+    const { url } = twitchOAuth.getAuthorizationUrl(redirectUri);
     res.redirect(url);
   } catch (err) {
     res.status(500).send(`<h3>Twitch Login Error</h3><p>${err.message}</p>`);
   }
+});
+
+// Local Dev Mock Login (Quick test without Twitch credentials)
+app.get('/auth/dev-login', (req, res) => {
+  const host = req.get('host') || '';
+  if (!host.includes('localhost') && !host.includes('127.0.0.1')) {
+    return res.status(403).send('Dev login only allowed on localhost');
+  }
+
+  const devUser = userRepo.upsertUser({
+    id: 'local_dev_user',
+    login: 'streamer_dev',
+    displayName: 'สตรีมเมอร์ (Dev Test)',
+    profileImageUrl: 'https://static-cdn.jtvnw.net/user-default-pictures-uv/75305d54-c7cc-40d1-bbbb-6a3f15440b54-profile_image-70x70.png',
+    accessToken: 'mock_token',
+    refreshToken: 'mock_refresh',
+    tokenExpiresAt: Date.now() + 365 * 24 * 60 * 60 * 1000,
+  });
+
+  const sessionToken = authRepo.createSession(devUser.id);
+  res.setHeader(
+    'Set-Cookie',
+    `session_token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`
+  );
+
+  res.redirect('/?auth=success');
 });
 
 // 2. Twitch OAuth Callback

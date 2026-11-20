@@ -7,8 +7,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// Load environment variables from .env
-dotenv.config({ path: path.join(rootDir, '.env') });
+// Load environment variables from .env or fallback to .env.example
+const envFile = path.join(rootDir, '.env');
+const envExampleFile = path.join(rootDir, '.env.example');
+
+if (fs.existsSync(envFile)) {
+  dotenv.config({ path: envFile });
+} else if (fs.existsSync(envExampleFile)) {
+  dotenv.config({ path: envExampleFile });
+}
 
 const dataDir = path.join(rootDir, 'data');
 if (!fs.existsSync(dataDir)) {
