@@ -18,14 +18,16 @@ html, body {
   position: absolute;
   top: 24px;
   left: 24px;
-  max-width: 540px;
-  width: calc(100% - 48px);
+  width: auto;
+  max-width: calc(100% - 48px);
   pointer-events: none;
 }
 
 /* Card Container */
 .redeem-card {
   position: relative;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: top left;
@@ -38,7 +40,7 @@ html, body {
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  padding: 16px 20px;
+  padding: 10px 24px;
   color: #ffffff;
   transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -46,6 +48,7 @@ html, body {
               border-color 0.3s ease,
               box-shadow 0.3s ease;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .redeem-card.theme-purple {
@@ -117,137 +120,75 @@ html, body {
   transition: background 0.3s ease;
 }
 
-.card-content {
+/* Single Row Content Layout (@user #แต้มที่แลก) */
+.card-content-row {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Top Header Bar */
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 8px;
-}
-
-.channel-points-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.points-icon {
-  width: 16px;
-  height: 16px;
-  color: #38bdf8;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
-}
-
-.badge-text {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #c4b5fd;
-  text-shadow: 0 0 8px rgba(196, 181, 253, 0.4);
-}
-
-.live-indicator {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(167, 139, 250, 0.3);
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-
-.live-indicator .dot {
-  width: 6px;
-  height: 6px;
-  background: #a78bfa;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #a78bfa;
-  animation: pulse-dot 2s infinite ease-in-out;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.6; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.2); }
-}
-
-.indicator-label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #ddd6fe;
-}
-
-.live-indicator.first-redeemer {
-  background: var(--badge-bg, rgba(245, 158, 11, 0.22));
-  border-color: var(--badge-color, rgba(251, 191, 36, 0.65));
-  box-shadow: 0 0 12px var(--badge-glow, rgba(245, 158, 11, 0.4));
-}
-
-.live-indicator.first-redeemer .dot {
-  background: var(--badge-color, #fbbf24);
-  box-shadow: 0 0 10px var(--badge-color, #fbbf24);
-}
-
-.live-indicator.first-redeemer .indicator-label {
-  color: var(--badge-color, #fef08a);
-  font-weight: 800;
-}
-
-/* Viewer Name Section */
-.viewer-section {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
+  gap: 14px;
+  font-size: calc(1.4rem * var(--overlay-scale, 1.0));
+  line-height: 1.25;
+}
+
+.user-chunk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.prefix-at {
+  font-weight: 700;
+  color: var(--badge-color, #fbbf24);
+  opacity: 0.95;
+  margin-right: 1px;
+  font-size: 1.05em;
+  text-shadow: 0 0 8px var(--badge-glow, rgba(251, 191, 36, 0.4));
 }
 
 .viewer-name {
   font-family: inherit;
-  font-size: 1.45rem;
   font-weight: 700;
-  line-height: 1.25;
   color: var(--viewer-color, #ffffff);
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-/* Reward Title Section */
-.reward-section {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(196, 181, 253, 0.12);
-  word-break: break-word;
-}
-
-.reward-prefix {
-  font-weight: 600;
-  color: #a78bfa;
-  flex-shrink: 0;
-  font-size: 0.85rem;
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  word-break: break-word;
+}
+
+.reward-chunk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.prefix-hash {
+  font-weight: 700;
+  color: var(--card-border, #c4b5fd);
+  opacity: 0.85;
+  margin-right: 2px;
+  font-size: 1.05em;
+  text-shadow: 0 0 8px var(--card-glow, rgba(168, 85, 247, 0.4));
 }
 
 .reward-title {
-  font-weight: 500;
-  color: #f1f5f9;
-  overflow-wrap: anywhere;
+  font-family: inherit;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 1st Redeemer Highlight on Single Row Pill */
+.redeem-card.first-redeemer {
+  border-color: var(--badge-color, #fbbf24);
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.6),
+    0 0 28px var(--badge-glow, rgba(245, 158, 11, 0.45)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.redeem-card.first-redeemer .prefix-at {
+  color: var(--badge-color, #fbbf24);
+  text-shadow: 0 0 12px var(--badge-color, #fbbf24);
 }
 
 /* Pulse animation on new redemption replacement */

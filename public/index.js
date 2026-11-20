@@ -317,17 +317,22 @@
     const glowBoxRgba = hexToRgba(glowColor, 0.28);
     const glowAmbientRgba = hexToRgba(glowColor, 0.35);
 
-    previewIndicatorLabel.textContent = badgeText;
-    previewIndicatorLabel.style.color = badgeColor;
-    previewLiveIndicator.style.borderColor = badgeColor;
-    previewLiveIndicator.style.background = badgeBg;
+    if (previewIndicatorLabel) {
+      previewIndicatorLabel.textContent = badgeText;
+      previewIndicatorLabel.style.color = badgeColor;
+    }
+    if (previewLiveIndicator) {
+      previewLiveIndicator.style.borderColor = badgeColor;
+      previewLiveIndicator.style.background = badgeBg;
+    }
 
-    previewViewer.style.color = viewerColor;
+    if (previewViewer) previewViewer.style.color = viewerColor;
 
     previewCard.style.setProperty('--overlay-font', fontFamily);
     previewCard.style.setProperty('--overlay-scale', fontScale);
     previewCard.style.setProperty('--badge-color', badgeColor);
     previewCard.style.setProperty('--badge-bg', badgeBg);
+    previewCard.style.setProperty('--badge-glow', `${badgeColor}66`);
     previewCard.style.setProperty('--viewer-color', viewerColor);
 
     // Custom card theme variables
@@ -337,7 +342,7 @@
     previewCard.style.setProperty('--card-glow-ambient', glowAmbientRgba);
     previewCard.style.setProperty('--card-radius', radius);
 
-    previewCard.className = `redeem-card theme-${theme}`;
+    previewCard.className = `redeem-card theme-${theme} first-redeemer`;
 
     if (currentWhitelist.length > 0) {
       previewRewardTitle.textContent = currentWhitelist[0];
