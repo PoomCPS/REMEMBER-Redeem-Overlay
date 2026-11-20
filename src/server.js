@@ -84,7 +84,7 @@ app.get('/auth/twitch/login', (req, res) => {
     const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
     const redirectUri = isLocal
       ? `http://${host}/auth/twitch/callback`
-      : config.twitch.redirectUri;
+      : (host.includes('onrender.com') ? `https://${host}/auth/twitch/callback` : config.twitch.redirectUri);
 
     const { url } = twitchOAuth.getAuthorizationUrl(redirectUri);
     res.redirect(url);
