@@ -5,6 +5,7 @@ import { config } from './config.js';
 import { userRepo, sessionRepo, authRepo } from './db/db.js';
 import { twitchOAuth } from './twitch/oauth.js';
 import { twitchManager } from './twitch/twitch.js';
+import { twitchEventSub } from './twitch/eventsub.js';
 import { broadcaster } from './websocket/broadcaster.js';
 
 const app = express();
