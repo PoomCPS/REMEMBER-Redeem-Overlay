@@ -5,6 +5,7 @@ import { config } from './config.js';
 import { userRepo, sessionRepo, authRepo } from './db/db.js';
 import { twitchOAuth } from './twitch/oauth.js';
 import { twitchManager } from './twitch/twitch.js';
+import { twitchEventSub } from './twitch/eventsub.js';
 import { broadcaster } from './websocket/broadcaster.js';
 
 const app = express();
@@ -85,6 +86,37 @@ app.get('/', optionalAuth, (req, res) => {
 // Health check endpoint for UptimeRobot / Keep-alive monitors
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
+// Diagnostic endpoint to debug EventSub, active users, and recent redemptions
+app.get('/api/debug-status', optionalAuth, (req, res) => {
+  const isLoopback = req.socket.remoteAddress === '127.0.0.1' || req.socket.remoteAddress === '::1' || req.socket.remoteAddress === '::ffff:127.0.0.1';
+  if (!isLoopback && !req.user && process.env.NODE_ENV === 'production') {
+    return res.status(401).json({ error: 'Unauthorized: Debug status requires authentication in production' });
+  }
+
+  const users = userRepo.getAllUsers().map(u => ({
+    id: u.id,
+    login: u.login,
+    displayName: u.display_name,
+    overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
+    tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
+    whitelistWords: JSON.parse(u.whitelist_words || '[]'),
+    subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
+  }));
+
+  res.json({
+    status: 'ok',
+    serverTime: new Date().toISOString(),
+    eventSub: {
+      connected: Boolean(twitchEventSub.ws && twitchEventSub.ws.readyState === 1),
+      sessionId: twitchEventSub.sessionId,
+      reconnectAttempts: twitchEventSub.reconnectAttempts,
+    },
+    userCount: users.length,
+    users,
+    recentLogs: twitchManager.recentLogs || [],
+  });
 });
 
 // Overlay page
