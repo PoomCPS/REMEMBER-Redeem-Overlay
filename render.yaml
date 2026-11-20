@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: remember-twitch-overlay
+    name: remember-redeem-overlay
     runtime: node
     plan: free
     buildCommand: npm install
