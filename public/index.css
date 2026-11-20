@@ -750,3 +750,95 @@ input[type="text"]:focus, .form-select:focus {
   display: none !important;
 }
 
+/* Twitch Rewards Quick-Pick Panel */
+.twitch-rewards-container {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.twitch-rewards-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.twitch-rewards-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-lavender);
+}
+
+.twitch-rewards-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 32px;
+  align-items: center;
+}
+
+.twitch-reward-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  font-size: 0.82rem;
+  color: #f1f5f9;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.twitch-reward-chip:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+
+.twitch-reward-chip.active {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: #34d399;
+  color: #a7f3d0;
+  font-weight: 600;
+}
+
+.twitch-reward-chip .chip-cost {
+  font-size: 0.72rem;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+/* Skipped Alert Banner */
+.skipped-alert-banner {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.skipped-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: #fef3c7;
+}
+
+.skipped-alert-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

@@ -36,6 +36,14 @@
   const newTagInput = document.getElementById('newTagInput');
   const addTagBtn = document.getElementById('addTagBtn');
 
+  // Twitch Rewards Quick Pick & Skipped Alert
+  const fetchTwitchRewardsBtn = document.getElementById('fetchTwitchRewardsBtn');
+  const twitchRewardsList = document.getElementById('twitchRewardsList');
+  const skippedAlertBanner = document.getElementById('skippedAlertBanner');
+  const skippedAlertText = document.getElementById('skippedAlertText');
+  const addSkippedToWhitelistBtn = document.getElementById('addSkippedToWhitelistBtn');
+  const dismissSkippedAlertBtn = document.getElementById('dismissSkippedAlertBtn');
+
   // Preview elements
   const previewCard = document.getElementById('previewCard');
   const previewLiveIndicator = document.getElementById('previewLiveIndicator');
@@ -48,6 +56,9 @@
   let currentUser = null;
   let currentWhitelist = [];
   let toastTimer = null;
+  let lastSkippedRewardTitle = '';
+  let dashboardWs = null;
+  let cachedTwitchRewards = [];
 
   const THEME_PRESETS = {
     purple: { bg: '#1c1030', opacity: '0.94', border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
@@ -133,6 +144,8 @@
 
     renderTags();
     updateLivePreview();
+    connectDashboardWs();
+    fetchTwitchRewards();
   }
 
   function updateOverlayUrl(token) {
@@ -163,6 +176,7 @@
       removeBtn.addEventListener('click', () => {
         currentWhitelist.splice(index, 1);
         renderTags();
+        updateTwitchRewardChips();
         updateLivePreview();
       });
 
@@ -178,6 +192,7 @@
     if (!currentWhitelist.includes(word)) {
       currentWhitelist.push(word);
       renderTags();
+      updateTwitchRewardChips();
       updateLivePreview();
     }
     newTagInput.value = '';
@@ -328,7 +343,7 @@
     if (currentWhitelist.length > 0) {
       previewRewardTitle.textContent = currentWhitelist[0];
     } else {
-      previewRewardTitle.textContent = 'รักแรกมันแยกยาก';
+      previewRewardTitle.textContent = 'แต้มตัวอย่าง (Channel Point)';
     }
   }
 
@@ -407,7 +422,7 @@
   sendTestRedeemBtn.addEventListener('click', async () => {
     try {
       showToast('กำลังส่งทดสอบแต้ม...');
-      const sampleReward = currentWhitelist.length > 0 ? currentWhitelist[0] : 'รักแรกมันแยกยาก';
+      const sampleReward = currentWhitelist.length > 0 ? currentWhitelist[0] : 'แต้มแรกของวัน';
       const res = await fetch('/api/test-redemption', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -443,6 +458,148 @@
       showToast(`Error: ${err.message}`);
     }
   });
+
+  // --- Twitch Custom Rewards & Skipped Alert Logic ---
+  function showSkippedAlert(data) {
+    if (!skippedAlertBanner || !skippedAlertText) return;
+    lastSkippedRewardTitle = data.rewardTitle;
+    skippedAlertText.textContent = `ผู้ชม @${data.displayName || 'ผู้ชม'} แลกแต้ม "${data.rewardTitle}" แต่ถูกข้ามเนื่องจากไม่อยู่ใน Whitelist`;
+    skippedAlertBanner.classList.remove('hidden');
+    showToast(`⚠️ มีแต้มถูกข้าม: "${data.rewardTitle}" (ไม่อยู่ใน Whitelist)`);
+  }
+
+  if (dismissSkippedAlertBtn) {
+    dismissSkippedAlertBtn.addEventListener('click', () => {
+      skippedAlertBanner.classList.add('hidden');
+    });
+  }
+
+  if (addSkippedToWhitelistBtn) {
+    addSkippedToWhitelistBtn.addEventListener('click', () => {
+      if (lastSkippedRewardTitle && !currentWhitelist.includes(lastSkippedRewardTitle)) {
+        currentWhitelist.push(lastSkippedRewardTitle);
+        renderTags();
+        updateTwitchRewardChips();
+        updateLivePreview();
+        skippedAlertBanner.classList.add('hidden');
+        showToast(`เพิ่ม "${lastSkippedRewardTitle}" ลง Whitelist แล้ว! อย่าลืมกดบันทึกการตั้งค่า`);
+      }
+    });
+  }
+
+  async function fetchTwitchRewards() {
+    if (!twitchRewardsList) return;
+    twitchRewardsList.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">กำลังโหลดแต้มจาก Twitch...</span>';
+
+    try {
+      const res = await fetch('/api/twitch/custom-rewards');
+      const data = await res.json();
+
+      if (!data.success) {
+        twitchRewardsList.innerHTML = `<span style="color: #f87171; font-size: 0.85rem;">โหลดแต้มไม่สำเร็จ: ${data.error || 'Unknown error'}</span>`;
+        return;
+      }
+
+      if (!data.isAffiliate) {
+        twitchRewardsList.innerHTML = `<span style="color: var(--text-subtle); font-size: 0.85rem;">${data.message || 'ช่องนี้ยังไม่ได้เปิดระบบ Channel Points'}</span>`;
+        return;
+      }
+
+      cachedTwitchRewards = data.rewards || [];
+      if (cachedTwitchRewards.length === 0) {
+        twitchRewardsList.innerHTML = '<span style="color: var(--text-subtle); font-size: 0.85rem;">ไม่พบรายการแต้มในช่องของคุณ</span>';
+        return;
+      }
+
+      renderTwitchRewardsList();
+    } catch (err) {
+      twitchRewardsList.innerHTML = `<span style="color: #f87171; font-size: 0.85rem;">Error: ${err.message}</span>`;
+    }
+  }
+
+  function renderTwitchRewardsList() {
+    if (!twitchRewardsList) return;
+    twitchRewardsList.innerHTML = '';
+
+    cachedTwitchRewards.forEach((r) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      const isSelected = currentWhitelist.includes(r.title);
+      chip.className = `twitch-reward-chip ${isSelected ? 'active' : ''}`;
+      chip.setAttribute('data-reward-title', r.title);
+
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = `${isSelected ? '✓ ' : '+ '}${r.title}`;
+
+      const costSpan = document.createElement('span');
+      costSpan.className = 'chip-cost';
+      costSpan.textContent = `(${r.cost.toLocaleString()} pts)`;
+
+      chip.appendChild(titleSpan);
+      chip.appendChild(costSpan);
+
+      chip.addEventListener('click', () => {
+        const title = r.title;
+        const idx = currentWhitelist.indexOf(title);
+        if (idx >= 0) {
+          currentWhitelist.splice(idx, 1);
+        } else {
+          currentWhitelist.push(title);
+        }
+        renderTags();
+        updateTwitchRewardChips();
+        updateLivePreview();
+      });
+
+      twitchRewardsList.appendChild(chip);
+    });
+  }
+
+  function updateTwitchRewardChips() {
+    if (!twitchRewardsList) return;
+    const chips = twitchRewardsList.querySelectorAll('.twitch-reward-chip');
+    chips.forEach((chip) => {
+      const title = chip.getAttribute('data-reward-title');
+      const isSelected = currentWhitelist.includes(title);
+      if (isSelected) {
+        chip.classList.add('active');
+        const firstSpan = chip.querySelector('span:first-child');
+        if (firstSpan) firstSpan.textContent = `✓ ${title}`;
+      } else {
+        chip.classList.remove('active');
+        const firstSpan = chip.querySelector('span:first-child');
+        if (firstSpan) firstSpan.textContent = `+ ${title}`;
+      }
+    });
+  }
+
+  if (fetchTwitchRewardsBtn) {
+    fetchTwitchRewardsBtn.addEventListener('click', fetchTwitchRewards);
+  }
+
+  function connectDashboardWs() {
+    if (dashboardWs) return;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    dashboardWs = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+    dashboardWs.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.type === 'SKIPPED_REDEMPTION') {
+          showSkippedAlert(payload.data);
+        } else if (payload.type === 'REDEMPTION') {
+          previewViewer.textContent = payload.data.displayName;
+          previewRewardTitle.textContent = payload.data.rewardTitle;
+          showToast(`🎉 มีการแลกแต้มสด: ${payload.data.displayName} (${payload.data.rewardTitle})`);
+        }
+      } catch {}
+    };
+
+    dashboardWs.onclose = () => {
+      dashboardWs = null;
+      setTimeout(connectDashboardWs, 5000);
+    };
+  }
 
   // Logout
   logoutBtn.addEventListener('click', async () => {

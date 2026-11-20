@@ -55,6 +55,12 @@ export class TwitchMultiUserManager extends EventEmitter {
 
       if (!isAllowed) {
         this.addLog(`⚠️ ข้ามแต้ม "${redemption.rewardTitle}" ของ @${user.login} (ไม่ตรงกับ Whitelist: ${JSON.stringify(whitelist)})`);
+        broadcaster.broadcastToUser(broadcasterId, 'SKIPPED_REDEMPTION', {
+          rewardTitle: redemption.rewardTitle,
+          displayName: redemption.displayName,
+          whitelist,
+          timestamp: new Date().toISOString(),
+        });
         return;
       }
 
