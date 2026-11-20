@@ -127,12 +127,18 @@ app.get('/overlay', (req, res) => {
 // 1. Twitch OAuth Login Initiation
 app.get('/auth/twitch/login', (req, res) => {
   try {
-    const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
-    const host = req.get('host') || 'localhost:3000';
-    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
-    const redirectUri = (config.twitch.redirectUri && !config.twitch.redirectUri.includes('localhost'))
-      ? config.twitch.redirectUri
-      : (isLocal ? `http://${host}/auth/twitch/callback` : `${proto}://${host}/auth/twitch/callback`);
+    // Determine redirect URI: honor TWITCH_REDIRECT_URI from env if explicitly set
+    let redirectUri;
+    if (config.twitch.redirectUri && !config.twitch.redirectUri.includes('onrender.com')) {
+      redirectUri = config.twitch.redirectUri;
+    } else {
+      const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
+      const host = req.get('host') || 'localhost:3000';
+      const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+      redirectUri = isLocal
+        ? `http://${host}/auth/twitch/callback`
+        : `${proto}://${host}/auth/twitch/callback`;
+    }
 
     const { url } = twitchOAuth.getAuthorizationUrl(redirectUri);
     res.redirect(url);
@@ -174,11 +180,12 @@ app.get('/auth/dev-login', (req, res) => {
   res.redirect('/?auth=success');
 });
 
-// 2. Twitch OAuth Callback
-app.get('/auth/twitch/callback', async (req, res) => {
+// 2. Twitch OAuth Callback (supports both /auth/twitch/callback and /api/auth/callback/twitch)
+const handleTwitchCallback = async (req, res) => {
   const { code, state, error, error_description } = req.query;
 
   if (error) {
+    console.error(`[Twitch OAuth Error] ${error}: ${error_description}`);
     return res.redirect(`/?error=${encodeURIComponent(error_description || error)}`);
   }
 
@@ -203,7 +210,10 @@ app.get('/auth/twitch/callback', async (req, res) => {
     console.error('[OAuth Callback Error]:', err.message);
     res.redirect(`/?error=${encodeURIComponent(err.message)}`);
   }
-});
+};
+
+app.get('/auth/twitch/callback', handleTwitchCallback);
+app.get('/api/auth/callback/twitch', handleTwitchCallback);
 
 // 3. Logout
 app.post('/api/auth/logout', (req, res) => {
