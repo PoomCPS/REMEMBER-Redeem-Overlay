@@ -280,11 +280,12 @@
     if (rewardTitleEl) rewardTitleEl.textContent = rewardTitle;
 
     // Badge styling for 1st redeemer
-    if (redemption.isFirst !== false) {
+    if (redemption.isFirst) {
       cardElement.classList.add('first-redeemer');
     } else {
       cardElement.classList.remove('first-redeemer');
     }
+
     if (indicatorLabelEl && liveIndicatorEl) {
       indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
       indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
