@@ -127,18 +127,19 @@ app.get('/overlay', (req, res) => {
 // 1. Twitch OAuth Login Initiation
 app.get('/auth/twitch/login', (req, res) => {
   try {
-    // Determine redirect URI: honor TWITCH_REDIRECT_URI from env if explicitly set
+    const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
+    const host = req.get('host') || 'localhost:3000';
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+
+    // Automatically determine redirect URI based on the actual domain being visited
     let redirectUri;
-    if (config.twitch.redirectUri && !config.twitch.redirectUri.includes('onrender.com')) {
+    if (config.twitch.redirectUri && !config.twitch.redirectUri.includes('onrender.com') && !config.twitch.redirectUri.includes('localhost')) {
       redirectUri = config.twitch.redirectUri;
     } else {
-      const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
-      const host = req.get('host') || 'localhost:3000';
-      const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
-      redirectUri = isLocal
-        ? `http://${host}/auth/twitch/callback`
-        : `${proto}://${host}/auth/twitch/callback`;
+      redirectUri = `${isLocal ? 'http' : proto}://${host}/auth/twitch/callback`;
     }
+
+    console.log(`[Twitch OAuth Login] User host: "${host}", sending redirect_uri: "${redirectUri}"`);
 
     const { url } = twitchOAuth.getAuthorizationUrl(redirectUri);
     res.redirect(url);
