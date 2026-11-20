@@ -95,23 +95,27 @@ app.get('/api/debug-status', optionalAuth, (req, res) => {
     return res.status(401).json({ error: 'Unauthorized: Debug status requires authentication in production' });
   }
 
-  const users = userRepo.getAllUsers().map(u => ({
-    id: u.id,
-    login: u.login,
-    displayName: u.display_name,
-    overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
-    tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
-    whitelistWords: JSON.parse(u.whitelist_words || '[]'),
-    subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
-  }));
+  const users = userRepo.getAllUsers().map(u => {
+    const conn = twitchEventSub.userConnections?.get(u.id);
+    return {
+      id: u.id,
+      login: u.login,
+      displayName: u.display_name,
+      overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
+      tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
+      whitelistWords: JSON.parse(u.whitelist_words || '[]'),
+      subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
+      eventSubConnected: Boolean(conn?.ws && conn.ws.readyState === 1),
+      sessionId: conn?.sessionId || null,
+    };
+  });
 
   res.json({
     status: 'ok',
     serverTime: new Date().toISOString(),
     eventSub: {
-      connected: Boolean(twitchEventSub.ws && twitchEventSub.ws.readyState === 1),
-      sessionId: twitchEventSub.sessionId,
-      reconnectAttempts: twitchEventSub.reconnectAttempts,
+      activeConnections: twitchEventSub.userConnections ? twitchEventSub.userConnections.size : 0,
+      connectedUsers: Array.from(twitchEventSub.userConnections?.keys() || []),
     },
     userCount: users.length,
     users,

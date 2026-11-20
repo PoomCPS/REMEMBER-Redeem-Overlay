@@ -21,17 +21,6 @@ export class TwitchMultiUserManager extends EventEmitter {
   }
 
   setupListeners() {
-    twitchEventSub.on('ready', async () => {
-      this.ready = true;
-      this.addLog('EventSub is ready. Subscribing all registered users...');
-      await this.subscribeAllUsers();
-    });
-
-    twitchEventSub.on('disconnected', () => {
-      this.ready = false;
-      this.addLog('EventSub disconnected.');
-    });
-
     // Handle incoming Channel Points Redemption
     twitchEventSub.on('redemption', ({ broadcasterId, redemption }) => {
       const user = userRepo.findUserById(broadcasterId);
@@ -105,7 +94,9 @@ export class TwitchMultiUserManager extends EventEmitter {
       console.warn('[Twitch Multi-User] Twitch Client ID or Secret missing in .env');
       return;
     }
-    twitchEventSub.connect();
+    this.ready = true;
+    this.addLog('Subscribing all registered users to Twitch EventSub...');
+    await this.subscribeAllUsers();
   }
 
   async subscribeAllUsers() {
