@@ -560,17 +560,20 @@ input[type="text"]:focus, .form-select:focus {
 /* Overlay card styles used in preview */
 .redeem-card {
   position: relative;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: center center;
   background: var(--card-bg, linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%));
   border: 1px solid var(--card-border, rgba(196, 181, 253, 0.28));
   border-radius: var(--card-radius, 16px);
-  padding: 16px 20px;
+  padding: 10px 24px;
   color: #ffffff;
-  max-width: 520px;
-  width: 100%;
+  max-width: 100%;
+  width: auto;
   overflow: hidden;
+  white-space: nowrap;
   box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px -2px var(--card-glow, rgba(167, 139, 250, 0.28));
   transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
@@ -636,92 +639,75 @@ input[type="text"]:focus, .form-select:focus {
   --card-radius: 12px;
 }
 
-.card-content {
+/* Single Row Content Layout (@user #แต้มที่แลก) */
+.card-content-row {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: calc(1.4rem * var(--overlay-scale, 1.0));
+  line-height: 1.25;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 8px;
+.user-chunk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
 }
 
-.channel-points-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.points-icon {
-  width: 16px;
-  height: 16px;
-  color: #38bdf8;
-}
-
-.badge-text {
-  font-size: 0.72rem;
+.prefix-at {
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--accent-lavender);
-}
-
-.live-indicator {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(167, 139, 250, 0.3);
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-.live-indicator .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #a78bfa;
-}
-
-.indicator-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  color: var(--badge-color, #fbbf24);
+  opacity: 0.95;
+  margin-right: 1px;
+  font-size: 1.05em;
+  text-shadow: 0 0 8px var(--badge-glow, rgba(251, 191, 36, 0.4));
 }
 
 .viewer-name {
-  font-family: 'Kanit', sans-serif;
-  font-size: 1.45rem;
+  font-family: inherit;
   font-weight: 700;
-  color: #fff;
+  color: var(--viewer-color, #ffffff);
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   word-break: break-word;
 }
 
-.reward-section {
-  display: flex;
+.reward-chunk {
+  display: inline-flex;
   align-items: baseline;
-  gap: 6px;
-  font-family: 'Kanit', sans-serif;
-  font-size: 0.95rem;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(196, 181, 253, 0.12);
+  gap: 2px;
 }
 
-.reward-prefix {
-  font-weight: 600;
-  color: var(--accent-purple);
-  font-size: 0.85rem;
+.prefix-hash {
+  font-weight: 700;
+  color: var(--card-border, #c4b5fd);
+  opacity: 0.85;
+  margin-right: 2px;
+  font-size: 1.05em;
+  text-shadow: 0 0 8px var(--card-glow, rgba(168, 85, 247, 0.4));
 }
 
 .reward-title {
-  color: #f1f5f9;
+  font-family: inherit;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 1st Redeemer Highlight on Single Row Pill */
+.redeem-card.first-redeemer {
+  border-color: var(--badge-color, #fbbf24);
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.6),
+    0 0 28px var(--badge-glow, rgba(245, 158, 11, 0.45)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.redeem-card.first-redeemer .prefix-at {
+  color: var(--badge-color, #fbbf24);
+  text-shadow: 0 0 12px var(--badge-color, #fbbf24);
 }
 
 .test-controls-row {

@@ -105,7 +105,7 @@
         <div class="card-header-row">
           <div>
             <h2 class="card-title">OBS Browser Source URL</h2>
-            <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 600 x สูง 250)</p>
+            <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 600 x สูง 90)</p>
           </div>
           <button type="button" id="regenerateTokenBtn" class="btn btn-ghost btn-sm" aria-label="Regenerate overlay token" title="สร้าง Token ใหม่กรณีทำลิงก์หลุด">
             🔄 Regenerate Token
@@ -127,7 +127,7 @@
           <ol class="guide-steps">
             <li>คลิกปุ่ม <strong>Copy URL</strong> สีม่วงด้านบนนี้</li>
             <li>ในโปรแกรม <strong>OBS Studio</strong>: ดูที่กล่อง <em>Sources (แหล่งสัญญาณ)</em> กดปุ่ม <strong>+</strong> แล้วเลือก <strong>Browser (เบราว์เซอร์)</strong></li>
-            <li>วางลิงก์ที่ก๊อปปี้มาลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>600</strong>, Height: <strong>250</strong>) แล้วกด <strong>OK</strong> จบเลย!</li>
+            <li>วางลิงก์ที่ก๊อปปี้มาลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>600</strong>, Height: <strong>90</strong>) แล้วกด <strong>OK</strong> จบเลย!</li>
           </ol>
         </div>
       </section>
@@ -359,30 +359,15 @@
         </div>
 
         <div class="preview-stage">
-          <div id="previewCard" class="redeem-card theme-purple">
+          <div id="previewCard" class="redeem-card theme-purple first-redeemer">
             <div class="card-glow"></div>
-            <div class="card-content">
-              <div class="card-header">
-                <div class="channel-points-badge">
-                  <svg class="points-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <span class="badge-text">CHANNEL POINT REDEEM</span>
-                </div>
-                <div id="previewLiveIndicator" class="live-indicator first-redeemer">
-                  <span class="dot"></span>
-                  <span id="previewIndicatorLabel" class="indicator-label">👑 1ST REDEEMER</span>
-                </div>
-              </div>
-
-              <div class="viewer-section">
-                <div id="previewViewer" class="viewer-name">ViewerName</div>
-              </div>
-
-              <div class="reward-section">
-                <span class="reward-prefix">Reward:</span>
-                <span id="previewRewardTitle" class="reward-title">รักแรกมันแยกยาก</span>
-              </div>
+            <div class="card-content-row">
+              <span class="user-chunk">
+                <span class="prefix-at">@</span><span id="previewViewer" class="viewer-name">ViewerName</span>
+              </span>
+              <span class="reward-chunk">
+                <span class="prefix-hash">#</span><span id="previewRewardTitle" class="reward-title">แต้มแรกของวัน</span>
+              </span>
             </div>
           </div>
         </div>

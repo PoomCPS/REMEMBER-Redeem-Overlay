@@ -276,10 +276,15 @@
     const rewardTitle = redemption.rewardTitle || 'Reward';
 
     // Safe rendering with textContent
-    viewerNameEl.textContent = displayName;
-    rewardTitleEl.textContent = rewardTitle;
+    if (viewerNameEl) viewerNameEl.textContent = displayName;
+    if (rewardTitleEl) rewardTitleEl.textContent = rewardTitle;
 
-    // Badge styling for 1st redeemer (Always display 1st redeemer badge for the reward)
+    // Badge styling for 1st redeemer
+    if (redemption.isFirst !== false) {
+      cardElement.classList.add('first-redeemer');
+    } else {
+      cardElement.classList.remove('first-redeemer');
+    }
     if (indicatorLabelEl && liveIndicatorEl) {
       indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
       indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
