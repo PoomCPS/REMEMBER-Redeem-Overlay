@@ -68,9 +68,17 @@ export class TwitchMultiUserManager extends EventEmitter {
       const user = userRepo.findUserById(broadcasterId);
       if (!user) return;
 
-      this.addLog(`@${user.login} started streaming. Resetting session.`);
+      const current = sessionRepo.getSession(broadcasterId);
+      const recentRedeemAgeMs = current.latestRedemption
+        ? Date.now() - new Date(current.latestRedemption.redeemedAt || current.updatedAt).getTime()
+        : Infinity;
+      const hasRecentRedemption = current.latestRedemption && recentRedeemAgeMs < 10 * 60 * 1000;
+
+      this.addLog(`@${user.login} started streaming.${hasRecentRedemption ? ' Preserving recent 1st redemption.' : ' Resetting session.'}`);
       const session = sessionRepo.startStream(broadcasterId);
-      broadcaster.broadcastClear(broadcasterId, 'stream_started');
+      if (!hasRecentRedemption) {
+        broadcaster.broadcastClear(broadcasterId, 'stream_started');
+      }
       broadcaster.broadcastSessionState(broadcasterId, session);
     });
 
