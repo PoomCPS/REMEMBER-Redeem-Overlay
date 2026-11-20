@@ -66,7 +66,7 @@ async function runAsyncTest(description, fn) {
     assert.strictEqual(user1.badge_text, '👑 1ST REDEEMER');
 
     const whitelist1 = JSON.parse(user1.whitelist_words);
-    assert.deepStrictEqual(whitelist1, ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
+    assert.deepStrictEqual(whitelist1, []);
   });
 
   // Test 2: Custom Badge, Colors, Fonts, Sizes, Theme & Custom Card Properties per User

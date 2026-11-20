@@ -87,6 +87,18 @@
       </div>
     </header>
 
+    <!-- Skipped Redemption Alert Banner -->
+    <div id="skippedAlertBanner" class="skipped-alert-banner hidden">
+      <div class="skipped-alert-content">
+        <span class="skipped-alert-icon">⚠️</span>
+        <span id="skippedAlertText">มีการแลกแต้มที่ถูกข้ามเนื่องจากไม่อยู่ใน Whitelist</span>
+      </div>
+      <div class="skipped-alert-actions">
+        <button type="button" id="addSkippedToWhitelistBtn" class="btn btn-sm btn-primary">+ เพิ่มแต้มนี้ใน Whitelist</button>
+        <button type="button" id="dismissSkippedAlertBtn" class="btn btn-sm btn-ghost">✕</button>
+      </div>
+    </div>
+
     <main class="dashboard-grid">
       <!-- 1. OBS Browser Source URL Card -->
       <section class="card url-card">
@@ -300,7 +312,7 @@
           <div class="whitelist-section">
             <label class="section-label">
               <span>รายการแต้มที่อนุญาตให้แสดง (Reward Whitelist)</span>
-              <span class="label-hint">เฉพาะแต้มที่มีชื่อในนี้เท่านั้นที่จะแสดงบนจอ</span>
+              <span class="label-hint">💡 ค่าเริ่มต้น: หากปล่อยว่างไว้ ระบบจะอนุญาตให้แสดง<strong>ทุกแต้ม</strong>ที่แลกในสตรีม (หรือใส่ชื่อแต้มด้านล่างเพื่อจำกัดเฉพาะบางแต้ม)</span>
             </label>
 
             <!-- Tags Container -->
@@ -308,10 +320,21 @@
 
             <!-- Add Tag Input -->
             <div class="add-tag-row">
-              <input type="text" id="newTagInput" placeholder="พิมพ์ชื่อแต้มที่ต้องการ เช่น รักแรกมันแยกยาก แล้วกด Enter หรือคลิกเพิ่ม">
+              <input type="text" id="newTagInput" placeholder="พิมพ์ชื่อแต้มที่ต้องการ เช่น คนแรก แล้วกด Enter หรือคลิกเพิ่ม">
               <button type="button" id="addTagBtn" class="btn btn-secondary">
                 + เพิ่มแต้ม
               </button>
+            </div>
+
+            <!-- Twitch Rewards Quick-Pick Panel -->
+            <div class="twitch-rewards-container" id="twitchRewardsContainer">
+              <div class="twitch-rewards-header">
+                <span class="twitch-rewards-title">แต้มจากช่อง Twitch ของคุณ (คลิกเพื่อเพิ่ม/ลบจาก Whitelist):</span>
+                <button type="button" id="fetchTwitchRewardsBtn" class="btn btn-sm btn-secondary">🔄 โหลดแต้มจาก Twitch</button>
+              </div>
+              <div id="twitchRewardsList" class="twitch-rewards-list">
+                <span style="color: var(--text-subtle); font-size: 0.85rem;">คลิก "โหลดแต้มจาก Twitch" เพื่อเลือกแต้มในช่องของคุณ</span>
+              </div>
             </div>
           </div>
 

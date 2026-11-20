@@ -41,8 +41,8 @@ export const config = {
     sessionFile: path.join(dataDir, 'session.json'),
     tokensFile: path.join(dataDir, 'tokens.json'),
   },
-  // Note: Whitelist is now managed per-user in database (user.whitelist_words)
-  defaultWhitelist: ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ'],
+  // Note: Whitelist is now managed per-user in database (user.whitelist_words). Default is empty (allow all rewards).
+  defaultWhitelist: [],
 
   isTwitchConfigured() {
     return Boolean(this.twitch.clientId && this.twitch.clientSecret);
