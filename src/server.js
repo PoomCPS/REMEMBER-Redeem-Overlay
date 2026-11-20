@@ -72,6 +72,32 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', uptime: process.uptime() });
 });
 
+// Diagnostic endpoint to debug EventSub, active users, and recent redemptions
+app.get('/api/debug-status', (req, res) => {
+  const users = userRepo.getAllUsers().map(u => ({
+    id: u.id,
+    login: u.login,
+    displayName: u.display_name,
+    overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
+    tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
+    whitelistWords: JSON.parse(u.whitelist_words || '[]'),
+    subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
+  }));
+
+  res.json({
+    status: 'ok',
+    serverTime: new Date().toISOString(),
+    eventSub: {
+      connected: Boolean(twitchEventSub.ws && twitchEventSub.ws.readyState === 1),
+      sessionId: twitchEventSub.sessionId,
+      reconnectAttempts: twitchEventSub.reconnectAttempts,
+    },
+    userCount: users.length,
+    users,
+    recentLogs: twitchManager.recentLogs || [],
+  });
+});
+
 // Overlay page
 app.get('/overlay', (req, res) => {
   res.sendFile(path.join(publicDir, 'overlay.html'));

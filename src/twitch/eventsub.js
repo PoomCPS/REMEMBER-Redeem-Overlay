@@ -15,6 +15,8 @@ export class TwitchEventSub extends EventEmitter {
     this.isExplicitlyClosed = false;
     this.seenMessageIds = new Set();
     this.maxSeenMessages = 500;
+    this.userSubscriptions = new Map(); // broadcasterId -> Array of { type, status, error, timestamp }
+    this.subscriptionQueue = new Set(); // Set of user objects waiting for sessionId
   }
 
   connect(url = config.twitch.eventsubWsUrl) {
@@ -84,6 +86,15 @@ export class TwitchEventSub extends EventEmitter {
         this.resetKeepalive();
         console.log(`[Twitch EventSub] Ready! Session ID: ${this.sessionId}`);
         this.emit('ready', { sessionId: this.sessionId });
+
+        // Process any queued users
+        if (this.subscriptionQueue.size > 0) {
+          const queued = Array.from(this.subscriptionQueue);
+          this.subscriptionQueue.clear();
+          for (const u of queued) {
+            this.subscribeUser(u);
+          }
+        }
         break;
 
       case 'session_keepalive':
@@ -104,7 +115,13 @@ export class TwitchEventSub extends EventEmitter {
   }
 
   async subscribeUser(user) {
-    if (!this.sessionId || !user || !user.access_token) return;
+    if (!user || !user.access_token) return;
+
+    if (!this.sessionId) {
+      console.warn(`[Twitch EventSub] Cannot subscribe @${user.login} yet: WebSocket not ready (sessionId is null). Queuing...`);
+      this.subscriptionQueue.add(user);
+      return;
+    }
 
     const subscriptions = [
       {
@@ -124,6 +141,7 @@ export class TwitchEventSub extends EventEmitter {
       },
     ];
 
+    const results = [];
     for (const sub of subscriptions) {
       try {
         const res = await fetch('https://api.twitch.tv/helix/eventsub/subscriptions', {
@@ -143,17 +161,22 @@ export class TwitchEventSub extends EventEmitter {
         });
 
         if (res.status === 202 || res.status === 200) {
-          // console.log(`[Twitch EventSub] Subscribed to ${sub.type} for @${user.login}`);
+          console.log(`[Twitch EventSub] Successfully subscribed to ${sub.type} for @${user.login}`);
+          results.push({ type: sub.type, success: true, status: res.status });
         } else if (res.status === 409) {
-          // Already subscribed
+          console.log(`[Twitch EventSub] Already subscribed to ${sub.type} for @${user.login}`);
+          results.push({ type: sub.type, success: true, status: 409, note: 'already_subscribed' });
         } else {
-          const err = await res.text();
-          console.warn(`[Twitch EventSub] Subscription error ${sub.type} (HTTP ${res.status}):`, err);
+          const errBody = await res.text();
+          console.warn(`[Twitch EventSub] Subscription error ${sub.type} for @${user.login} (HTTP ${res.status}):`, errBody);
+          results.push({ type: sub.type, success: false, status: res.status, error: errBody });
         }
       } catch (err) {
-        console.error(`[Twitch EventSub] Failed to subscribe to ${sub.type}:`, err.message);
+        console.error(`[Twitch EventSub] Failed to subscribe to ${sub.type} for @${user.login}:`, err.message);
+        results.push({ type: sub.type, success: false, error: err.message });
       }
     }
+    this.userSubscriptions.set(user.id, results);
   }
 
   handleNotification(metadata, payload) {

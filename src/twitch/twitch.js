@@ -9,24 +9,36 @@ export class TwitchMultiUserManager extends EventEmitter {
   constructor() {
     super();
     this.ready = false;
+    this.recentLogs = [];
     this.setupListeners();
+  }
+
+  addLog(msg) {
+    const time = new Date().toLocaleTimeString('th-TH');
+    this.recentLogs.unshift(`[${time}] ${msg}`);
+    if (this.recentLogs.length > 50) this.recentLogs.pop();
+    console.log(`[Twitch Multi-User] ${msg}`);
   }
 
   setupListeners() {
     twitchEventSub.on('ready', async () => {
       this.ready = true;
-      console.log('[Twitch Multi-User] EventSub is ready. Subscribing all registered users...');
+      this.addLog('EventSub is ready. Subscribing all registered users...');
       await this.subscribeAllUsers();
     });
 
     twitchEventSub.on('disconnected', () => {
       this.ready = false;
+      this.addLog('EventSub disconnected.');
     });
 
     // Handle incoming Channel Points Redemption
     twitchEventSub.on('redemption', ({ broadcasterId, redemption }) => {
       const user = userRepo.findUserById(broadcasterId);
-      if (!user) return;
+      if (!user) {
+        this.addLog(`⚠️ ได้รับแต้มจาก broadcasterId=${broadcasterId} แต่ไม่พบ user ในฐานข้อมูล`);
+        return;
+      }
 
       // Check User's Custom Whitelist
       let whitelist = [];
@@ -34,17 +46,19 @@ export class TwitchMultiUserManager extends EventEmitter {
         whitelist = JSON.parse(user.whitelist_words || '[]');
       } catch {}
 
-      if (whitelist.length > 0) {
-        const cleanReward = String(redemption.rewardTitle || '').trim().toLowerCase();
-        const isAllowed = whitelist.some((w) => cleanReward === String(w).trim().toLowerCase());
+      const cleanReward = String(redemption.rewardTitle || '').trim().toLowerCase();
+      // Match if whitelist is empty OR exact/substring match
+      const isAllowed = whitelist.length === 0 || whitelist.some((w) => {
+        const cleanW = String(w).trim().toLowerCase();
+        return cleanReward === cleanW || cleanReward.includes(cleanW) || cleanW.includes(cleanReward);
+      });
 
-        if (!isAllowed) {
-          console.log(`[Twitch Multi-User] Skipping reward "${redemption.rewardTitle}" for @${user.login} (not in whitelist).`);
-          return;
-        }
+      if (!isAllowed) {
+        this.addLog(`⚠️ ข้ามแต้ม "${redemption.rewardTitle}" ของ @${user.login} (ไม่ตรงกับ Whitelist: ${JSON.stringify(whitelist)})`);
+        return;
       }
 
-      console.log(`[Twitch Multi-User] Valid redemption for @${user.login}: ${redemption.displayName} - "${redemption.rewardTitle}"`);
+      this.addLog(`🎉 รับแต้มสำเร็จ @${user.login}: ${redemption.displayName} แลก "${redemption.rewardTitle}"`);
       const formatted = sessionRepo.setLatestRedemption(broadcasterId, redemption);
       broadcaster.broadcastRedemption(broadcasterId, formatted);
     });
@@ -54,7 +68,7 @@ export class TwitchMultiUserManager extends EventEmitter {
       const user = userRepo.findUserById(broadcasterId);
       if (!user) return;
 
-      console.log(`[Twitch Multi-User] @${user.login} started streaming. Resetting session.`);
+      this.addLog(`@${user.login} started streaming. Resetting session.`);
       const session = sessionRepo.startStream(broadcasterId);
       broadcaster.broadcastClear(broadcasterId, 'stream_started');
       broadcaster.broadcastSessionState(broadcasterId, session);
@@ -65,7 +79,7 @@ export class TwitchMultiUserManager extends EventEmitter {
       const user = userRepo.findUserById(broadcasterId);
       if (!user) return;
 
-      console.log(`[Twitch Multi-User] @${user.login} stopped streaming. Clearing overlay.`);
+      this.addLog(`@${user.login} stopped streaming. Clearing overlay.`);
       const session = sessionRepo.endStream(broadcasterId);
       broadcaster.broadcastClear(broadcasterId, 'stream_stopped');
       broadcaster.broadcastSessionState(broadcasterId, session);
