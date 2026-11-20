@@ -324,7 +324,8 @@ export const sessionRepo = {
   setLatestRedemption(userId, redemption) {
     const current = this.getSession(userId);
     const newCount = (current.redemptionCount || 0) + 1;
-    const isFirst = newCount === 1;
+    // Always mark as 1st redeemer (isFirst: true) because Twitch limits this reward to 1 per stream
+    const isFirst = redemption.isFirst !== undefined ? Boolean(redemption.isFirst) : true;
 
     const formatted = {
       ...redemption,

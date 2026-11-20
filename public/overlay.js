@@ -279,19 +279,12 @@
     viewerNameEl.textContent = displayName;
     rewardTitleEl.textContent = rewardTitle;
 
-    // Badge styling for 1st redeemer
+    // Badge styling for 1st redeemer (Always display 1st redeemer badge for the reward)
     if (indicatorLabelEl && liveIndicatorEl) {
-      if (redemption.isFirst) {
-        indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
-        indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
-        liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#fbbf24';
-        liveIndicatorEl.classList.add('first-redeemer');
-      } else {
-        indicatorLabelEl.textContent = 'LATEST';
-        indicatorLabelEl.style.color = '';
-        liveIndicatorEl.style.borderColor = '';
-        liveIndicatorEl.classList.remove('first-redeemer');
-      }
+      indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
+      indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
+      liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#fbbf24';
+      liveIndicatorEl.classList.add('first-redeemer');
     }
 
     cardElement.classList.remove('hidden');

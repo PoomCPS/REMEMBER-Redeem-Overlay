@@ -134,14 +134,14 @@ async function runAsyncTest(description, fn) {
     assert.strictEqual(redeem1.isFirst, true);
     assert.strictEqual(redeem1.order, 1);
 
-    // 2nd redemption replaces 1st, marked not first
+    // 2nd redemption replaces 1st, always treated as 1st redeemer badge for the reward
     const redeem2 = sessionRepo.setLatestRedemption(user1.id, {
       id: 'r_02',
       userName: 'viewer2',
       displayName: 'Viewer Two',
       rewardTitle: 'แต้มพิเศษประจำวัน',
     });
-    assert.strictEqual(redeem2.isFirst, false);
+    assert.strictEqual(redeem2.isFirst, true);
     assert.strictEqual(redeem2.order, 2);
 
     const currentSession = sessionRepo.getSession(user1.id);
