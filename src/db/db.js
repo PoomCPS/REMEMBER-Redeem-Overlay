@@ -258,20 +258,35 @@ export const sessionRepo = {
   },
 
   startStream(userId) {
+    const current = this.getSession(userId);
     const now = new Date().toISOString();
     const newSessionId = `stream_${Date.now()}`;
+
+    // Grace window: If a redemption happened within the last 10 minutes, preserve it as the stream's 1st redemption!
+    const recentRedeemAgeMs = current.latestRedemption
+      ? Date.now() - new Date(current.latestRedemption.redeemedAt || current.updatedAt).getTime()
+      : Infinity;
+    const hasRecentRedemption = current.latestRedemption && recentRedeemAgeMs < 10 * 60 * 1000;
+
     const stmt = db.prepare(`
       INSERT INTO user_sessions (user_id, session_id, is_streaming, stream_started_at, latest_redemption, redemption_count, updated_at)
-      VALUES (?, ?, 1, ?, NULL, 0, ?)
+      VALUES (?, ?, 1, ?, ?, ?, ?)
       ON CONFLICT(user_id) DO UPDATE SET
         session_id = excluded.session_id,
         is_streaming = 1,
         stream_started_at = excluded.stream_started_at,
-        latest_redemption = NULL,
-        redemption_count = 0,
+        latest_redemption = excluded.latest_redemption,
+        redemption_count = excluded.redemption_count,
         updated_at = excluded.updated_at
     `);
-    stmt.run(userId, newSessionId, now, now);
+    stmt.run(
+      userId,
+      newSessionId,
+      now,
+      hasRecentRedemption ? JSON.stringify(current.latestRedemption) : null,
+      hasRecentRedemption ? current.redemptionCount : 0,
+      now
+    );
     return this.getSession(userId);
   },
 
@@ -317,6 +332,7 @@ export const sessionRepo = {
     const stmt = db.prepare(`
       UPDATE user_sessions SET
         latest_redemption = NULL,
+        redemption_count = 0,
         updated_at = ?
       WHERE user_id = ?
     `);
