@@ -842,3 +842,19 @@ input[type="text"]:focus, .form-select:focus {
   gap: 8px;
 }
 
+/* Status and hint text helpers */
+.hint-text {
+  color: var(--text-subtle);
+  font-size: 0.85rem;
+}
+
+.hint-text-muted {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.hint-text-error {
+  color: #f87171;
+  font-size: 0.85rem;
+}
+
