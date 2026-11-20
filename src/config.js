@@ -41,17 +41,8 @@ export const config = {
     sessionFile: path.join(dataDir, 'session.json'),
     tokensFile: path.join(dataDir, 'tokens.json'),
   },
-  allowedRewards: process.env.ALLOWED_REWARDS !== undefined
-    ? process.env.ALLOWED_REWARDS.split(',').map(s => s.trim()).filter(Boolean)
-    : ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ'],
-
-  isRewardAllowed(title) {
-    if (!this.allowedRewards || this.allowedRewards.length === 0) {
-      return true; // No filter: allow all rewards
-    }
-    const clean = String(title || '').trim().toLowerCase();
-    return this.allowedRewards.some(allowed => clean === allowed.trim().toLowerCase());
-  },
+  // Note: Whitelist is now managed per-user in database (user.whitelist_words)
+  defaultWhitelist: ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ'],
 
   isTwitchConfigured() {
     return Boolean(this.twitch.clientId && this.twitch.clientSecret);
