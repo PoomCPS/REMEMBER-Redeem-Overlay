@@ -17,7 +17,7 @@ if (fs.existsSync(envFile)) {
   dotenv.config({ path: envExampleFile });
 }
 
-const dataDir = path.join(rootDir, 'data');
+const dataDir = process.env.DATA_DIR || path.join(rootDir, 'data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }

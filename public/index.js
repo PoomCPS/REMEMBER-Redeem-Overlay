@@ -158,6 +158,7 @@
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'tag-remove-btn';
+      removeBtn.setAttribute('aria-label', `ลบแต้ม ${word}`);
       removeBtn.innerHTML = '&times;';
       removeBtn.addEventListener('click', () => {
         currentWhitelist.splice(index, 1);

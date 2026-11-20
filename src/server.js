@@ -10,6 +10,21 @@ import { broadcaster } from './websocket/broadcaster.js';
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy for Google Cloud / Reverse Proxies (enables secure cookies and correct client IP)
+app.set('trust proxy', 1);
+
+// Security Headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  // Allow /overlay and /overlay.html to be embedded in OBS Studio / browser sources
+  if (req.path.startsWith('/overlay')) {
+    res.setHeader('Content-Security-Policy', "frame-ancestors *;");
+  } else {
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  }
+  next();
+});
+
 // Simple lightweight cookie parser
 app.use((req, res, next) => {
   req.cookies = {};
@@ -80,11 +95,12 @@ app.get('/overlay', (req, res) => {
 // 1. Twitch OAuth Login Initiation
 app.get('/auth/twitch/login', (req, res) => {
   try {
+    const proto = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
     const host = req.get('host') || 'localhost:3000';
     const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
-    const redirectUri = isLocal
-      ? `http://${host}/auth/twitch/callback`
-      : (host.includes('onrender.com') ? `https://${host}/auth/twitch/callback` : config.twitch.redirectUri);
+    const redirectUri = (config.twitch.redirectUri && !config.twitch.redirectUri.includes('localhost'))
+      ? config.twitch.redirectUri
+      : (isLocal ? `http://${host}/auth/twitch/callback` : `${proto}://${host}/auth/twitch/callback`);
 
     const { url } = twitchOAuth.getAuthorizationUrl(redirectUri);
     res.redirect(url);
@@ -93,11 +109,16 @@ app.get('/auth/twitch/login', (req, res) => {
   }
 });
 
-// Local Dev Mock Login (Quick test without Twitch credentials)
+// Local Dev Mock Login (Quick test without Twitch credentials - disabled in production)
 app.get('/auth/dev-login', (req, res) => {
-  const host = req.get('host') || '';
-  if (!host.includes('localhost') && !host.includes('127.0.0.1')) {
-    return res.status(403).send('Dev login only allowed on localhost');
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(404).send('Dev login is disabled in production');
+  }
+
+  const remoteIp = req.socket.remoteAddress;
+  const isLoopback = remoteIp === '127.0.0.1' || remoteIp === '::1' || remoteIp === '::ffff:127.0.0.1';
+  if (!isLoopback) {
+    return res.status(403).send('Dev login only allowed from localhost loopback interface');
   }
 
   const devUser = userRepo.upsertUser({
@@ -110,10 +131,12 @@ app.get('/auth/dev-login', (req, res) => {
     tokenExpiresAt: Date.now() + 365 * 24 * 60 * 60 * 1000,
   });
 
+  const isSecure = req.secure || req.get('x-forwarded-proto') === 'https' || process.env.NODE_ENV === 'production';
+  const secureFlag = isSecure ? '; Secure' : '';
   const sessionToken = authRepo.createSession(devUser.id);
   res.setHeader(
     'Set-Cookie',
-    `session_token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`
+    `session_token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}${secureFlag}`
   );
 
   res.redirect('/?auth=success');
@@ -134,10 +157,13 @@ app.get('/auth/twitch/callback', async (req, res) => {
   try {
     const { sessionToken } = await twitchManager.handleOAuthCallback(code, state);
 
+    const isSecure = req.secure || req.get('x-forwarded-proto') === 'https' || process.env.NODE_ENV === 'production';
+    const secureFlag = isSecure ? '; Secure' : '';
+
     // Set secure HTTP-only cookie
     res.setHeader(
       'Set-Cookie',
-      `session_token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`
+      `session_token=${sessionToken}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}${secureFlag}`
     );
 
     res.redirect('/?auth=success');
@@ -152,7 +178,9 @@ app.post('/api/auth/logout', (req, res) => {
   const token = req.cookies.session_token;
   if (token) authRepo.deleteSession(token);
 
-  res.setHeader('Set-Cookie', 'session_token=; Path=/; HttpOnly; Max-Age=0');
+  const isSecure = req.secure || req.get('x-forwarded-proto') === 'https' || process.env.NODE_ENV === 'production';
+  const secureFlag = isSecure ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `session_token=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secureFlag}`);
   res.json({ success: true });
 });
 
