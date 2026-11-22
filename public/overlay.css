@@ -15,7 +15,8 @@
   border-radius: 0px !important;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   background: transparent !important;
@@ -67,13 +68,11 @@ html, body {
   left: 0;
   right: 0;
   height: 3px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.35) 0px,
-    rgba(255, 255, 255, 0.35) 1px,
-    transparent 1px,
-    transparent 6px
-  );
+  background-image: repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.35) 0px,
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 1px,
+      transparent 6px);
   z-index: 2;
   pointer-events: none;
 }
@@ -196,11 +195,25 @@ html, body {
   height: 100%;
 }
 
-.stripe-1 { background-color: var(--stripe-1, #E63946); }
-.stripe-2 { background-color: var(--stripe-2, #F77F00); }
-.stripe-3 { background-color: var(--stripe-3, #FCBF49); }
-.stripe-4 { background-color: var(--stripe-4, #0096C7); }
-.stripe-5 { background-color: var(--stripe-5, #2A9D8F); }
+.stripe-1 {
+  background-color: var(--stripe-1, #E63946);
+}
+
+.stripe-2 {
+  background-color: var(--stripe-2, #F77F00);
+}
+
+.stripe-3 {
+  background-color: var(--stripe-3, #FCBF49);
+}
+
+.stripe-4 {
+  background-color: var(--stripe-4, #0096C7);
+}
+
+.stripe-5 {
+  background-color: var(--stripe-5, #2A9D8F);
+}
 
 /* First Redeemer Highlight: Tape Gold Border Stamp */
 .vhs-spine-bar.first-redeemer {
@@ -214,9 +227,19 @@ html, body {
 }
 
 @keyframes spine-pop {
-  0% { transform: scale(1.03); filter: invert(0.8); }
-  50% { transform: scale(0.99); filter: invert(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1.03);
+    filter: invert(0.8);
+  }
+
+  50% {
+    transform: scale(0.99);
+    filter: invert(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* ==========================================================================
@@ -236,23 +259,24 @@ html, body {
   --stripe-4: #0096C7;
   --stripe-5: #2A9D8F;
 }
+
 .vhs-spine-bar.theme-polaroid .spine-meta-label,
 .vhs-spine-bar.theme-polaroid .spine-speed-mode,
 .vhs-spine-bar.theme-polaroid .spine-tape-barcode {
   color: rgba(26, 26, 26, 0.7);
 }
+
 .vhs-spine-bar.theme-polaroid .spine-hq-badge {
   color: #1A1A1A;
   border-color: #1A1A1A;
 }
+
 .vhs-spine-bar.theme-polaroid .spine-ruler-ticks {
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgba(26, 26, 26, 0.4) 0px,
-    rgba(26, 26, 26, 0.4) 1px,
-    transparent 1px,
-    transparent 6px
-  );
+  background-image: repeating-linear-gradient(90deg,
+      rgba(26, 26, 26, 0.4) 0px,
+      rgba(26, 26, 26, 0.4) 1px,
+      transparent 1px,
+      transparent 6px);
 }
 
 /* 2. TDK Super Avilyn SA (Oxide black, gold rules, crimson/orange stepped band) */
@@ -462,11 +486,13 @@ html, body {
   --stripe-4: #0096C7;
   --stripe-5: #2A9D8F;
 }
+
 .vhs-spine-bar.theme-cyberpunk .spine-meta-label,
 .vhs-spine-bar.theme-cyberpunk .spine-speed-mode,
 .vhs-spine-bar.theme-cyberpunk .spine-tape-barcode {
   color: rgba(26, 26, 26, 0.7);
 }
+
 .vhs-spine-bar.theme-cyberpunk .spine-hq-badge {
   color: #1A1A1A;
   border-color: #1A1A1A;

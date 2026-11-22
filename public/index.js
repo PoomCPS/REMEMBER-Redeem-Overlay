@@ -1,3 +1,12 @@
+import { createRetroEditors } from './codemirror-loader.js';
+import {
+  renderCustomTemplate,
+  scopeCss,
+  populateDomHooks,
+  DEFAULT_VHS_STARTER_HTML,
+  DEFAULT_VHS_STARTER_CSS
+} from './template-engine.js';
+
 (() => {
   // Elements
   const guestView = document.getElementById('guestView');
@@ -16,6 +25,18 @@
   const copyUrlText = document.getElementById('copyUrlText');
   const openOverlayLink = document.getElementById('openOverlayLink');
   const regenerateTokenBtn = document.getElementById('regenerateTokenBtn');
+
+  // Deck Tabs & Mode
+  const tabPresetBtn = document.getElementById('tabPresetBtn');
+  const tabManualBtn = document.getElementById('tabManualBtn');
+  const presetTabPane = document.getElementById('presetTabPane');
+  const manualTabPane = document.getElementById('manualTabPane');
+  const configModeInput = document.getElementById('configModeInput');
+
+  // Manual CodeMirror Blocks
+  const htmlEditorContainer = document.getElementById('htmlEditorContainer');
+  const cssEditorContainer = document.getElementById('cssEditorContainer');
+  const loadStarterTemplateBtn = document.getElementById('loadStarterTemplateBtn');
 
   // Settings
   const settingsForm = document.getElementById('settingsForm');
@@ -46,6 +67,8 @@
 
   // Preview elements
   const previewCard = document.getElementById('previewCard');
+  const previewCustomOverlayRoot = document.getElementById('previewCustomOverlayRoot');
+  const previewCustomStyle = document.getElementById('previewCustomStyle');
   const previewLiveIndicator = document.getElementById('previewLiveIndicator');
   const previewIndicatorLabel = document.getElementById('previewIndicatorLabel');
   const previewViewer = document.getElementById('previewViewer');
@@ -59,6 +82,8 @@
   let lastSkippedRewardTitle = '';
   let dashboardWs = null;
   let cachedTwitchRewards = [];
+  let cmEditors = null;
+  let previewDebounceTimer = null;
 
   const THEME_PRESETS = {
     // Classic Blank VHS Tape Brands
@@ -160,10 +185,75 @@
     if (cardRadiusSelect) cardRadiusSelect.value = currentUser.cardRadius || '16px';
     soundToggle.checked = Boolean(currentUser.soundEnabled);
 
+    if (configModeInput) {
+      configModeInput.value = currentUser.configMode || 'preset';
+      switchTab(configModeInput.value);
+    }
+
+    if (!cmEditors && htmlEditorContainer && cssEditorContainer) {
+      createRetroEditors({
+        htmlContainer: htmlEditorContainer,
+        cssContainer: cssEditorContainer,
+        initialHtml: currentUser.customHtml || DEFAULT_VHS_STARTER_HTML,
+        initialCss: currentUser.customCss || DEFAULT_VHS_STARTER_CSS,
+        onHtmlChange: () => schedulePreviewUpdate(),
+        onCssChange: () => schedulePreviewUpdate(),
+      }).then((editors) => {
+        cmEditors = editors;
+        updateLivePreview();
+      }).catch((err) => {
+        console.warn('[CodeMirror init error]:', err);
+      });
+    } else if (cmEditors) {
+      cmEditors.setHtml(currentUser.customHtml || DEFAULT_VHS_STARTER_HTML);
+      cmEditors.setCss(currentUser.customCss || DEFAULT_VHS_STARTER_CSS);
+    }
+
     renderTags();
     updateLivePreview();
     connectDashboardWs();
     fetchTwitchRewards();
+  }
+
+  function switchTab(mode) {
+    if (!tabPresetBtn || !tabManualBtn) return;
+    if (mode === 'manual') {
+      tabPresetBtn.classList.remove('active');
+      tabManualBtn.classList.add('active');
+      if (presetTabPane) presetTabPane.classList.add('hidden');
+      if (manualTabPane) manualTabPane.classList.remove('hidden');
+      if (configModeInput) configModeInput.value = 'manual';
+      if (currentUser) currentUser.configMode = 'manual';
+    } else {
+      tabManualBtn.classList.remove('active');
+      tabPresetBtn.classList.add('active');
+      if (manualTabPane) manualTabPane.classList.add('hidden');
+      if (presetTabPane) presetTabPane.classList.remove('hidden');
+      if (configModeInput) configModeInput.value = 'preset';
+      if (currentUser) currentUser.configMode = 'preset';
+    }
+    updateLivePreview();
+  }
+
+  if (tabPresetBtn) tabPresetBtn.addEventListener('click', () => switchTab('preset'));
+  if (tabManualBtn) tabManualBtn.addEventListener('click', () => switchTab('manual'));
+
+  if (loadStarterTemplateBtn) {
+    loadStarterTemplateBtn.addEventListener('click', () => {
+      if (cmEditors) {
+        cmEditors.setHtml(DEFAULT_VHS_STARTER_HTML);
+        cmEditors.setCss(DEFAULT_VHS_STARTER_CSS);
+        showToast('โหลด VHS Starter Template เรียบร้อย!');
+        schedulePreviewUpdate();
+      }
+    });
+  }
+
+  function schedulePreviewUpdate() {
+    if (previewDebounceTimer) clearTimeout(previewDebounceTimer);
+    previewDebounceTimer = setTimeout(() => {
+      updateLivePreview();
+    }, 300);
   }
 
   function updateOverlayUrl(token) {
@@ -322,6 +412,39 @@
   if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
+    const mode = configModeInput?.value || currentUser?.configMode || 'preset';
+
+    if (mode === 'manual') {
+      if (previewCard) previewCard.classList.add('hidden');
+      if (previewCustomOverlayRoot && previewCustomStyle) {
+        const rawHtml = cmEditors ? cmEditors.getHtml() : (currentUser?.customHtml || DEFAULT_VHS_STARTER_HTML);
+        const rawCss = cmEditors ? cmEditors.getCss() : (currentUser?.customCss || DEFAULT_VHS_STARTER_CSS);
+
+        previewCustomStyle.textContent = scopeCss(rawCss, '#previewCustomOverlayRoot');
+
+        const rawBadgeText = badgeTextInput?.value?.trim() || '1ST';
+        const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1ST';
+
+        const sampleData = {
+          displayName: previewViewer?.textContent || 'ViewerName',
+          userName: 'viewer_name',
+          rewardTitle: currentWhitelist.length > 0 ? currentWhitelist[0] : 'รักแรกมันแยกยาก',
+          badgeText: badgeText,
+          order: 1,
+        };
+
+        previewCustomOverlayRoot.innerHTML = renderCustomTemplate(rawHtml, sampleData);
+        populateDomHooks(previewCustomOverlayRoot, sampleData);
+        previewCustomOverlayRoot.classList.remove('hidden');
+      }
+      return;
+    }
+
+    // Preset mode
+    if (previewCustomOverlayRoot) previewCustomOverlayRoot.classList.add('hidden');
+    if (previewCustomStyle) previewCustomStyle.textContent = '';
+    if (previewCard) previewCard.classList.remove('hidden');
+
     const rawBadgeText = badgeTextInput.value.trim() || '1ST';
     const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1ST';
     const badgeColor = badgeColorPicker.value || '#10111A';
@@ -417,6 +540,9 @@
       cardRadius: cardRadiusSelect?.value || '16px',
       soundEnabled: soundToggle.checked,
       whitelistWords: currentWhitelist,
+      configMode: configModeInput?.value || 'preset',
+      customHtml: cmEditors ? cmEditors.getHtml() : (currentUser?.customHtml || ''),
+      customCss: cmEditors ? cmEditors.getCss() : (currentUser?.customCss || ''),
     };
 
     try {
@@ -429,10 +555,20 @@
 
       const data = await res.json();
       if (data.success) {
+        if (currentUser && data.user) {
+          currentUser.configMode = data.user.config_mode;
+          currentUser.customHtml = data.user.custom_html;
+          currentUser.customCss = data.user.custom_css;
+        }
         showToast('บันทึกการตั้งค่าสำเร็จ! หน้าจอ OBS จะอัปเดตทันที');
+        updateLivePreview();
       } else {
         showToast(`บันทึกไม่สำเร็จ: ${data.error}`);
       }
+    } catch (err) {
+      showToast(`Error: ${err.message}`);
+    }
+  });
     } catch (err) {
       showToast(`Error: ${err.message}`);
     }

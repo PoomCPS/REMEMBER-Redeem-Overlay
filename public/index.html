@@ -44,7 +44,8 @@
         <div class="cassette-window-box" style="width: 100%; max-width: 480px; margin: 4px auto 12px;">
           <div class="cassette-spool"></div>
           <div class="cassette-tape-bridge"></div>
-          <div style="font-family: var(--font-mono); font-size: 0.65rem; color: #EDE3D2; letter-spacing: 0.1em; text-transform: uppercase;">
+          <div
+            style="font-family: var(--font-mono); font-size: 0.65rem; color: #EDE3D2; letter-spacing: 0.1em; text-transform: uppercase;">
             BLANK VHS CASSETTE // T-120 HIGH GRADE
           </div>
           <div class="cassette-tape-bridge"></div>
@@ -53,7 +54,8 @@
 
         <p class="hero-subtitle">
           ระบบแสดงผู้ชมที่แลกแต้ม <strong>คนแรกของสตรีม</strong> อัตโนมัติบน OBS Studio
-          ดีไซน์ม้วนเทปเปล่า Blank VHS ยุค 1980s (TDK, Maxell, Sony, JVC, Polaroid) พร้อมพาเลทสี Filmora 15 ธีม ตรวจจับตรงผ่าน Twitch EventSub คมชัดระดับบรอดคาสต์
+          ดีไซน์ม้วนเทปเปล่า Blank VHS ยุค 1980s (TDK, Maxell, Sony, JVC, Polaroid) พร้อมพาเลทสี Filmora 15 ธีม
+          ตรวจจับตรงผ่าน Twitch EventSub คมชัดระดับบรอดคาสต์
         </p>
 
         <div class="hero-actions">
@@ -189,14 +191,28 @@
         </div>
       </section>
 
-      <!-- 2. Settings Form: Custom Badge and Whitelist Words -->
+      <!-- 2. Settings Form: Custom Badge, Whitelist Words, and Manual Code -->
       <section class="card settings-card">
         <div class="card-stamp">[ TAPE CONFIGURATION ]</div>
         <h2 class="card-title">การปรับแต่ง Overlay ประจำช่องของคุณ</h2>
-        <p class="card-desc">ปรับเปลี่ยนข้อความป้าย สี และรายการแต้มที่อนุญาตให้แสดง</p>
+        <p class="card-desc">เลือกปรับแต่งด้วยปุ่มสไตล์ม้วนเทป 1980s หรือเขียนโค้ด HTML/CSS ด้วยตนเองแบบอิสระ</p>
+
+        <!-- Deck Channel Mode Tabs -->
+        <div class="deck-tabs-header">
+          <button type="button" id="tabPresetBtn" class="deck-tab-btn active" data-tab="preset">
+            <span class="tab-channel">[ CH-01 ]</span> NORMAL VHS CONFIG
+          </button>
+          <button type="button" id="tabManualBtn" class="deck-tab-btn" data-tab="manual">
+            <span class="tab-channel">[ CH-02 ]</span> MANUAL CODE (CODEMIRROR 6)
+          </button>
+        </div>
 
         <form id="settingsForm">
-          <div class="settings-grid">
+          <input type="hidden" id="configModeInput" value="preset">
+
+          <!-- TAB PANE 1: PRESET NORMAL CONFIG -->
+          <div id="presetTabPane" class="tab-pane active">
+            <div class="settings-grid">
             <!-- Left Block Text -->
             <div class="form-group">
               <label for="badgeTextInput">ข้อความแถบซ้าย (Left Block Text - หมุนแนวตั้ง 90°)</label>
@@ -299,7 +315,8 @@
                 <optgroup label="🌈 FILMORA RETRO VHS COLOR PALETTES">
                   <option value="neon-midnight">🌆 NEON MIDNIGHT (ซินธ์เวฟ 80s ม่วงเข้ม ชมพูนีออน ฟ้าไซแอน)</option>
                   <option value="outrun">🏎️ OUTRUN HORIZON (อาทิตย์อัสดง ซันเซ็ตออเรนจ์ ชมพูฮอตพิงค์)</option>
-                  <option value="sun-bleached">📹 SUN-BLEACHED 1988 (แคมคอร์เดอร์เรโทร ดินเผา เทาเสจ ครีมอบอุ่น)</option>
+                  <option value="sun-bleached">📹 SUN-BLEACHED 1988 (แคมคอร์เดอร์เรโทร ดินเผา เทาเสจ ครีมอบอุ่น)
+                  </option>
                   <option value="aged-attic">📦 AGED ATTIC TAPE (ม้วนเทปเก่าในห้องใต้หลังคา เซเปีย น้ำตาลทราย)</option>
                   <option value="toxic-crt">📺 TOXIC CRT (หน้าจอฟอสฟอร์เขียว เทอร์มินอล 80s)</option>
                   <option value="glitch-core">⚡ GLITCH CORE (ไซเบอร์เนติก เนวี่มืด เขียวแมทริกซ์ แดงเตือนภัย)</option>
@@ -432,6 +449,56 @@
               </div>
             </div>
           </div>
+          </div> <!-- End #presetTabPane -->
+
+          <!-- TAB PANE 2: MANUAL CODEMIRROR 6 OVERRIDE -->
+          <div id="manualTabPane" class="tab-pane hidden">
+            <div class="manual-deck-panel">
+              <div class="manual-toolbar">
+                <div>
+                  <div class="badge-mono">[ FULL CUSTOMIZATION // CODEMIRROR 6 ]</div>
+                  <p class="manual-toolbar-desc">เขียน HTML และ CSS เพื่อออกแบบ Overlay ด้วยตัวเองได้อย่างอิสระ 100%</p>
+                </div>
+                <div class="manual-toolbar-actions">
+                  <button type="button" id="loadStarterTemplateBtn" class="deck-btn btn-sm">
+                    [ ↺ LOAD VHS STARTER TEMPLATE ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- Template Tag Cheatsheet -->
+              <div class="template-tags-banner">
+                <span class="tags-banner-title">ตัวแปรไดนามิก (Template Tags):</span>
+                <div class="tags-pill-row">
+                  <span class="tag-pill"><code>{{viewer}}</code> <em>ชื่อคนแลกแต้ม</em></span>
+                  <span class="tag-pill"><code>{{reward}}</code> <em>ชื่อของรางวัล</em></span>
+                  <span class="tag-pill"><code>{{badge}}</code> <em>ข้อความป้าย</em></span>
+                  <span class="tag-pill"><code>{{order}}</code> <em>ลำดับการแลก</em></span>
+                </div>
+              </div>
+
+              <!-- CodeMirror 6 Blocks Grid -->
+              <div class="codemirror-grid">
+                <!-- HTML Block -->
+                <div class="editor-column">
+                  <div class="editor-header-bar">
+                    <span class="editor-header-title">[ 01. CUSTOM HTML ]</span>
+                    <span class="editor-syntax-badge">HTML5</span>
+                  </div>
+                  <div id="htmlEditorContainer" class="editor-cm-mount"></div>
+                </div>
+
+                <!-- CSS Block -->
+                <div class="editor-column">
+                  <div class="editor-header-bar">
+                    <span class="editor-header-title">[ 02. CUSTOM CSS ]</span>
+                    <span class="editor-syntax-badge">CSS3 (CONTAINER SCOPED)</span>
+                  </div>
+                  <div id="cssEditorContainer" class="editor-cm-mount"></div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- End #manualTabPane -->
 
           <div class="form-submit-row">
             <button type="submit" class="deck-btn btn-primary btn-save">
@@ -455,6 +522,8 @@
         </div>
 
         <div class="preview-stage">
+          <style id="previewCustomStyle"></style>
+          <div id="previewCustomOverlayRoot" class="hidden"></div>
           <div id="previewCard" class="vhs-spine-bar first-redeemer">
             <!-- 0. Top Ruler Ticks (Authentic Cassette Index Label Edge) -->
             <div class="spine-ruler-ticks"></div>
@@ -502,7 +571,7 @@
     </main>
   </div>
 
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 
 </html>

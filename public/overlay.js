@@ -1,9 +1,19 @@
+import {
+  renderCustomTemplate,
+  scopeCss,
+  populateDomHooks,
+  DEFAULT_VHS_STARTER_HTML,
+  DEFAULT_VHS_STARTER_CSS
+} from './template-engine.js';
+
 (() => {
   const cardElement = document.getElementById('redeemCard');
   const viewerNameEl = document.getElementById('viewerName');
   const rewardTitleEl = document.getElementById('rewardTitle');
   const liveIndicatorEl = document.getElementById('liveIndicator');
   const indicatorLabelEl = document.getElementById('indicatorLabel');
+  const customOverlayRoot = document.getElementById('customOverlayRoot');
+  const customOverlayStyle = document.getElementById('customOverlayStyle');
 
   let ws = null;
   let reconnectTimer = null;
@@ -11,6 +21,7 @@
   let pollingTimer = null;
   let lastMessageTime = Date.now();
   let currentRedemptionId = null;
+  let lastRedemptionData = null;
 
   const PING_INTERVAL_MS = 15000; // Send PING every 15s to keep Cloud Run / reverse proxies alive
   const WATCHDOG_TIMEOUT_MS = 35000; // Reconnect if no message/pong received in 35s
@@ -30,6 +41,9 @@
     cardGlowColor: '#F2B857',
     cardRadius: '0px',
     soundEnabled: true,
+    configMode: 'preset',
+    customHtml: '',
+    customCss: '',
   };
 
   const THEME_PRESETS = {
@@ -99,7 +113,7 @@
 
       osc.start();
       osc.stop(ctx.currentTime + 0.6);
-    } catch {}
+    } catch { }
   }
 
   function startHeartbeat() {
@@ -108,12 +122,12 @@
       if (ws && ws.readyState === WebSocket.OPEN) {
         try {
           ws.send(JSON.stringify({ type: 'PING' }));
-        } catch {}
+        } catch { }
       }
       // Watchdog: If no message or pong received within WATCHDOG_TIMEOUT_MS, reconnect
       if (Date.now() - lastMessageTime > WATCHDOG_TIMEOUT_MS) {
         console.warn('[Overlay] WebSocket connection appears stale. Reconnecting...');
-        try { ws.close(); } catch {}
+        try { ws.close(); } catch { }
       }
     }, PING_INTERVAL_MS);
   }
@@ -150,7 +164,7 @@
       } else if (currentRedemptionId !== null) {
         hideRedemption();
       }
-    } catch {}
+    } catch { }
   }
 
   function connectWebSocket() {
@@ -251,6 +265,22 @@
   }
 
   function applyCustomStyles() {
+    if (currentUser.configMode === 'manual') {
+      const css = currentUser.customCss || DEFAULT_VHS_STARTER_CSS;
+      if (customOverlayStyle) {
+        customOverlayStyle.textContent = scopeCss(css, '#customOverlayRoot');
+      }
+      if (cardElement) cardElement.classList.add('hidden');
+      if (lastRedemptionData) {
+        displayRedemption(lastRedemptionData, false);
+      }
+      return;
+    }
+
+    // Preset mode
+    if (customOverlayRoot) customOverlayRoot.classList.add('hidden');
+    if (customOverlayStyle) customOverlayStyle.textContent = '';
+
     applyTheme(currentUser.cardTheme);
     cardElement.style.setProperty('--overlay-font', currentUser.fontFamily || 'Kanit');
     cardElement.style.setProperty('--overlay-scale', currentUser.fontSizeScale || 1.0);
@@ -271,6 +301,10 @@
       // Use card glow color as an accent highlight stripe
       cardElement.style.setProperty('--stripe-3', currentUser.cardGlowColor);
     }
+
+    if (lastRedemptionData) {
+      displayRedemption(lastRedemptionData, false);
+    }
   }
 
   function applyTheme(theme) {
@@ -282,9 +316,38 @@
   function displayRedemption(redemption, animatePulse = true) {
     if (!redemption) return;
 
+    lastRedemptionData = redemption;
     currentRedemptionId = redemption.id || `${redemption.userName}_${redemption.redeemedAt}`;
     const displayName = redemption.displayName || redemption.userName || 'Viewer';
     const rewardTitle = redemption.rewardTitle || 'Reward';
+
+    if (currentUser.configMode === 'manual') {
+      if (cardElement) cardElement.classList.add('hidden');
+      if (customOverlayRoot) {
+        const html = currentUser.customHtml || DEFAULT_VHS_STARTER_HTML;
+        const bindData = {
+          displayName,
+          userName: redemption.userName,
+          rewardTitle,
+          badgeText: currentUser.badgeText,
+          isFirst: redemption.isFirst,
+          order: redemption.order,
+        };
+        customOverlayRoot.innerHTML = renderCustomTemplate(html, bindData);
+        populateDomHooks(customOverlayRoot, bindData);
+        customOverlayRoot.classList.remove('hidden');
+
+        if (animatePulse) {
+          customOverlayRoot.classList.remove('pulse');
+          void customOverlayRoot.offsetWidth;
+          customOverlayRoot.classList.add('pulse');
+        }
+      }
+      return;
+    }
+
+    // Preset mode
+    if (customOverlayRoot) customOverlayRoot.classList.add('hidden');
 
     // Safe rendering with textContent
     if (viewerNameEl) viewerNameEl.textContent = displayName;
@@ -318,7 +381,9 @@
 
   function hideRedemption() {
     currentRedemptionId = null;
-    cardElement.classList.add('hidden');
+    lastRedemptionData = null;
+    if (cardElement) cardElement.classList.add('hidden');
+    if (customOverlayRoot) customOverlayRoot.classList.add('hidden');
   }
 
   // Initial immediate fetch for instant loading on OBS
