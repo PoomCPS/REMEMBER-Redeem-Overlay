@@ -470,10 +470,43 @@ input[type="text"]:focus,
   width: 28px;
   height: 28px;
   border: 1px solid var(--border-color);
-  background: var(--chip-color);
+  background: var(--chip-color, transparent);
   cursor: pointer;
   box-shadow: 1px 1px 0px var(--border-color);
   transition: transform var(--transition-step);
+}
+
+/* Color Chip Palette Selectors (Eliminating inline styles) */
+[data-bgcolor="#00A896"], [data-color="#00A896"] { background-color: #00A896; }
+[data-bgcolor="#E63946"], [data-color="#E63946"] { background-color: #E63946; }
+[data-bgcolor="#FCBF49"], [data-color="#FCBF49"] { background-color: #FCBF49; }
+[data-bgcolor="#F77F00"], [data-color="#F77F00"] { background-color: #F77F00; }
+[data-bgcolor="#121212"], [data-color="#121212"] { background-color: #121212; }
+[data-color="#10111A"] { background-color: #10111A; }
+[data-color="#FFFFFF"] { background-color: #FFFFFF; }
+[data-color="#1A1A1A"] { background-color: #1A1A1A; }
+[data-color="#0096C7"] { background-color: #0096C7; }
+[data-color="#F4F1EA"] { background-color: #F4F1EA; }
+[data-color="#E2DFD7"] { background-color: #E2DFD7; }
+[data-color="#2A9D8F"] { background-color: #2A9D8F; }
+
+/* Cassette Acrylic Window Motif */
+.cassette-window-box {
+  width: 100%;
+  max-width: 480px;
+  margin: 4px auto 12px;
+}
+
+.cassette-window-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: #EDE3D2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hidden-hooks {
+  display: none !important;
 }
 
 .color-chip:hover,

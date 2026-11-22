@@ -536,3 +536,7 @@ body {
   --stripe-4: #8C8C8C;
   --stripe-5: #5C5A54;
 }
+
+.hidden-hooks {
+  display: none !important;
+}
