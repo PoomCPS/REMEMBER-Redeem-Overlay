@@ -797,7 +797,7 @@ import {
           previewRewardTitle.textContent = payload.data.rewardTitle;
           showToast(`🎉 มีการแลกแต้มสด: ${payload.data.displayName} (${payload.data.rewardTitle})`);
         }
-      } catch {}
+      } catch { }
     };
 
     dashboardWs.onclose = () => {
