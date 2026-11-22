@@ -461,6 +461,9 @@
                   <p class="manual-toolbar-desc">เขียน HTML และ CSS เพื่อออกแบบ Overlay ด้วยตัวเองได้อย่างอิสระ 100%</p>
                 </div>
                 <div class="manual-toolbar-actions">
+                  <button type="button" id="formatAllBtn" class="deck-btn btn-sm">
+                    [ ⚡ PRETTIER FORMAT ]
+                  </button>
                   <button type="button" id="loadStarterTemplateBtn" class="deck-btn btn-sm">
                     [ ↺ LOAD VHS STARTER TEMPLATE ]
                   </button>
@@ -483,8 +486,13 @@
                 <!-- HTML Block -->
                 <div class="editor-column">
                   <div class="editor-header-bar">
-                    <span class="editor-header-title">[ 01. CUSTOM HTML ]</span>
-                    <span class="editor-syntax-badge">HTML5</span>
+                    <div class="editor-header-left">
+                      <span class="editor-header-title">[ 01. CUSTOM HTML ]</span>
+                      <span class="editor-syntax-badge">HTML5</span>
+                    </div>
+                    <button type="button" id="formatHtmlBtn" class="deck-btn btn-xs">
+                      [ ⚡ PRETTIER ]
+                    </button>
                   </div>
                   <div id="htmlEditorContainer" class="editor-cm-mount"></div>
                 </div>
@@ -492,8 +500,13 @@
                 <!-- CSS Block -->
                 <div class="editor-column">
                   <div class="editor-header-bar">
-                    <span class="editor-header-title">[ 02. CUSTOM CSS ]</span>
-                    <span class="editor-syntax-badge">CSS3 (CONTAINER SCOPED)</span>
+                    <div class="editor-header-left">
+                      <span class="editor-header-title">[ 02. CUSTOM CSS ]</span>
+                      <span class="editor-syntax-badge">CSS3 (CONTAINER SCOPED)</span>
+                    </div>
+                    <button type="button" id="formatCssBtn" class="deck-btn btn-xs">
+                      [ ⚡ PRETTIER ]
+                    </button>
                   </div>
                   <div id="cssEditorContainer" class="editor-cm-mount"></div>
                 </div>

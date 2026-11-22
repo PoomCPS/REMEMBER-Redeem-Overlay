@@ -1,4 +1,4 @@
-import { createRetroEditors } from './codemirror-loader.js';
+import { createRetroEditors, formatCode } from './codemirror-loader.js';
 import {
   renderCustomTemplate,
   scopeCss,
@@ -37,6 +37,9 @@ import {
   const htmlEditorContainer = document.getElementById('htmlEditorContainer');
   const cssEditorContainer = document.getElementById('cssEditorContainer');
   const loadStarterTemplateBtn = document.getElementById('loadStarterTemplateBtn');
+  const formatAllBtn = document.getElementById('formatAllBtn');
+  const formatHtmlBtn = document.getElementById('formatHtmlBtn');
+  const formatCssBtn = document.getElementById('formatCssBtn');
 
   // Settings
   const settingsForm = document.getElementById('settingsForm');
@@ -245,6 +248,56 @@ import {
         cmEditors.setCss(DEFAULT_VHS_STARTER_CSS);
         showToast('โหลด VHS Starter Template เรียบร้อย!');
         schedulePreviewUpdate();
+      }
+    });
+  }
+
+  // Prettier Formatting
+  if (formatAllBtn) {
+    formatAllBtn.addEventListener('click', async () => {
+      if (!cmEditors) return;
+      showToast('กำลังจัดรูปแบบด้วย Prettier...');
+      try {
+        const [formattedHtml, formattedCss] = await Promise.all([
+          formatCode(cmEditors.getHtml(), 'html'),
+          formatCode(cmEditors.getCss(), 'css'),
+        ]);
+        cmEditors.setHtml(formattedHtml);
+        cmEditors.setCss(formattedCss);
+        showToast('✨ จัดรูปแบบโค้ดทั้งหมดด้วย Prettier สำเร็จ!');
+        schedulePreviewUpdate();
+      } catch (err) {
+        showToast(`จัดรูปแบบไม่สำเร็จ: ${err.message}`);
+      }
+    });
+  }
+
+  if (formatHtmlBtn) {
+    formatHtmlBtn.addEventListener('click', async () => {
+      if (!cmEditors) return;
+      showToast('กำลังจัดรูปแบบ HTML ด้วย Prettier...');
+      try {
+        const formatted = await formatCode(cmEditors.getHtml(), 'html');
+        cmEditors.setHtml(formatted);
+        showToast('✨ จัดรูปแบบ HTML สำเร็จ!');
+        schedulePreviewUpdate();
+      } catch (err) {
+        showToast(`จัดรูปแบบไม่สำเร็จ: ${err.message}`);
+      }
+    });
+  }
+
+  if (formatCssBtn) {
+    formatCssBtn.addEventListener('click', async () => {
+      if (!cmEditors) return;
+      showToast('กำลังจัดรูปแบบ CSS ด้วย Prettier...');
+      try {
+        const formatted = await formatCode(cmEditors.getCss(), 'css');
+        cmEditors.setCss(formatted);
+        showToast('✨ จัดรูปแบบ CSS สำเร็จ!');
+        schedulePreviewUpdate();
+      } catch (err) {
+        showToast(`จัดรูปแบบไม่สำเร็จ: ${err.message}`);
       }
     });
   }
@@ -744,7 +797,7 @@ import {
           previewRewardTitle.textContent = payload.data.rewardTitle;
           showToast(`🎉 มีการแลกแต้มสด: ${payload.data.displayName} (${payload.data.rewardTitle})`);
         }
-      } catch {}
+      } catch { }
     };
 
     dashboardWs.onclose = () => {
