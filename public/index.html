@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>REMEMBER // T-120 Twitch First Redeemer Control Deck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
   <!-- Toast Notification -->
   <div id="toast" class="toast hidden" aria-live="polite" role="status"></div>
@@ -34,15 +38,17 @@
         </div>
 
         <h1 class="hero-title">REMEMBER<br><span class="hero-subtitle-lead">TWITCH FIRST REDEEMER // OVERLAY</span></h1>
-        
+
         <p class="hero-subtitle">
-          ระบบแสดงผู้ชมที่แลกแต้ม <strong>คนแรกของสตรีม</strong> อัตโนมัติบน OBS Studio สไตล์ป้ายม้วนเทปคาสเซ็ทอนาล็อกยุค 1980s ตรวจจับตรงผ่าน Twitch EventSub แม่นยำ รวดเร็ว และเป็นเอกลักษณ์
+          ระบบแสดงผู้ชมที่แลกแต้ม <strong>คนแรกของสตรีม</strong> อัตโนมัติบน OBS Studio
+          สไตล์ป้ายม้วนเทปคาสเซ็ทอนาล็อกยุค 1980s ตรวจจับตรงผ่าน Twitch EventSub แม่นยำ รวดเร็ว และเป็นเอกลักษณ์
         </p>
 
         <div class="hero-actions">
           <a href="/auth/twitch/login" class="deck-btn btn-twitch-deck">
             <svg viewBox="0 0 24 24" fill="currentColor" class="twitch-icon">
-              <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/>
+              <path
+                d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z" />
             </svg>
             [ ▶ PLAY / SIGN IN WITH TWITCH ]
           </a>
@@ -99,7 +105,9 @@
       </div>
 
       <div class="header-user">
-        <img id="userAvatar" class="user-avatar" src="https://static-cdn.jtvnw.net/user-default-pictures-uv/75305d54-c7cc-40d1-bbbb-6a3f15440b54-profile_image-70x70.png" alt="User Avatar" width="40" height="40">
+        <img id="userAvatar" class="user-avatar"
+          src="https://static-cdn.jtvnw.net/user-default-pictures-uv/75305d54-c7cc-40d1-bbbb-6a3f15440b54-profile_image-70x70.png"
+          alt="User Avatar" width="40" height="40">
         <div class="user-meta">
           <div id="userDisplayName" class="user-name">Streamer</div>
           <div id="userLogin" class="user-handle">@streamer</div>
@@ -124,7 +132,8 @@
         <span id="skippedAlertText">มีการแลกแต้มที่ถูกข้ามเนื่องจากไม่อยู่ใน Whitelist</span>
       </div>
       <div class="skipped-alert-actions">
-        <button type="button" id="addSkippedToWhitelistBtn" class="deck-btn btn-sm btn-primary">+ เพิ่มแต้มนี้ใน Whitelist</button>
+        <button type="button" id="addSkippedToWhitelistBtn" class="deck-btn btn-sm btn-primary">+ เพิ่มแต้มนี้ใน
+          Whitelist</button>
         <button type="button" id="dismissSkippedAlertBtn" class="deck-btn btn-sm">[ ✕ ]</button>
       </div>
     </div>
@@ -138,7 +147,8 @@
             <h2 class="card-title">OBS Browser Source URL</h2>
             <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 600 x สูง 90)</p>
           </div>
-          <button type="button" id="regenerateTokenBtn" class="deck-btn btn-sm" aria-label="Regenerate overlay token" title="สร้าง Token ใหม่กรณีทำลิงก์หลุด">
+          <button type="button" id="regenerateTokenBtn" class="deck-btn btn-sm" aria-label="Regenerate overlay token"
+            title="สร้าง Token ใหม่กรณีทำลิงก์หลุด">
             [ 🔄 REGENERATE ]
           </button>
         </div>
@@ -157,8 +167,12 @@
           <div class="guide-title">[ QUICK SETUP GUIDE // OBS STUDIO ]:</div>
           <ol class="guide-steps">
             <li>คลิกปุ่ม <strong>[ COPY URL ]</strong> ด้านบนนี้</li>
-            <li>ในโปรแกรม <strong>OBS Studio</strong>: ดูที่กล่อง <em>Sources</em> กดปุ่ม <strong>+</strong> แล้วเลือก <strong>Browser</strong></li>
-            <li>วางลิงก์ลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>600</strong>, Height: <strong>90</strong>) แล้วกด <strong>OK</strong></li>
+            <li>ในโปรแกรม <strong>OBS Studio</strong>: ดูที่กล่อง <em>Sources</em> กดปุ่ม <strong>+</strong> แล้วเลือก
+              <strong>Browser</strong>
+            </li>
+            <li>วางลิงก์ลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>600</strong>, Height:
+              <strong>90</strong>) แล้วกด <strong>OK</strong>
+            </li>
           </ol>
         </div>
       </section>
@@ -183,11 +197,16 @@
               <div class="color-picker-row">
                 <input type="color" id="badgeColorPicker" value="#FCBF49" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;" title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-chip" data-color="#E63946" style="--chip-color: #E63946;" title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="color-chip" data-color="#0096C7" style="--chip-color: #0096C7;" title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="color-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;" title="VHS Green" aria-label="VHS Green"></button>
-                  <button type="button" class="color-chip" data-color="#F77F00" style="--chip-color: #F77F00;" title="Analog Orange" aria-label="Analog Orange"></button>
+                  <button type="button" class="color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Tape Yellow" aria-label="Tape Yellow"></button>
+                  <button type="button" class="color-chip" data-color="#E63946" style="--chip-color: #E63946;"
+                    title="Signal Red" aria-label="Signal Red"></button>
+                  <button type="button" class="color-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
+                    title="Ferric Blue" aria-label="Ferric Blue"></button>
+                  <button type="button" class="color-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
+                    title="VHS Green" aria-label="VHS Green"></button>
+                  <button type="button" class="color-chip" data-color="#F77F00" style="--chip-color: #F77F00;"
+                    title="Analog Orange" aria-label="Analog Orange"></button>
                 </div>
               </div>
             </div>
@@ -198,11 +217,16 @@
               <div class="color-picker-row">
                 <input type="color" id="badgeBgColorPicker" value="#FCBF49" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49" style="--chip-color: #FCBF49;" title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#121212" style="--chip-color: #121212;" title="Tape Black" aria-label="Tape Black"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#E63946" style="--chip-color: #E63946;" title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#0096C7" style="--chip-color: #0096C7;" title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#F4F1EA" style="--chip-color: #F4F1EA;" title="Paper White" aria-label="Paper White"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Tape Yellow" aria-label="Tape Yellow"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#121212" style="--chip-color: #121212;"
+                    title="Tape Black" aria-label="Tape Black"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#E63946" style="--chip-color: #E63946;"
+                    title="Signal Red" aria-label="Signal Red"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#0096C7" style="--chip-color: #0096C7;"
+                    title="Ferric Blue" aria-label="Ferric Blue"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#F4F1EA" style="--chip-color: #F4F1EA;"
+                    title="Paper White" aria-label="Paper White"></button>
                 </div>
               </div>
             </div>
@@ -237,11 +261,16 @@
               <div class="color-picker-row">
                 <input type="color" id="viewerColorPicker" value="#1A1A1A" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="viewer-color-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;" title="Charcoal Ink" aria-label="Charcoal Ink"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#FFFFFF" style="--chip-color: #FFFFFF;" title="White Ink" aria-label="White Ink"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;" title="Gold Yellow" aria-label="Gold Yellow"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#E63946" style="--chip-color: #E63946;" title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#0096C7" style="--chip-color: #0096C7;" title="Cyan Blue" aria-label="Cyan Blue"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
+                    title="Charcoal Ink" aria-label="Charcoal Ink"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#FFFFFF" style="--chip-color: #FFFFFF;"
+                    title="White Ink" aria-label="White Ink"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Gold Yellow" aria-label="Gold Yellow"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#E63946" style="--chip-color: #E63946;"
+                    title="Signal Red" aria-label="Signal Red"></button>
+                  <button type="button" class="viewer-color-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
+                    title="Cyan Blue" aria-label="Cyan Blue"></button>
                 </div>
               </div>
             </div>
@@ -266,10 +295,14 @@
               <div class="color-picker-row">
                 <input type="color" id="cardBgColorPicker" value="#F4F1EA" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="card-bg-chip" data-color="#F4F1EA" style="--chip-color: #F4F1EA;" title="Paper White" aria-label="Paper White"></button>
-                  <button type="button" class="card-bg-chip" data-color="#121212" style="--chip-color: #121212;" title="Tape Black" aria-label="Tape Black"></button>
-                  <button type="button" class="card-bg-chip" data-color="#E2DFD7" style="--chip-color: #E2DFD7;" title="Sleeve Gray" aria-label="Sleeve Gray"></button>
-                  <button type="button" class="card-bg-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;" title="Charcoal" aria-label="Charcoal"></button>
+                  <button type="button" class="card-bg-chip" data-color="#F4F1EA" style="--chip-color: #F4F1EA;"
+                    title="Paper White" aria-label="Paper White"></button>
+                  <button type="button" class="card-bg-chip" data-color="#121212" style="--chip-color: #121212;"
+                    title="Tape Black" aria-label="Tape Black"></button>
+                  <button type="button" class="card-bg-chip" data-color="#E2DFD7" style="--chip-color: #E2DFD7;"
+                    title="Sleeve Gray" aria-label="Sleeve Gray"></button>
+                  <button type="button" class="card-bg-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
+                    title="Charcoal" aria-label="Charcoal"></button>
                 </div>
               </div>
             </div>
@@ -290,11 +323,16 @@
               <div class="color-picker-row">
                 <input type="color" id="cardBorderColorPicker" value="#1A1A1A" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="card-border-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;" title="Charcoal" aria-label="Charcoal"></button>
-                  <button type="button" class="card-border-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;" title="Gold Yellow" aria-label="Gold Yellow"></button>
-                  <button type="button" class="card-border-chip" data-color="#E63946" style="--chip-color: #E63946;" title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="card-border-chip" data-color="#0096C7" style="--chip-color: #0096C7;" title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="card-border-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;" title="VHS Green" aria-label="VHS Green"></button>
+                  <button type="button" class="card-border-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
+                    title="Charcoal" aria-label="Charcoal"></button>
+                  <button type="button" class="card-border-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Gold Yellow" aria-label="Gold Yellow"></button>
+                  <button type="button" class="card-border-chip" data-color="#E63946" style="--chip-color: #E63946;"
+                    title="Signal Red" aria-label="Signal Red"></button>
+                  <button type="button" class="card-border-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
+                    title="Ferric Blue" aria-label="Ferric Blue"></button>
+                  <button type="button" class="card-border-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
+                    title="VHS Green" aria-label="VHS Green"></button>
                 </div>
               </div>
             </div>
@@ -305,10 +343,14 @@
               <div class="color-picker-row">
                 <input type="color" id="cardGlowColorPicker" value="#FCBF49" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="card-glow-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;" title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="card-glow-chip" data-color="#E63946" style="--chip-color: #E63946;" title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="card-glow-chip" data-color="#0096C7" style="--chip-color: #0096C7;" title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="card-glow-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;" title="VHS Green" aria-label="VHS Green"></button>
+                  <button type="button" class="card-glow-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Tape Yellow" aria-label="Tape Yellow"></button>
+                  <button type="button" class="card-glow-chip" data-color="#E63946" style="--chip-color: #E63946;"
+                    title="Signal Red" aria-label="Signal Red"></button>
+                  <button type="button" class="card-glow-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
+                    title="Ferric Blue" aria-label="Ferric Blue"></button>
+                  <button type="button" class="card-glow-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
+                    title="VHS Green" aria-label="VHS Green"></button>
                 </div>
               </div>
             </div>
@@ -335,7 +377,8 @@
           <div class="whitelist-section">
             <label class="section-label">
               <span>รายการแต้มที่อนุญาตให้แสดง (Reward Whitelist)</span>
-              <span class="label-hint">💡 หากปล่อยว่างไว้ ระบบจะอนุญาตให้แสดง<strong>ทุกแต้ม</strong>ที่แลกในสตรีม (หรือระบุชื่อแต้มเพื่อจำกัดเฉพาะแต้มพิเศษ)</span>
+              <span class="label-hint">💡 หากปล่อยว่างไว้ ระบบจะอนุญาตให้แสดง<strong>ทุกแต้ม</strong>ที่แลกในสตรีม
+                (หรือระบุชื่อแต้มเพื่อจำกัดเฉพาะแต้มพิเศษ)</span>
             </label>
 
             <!-- Tags Container -->
@@ -402,7 +445,8 @@
                 <span class="prefix-at">@</span><span id="previewViewer" class="viewer-name">ViewerName</span>
               </span>
               <span class="reward-chunk">
-                <span class="prefix-hash">#</span><span id="previewRewardTitle" class="reward-title">แต้มแรกของวัน</span>
+                <span class="prefix-hash">#</span><span id="previewRewardTitle"
+                  class="reward-title">แต้มแรกของวัน</span>
               </span>
             </div>
 
@@ -422,4 +466,5 @@
 
   <script src="index.js"></script>
 </body>
+
 </html>
