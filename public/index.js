@@ -569,10 +569,6 @@ import {
       showToast(`Error: ${err.message}`);
     }
   });
-    } catch (err) {
-      showToast(`Error: ${err.message}`);
-    }
-  });
 
   // Test Redemption
   sendTestRedeemBtn.addEventListener('click', async () => {
