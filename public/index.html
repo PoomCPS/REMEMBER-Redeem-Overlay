@@ -35,13 +35,25 @@
           <span class="badge-mono">[ STEREO HI-FI ]</span>
           <span class="badge-mono badge-yellow">[ TYPE-II / CHROME ]</span>
           <span class="badge-mono">[ T-120 // 60 MIN ]</span>
+          <span class="badge-mono badge-cyan">[ SP / LP / EP ]</span>
         </div>
 
         <h1 class="hero-title">REMEMBER<br><span class="hero-subtitle-lead">TWITCH FIRST REDEEMER // OVERLAY</span></h1>
 
+        <!-- Cassette Tape Spool Acrylic Window Motif -->
+        <div class="cassette-window-box" style="width: 100%; max-width: 480px; margin: 4px auto 12px;">
+          <div class="cassette-spool"></div>
+          <div class="cassette-tape-bridge"></div>
+          <div style="font-family: var(--font-mono); font-size: 0.65rem; color: #EDE3D2; letter-spacing: 0.1em; text-transform: uppercase;">
+            BLANK VHS CASSETTE // T-120 HIGH GRADE
+          </div>
+          <div class="cassette-tape-bridge"></div>
+          <div class="cassette-spool"></div>
+        </div>
+
         <p class="hero-subtitle">
           ระบบแสดงผู้ชมที่แลกแต้ม <strong>คนแรกของสตรีม</strong> อัตโนมัติบน OBS Studio
-          สไตล์ป้ายม้วนเทปคาสเซ็ทอนาล็อกยุค 1980s ตรวจจับตรงผ่าน Twitch EventSub แม่นยำ รวดเร็ว และเป็นเอกลักษณ์
+          ดีไซน์ม้วนเทปเปล่า Blank VHS ยุค 1980s (TDK, Maxell, Sony, JVC, Polaroid) พร้อมพาเลทสี Filmora 15 ธีม ตรวจจับตรงผ่าน Twitch EventSub คมชัดระดับบรอดคาสต์
         </p>
 
         <div class="hero-actions">
@@ -275,14 +287,33 @@
 
             <!-- Card Theme Preset Selector -->
             <div class="form-group">
-              <label for="cardThemeSelect">รูปแบบม้วนเทป (1980s Tape Presets)</label>
+              <label for="cardThemeSelect">รูปแบบม้วนเทป (1980s Blank VHS &amp; Filmora Presets)</label>
               <select id="cardThemeSelect" class="form-select">
-                <option value="purple" selected>📼 TYPE-II CHROME (กระดาษออฟไวท์ ขอบหมึกดำ - แนะนำ)</option>
-                <option value="midnight">📼 TYPE-IV METAL (เทปดำด้าน ขอบทองเรโทร)</option>
-                <option value="cyberpunk">📼 TYPE-I FERRO (ปลอกเทปสีเทา ขอบแดงสตูดิโอ)</option>
-                <option value="emerald">📼 VHS MASTER (เทปดำ ขอบเขียวมาสเตอร์)</option>
-                <option value="sunset">📼 ANALOG SUNSET (เทปดำ แถบส้มอนาล็อก)</option>
-                <option value="stealth">📼 STEALTH DECK (ดำสนิท สวิตช์มินิมอล)</option>
+                <optgroup label="📼 CLASSIC BLANK TAPE BRANDS (UX Collective / Design Smith)">
+                  <option value="polaroid">📼 POLAROID SPECTRA (กระดาษออฟไวท์ แถบรุ้ง 5 สีคลาสสิก)</option>
+                  <option value="tdk">📼 TDK SUPER AVILYN SA (เทปดำ ขอบทอง รหัสแถบส้มแดง)</option>
+                  <option value="maxell">📼 MAXELL EPITAXIAL GOLD (ดำด้าน ขอบทองเรโทร ตัวหนังสือขาว)</option>
+                  <option value="jvc">📼 JVC SUPER HG MASTER (มิดไนท์เนวี่ ไฮไลต์ฟ้าไซแอน)</option>
+                  <option value="sony">📼 SONY DYNAMIC CHROMA (น้ำเงินโครมา แถบมาเจนต้า)</option>
+                </optgroup>
+                <optgroup label="🌈 FILMORA RETRO VHS COLOR PALETTES">
+                  <option value="neon-midnight">🌆 NEON MIDNIGHT (ซินธ์เวฟ 80s ม่วงเข้ม ชมพูนีออน ฟ้าไซแอน)</option>
+                  <option value="outrun">🏎️ OUTRUN HORIZON (อาทิตย์อัสดง ซันเซ็ตออเรนจ์ ชมพูฮอตพิงค์)</option>
+                  <option value="sun-bleached">📹 SUN-BLEACHED 1988 (แคมคอร์เดอร์เรโทร ดินเผา เทาเสจ ครีมอบอุ่น)</option>
+                  <option value="aged-attic">📦 AGED ATTIC TAPE (ม้วนเทปเก่าในห้องใต้หลังคา เซเปีย น้ำตาลทราย)</option>
+                  <option value="toxic-crt">📺 TOXIC CRT (หน้าจอฟอสฟอร์เขียว เทอร์มินอล 80s)</option>
+                  <option value="glitch-core">⚡ GLITCH CORE (ไซเบอร์เนติก เนวี่มืด เขียวแมทริกซ์ แดงเตือนภัย)</option>
+                  <option value="smpte">📡 SMPTE COLOR BARS (แถบทดสอบสัญญาณโทรทัศน์บรอดคาสต์)</option>
+                  <option value="cartoon">🎨 SATURDAY CARTOON (การ์ตูนเช้าวันเสาร์ แดงสด เหลือง ฟ้า)</option>
+                </optgroup>
+                <optgroup label="🎛️ STUDIO DECK CLASSICS">
+                  <option value="purple" selected>📼 TYPE-II CHROME (กระดาษออฟไวท์ ขอบหมึกดำ - ค่าเริ่มต้น)</option>
+                  <option value="midnight">📼 TYPE-IV METAL (เทปดำด้าน ขอบทองเรโทร)</option>
+                  <option value="cyberpunk">📼 TYPE-I FERRO (ปลอกเทปสีเทา ขอบแดงสตูดิโอ)</option>
+                  <option value="emerald">📼 VHS MASTER (เทปดำ ขอบเขียวมาสเตอร์)</option>
+                  <option value="sunset">📼 ANALOG SUNSET (เทปดำ แถบส้มอนาล็อก)</option>
+                  <option value="stealth">📼 STEALTH DECK (ดำสนิท สวิตช์มินิมอล)</option>
+                </optgroup>
                 <option value="custom">🎨 Custom (ปรับแต่งสีอิสระ)</option>
               </select>
             </div>
@@ -425,26 +456,34 @@
 
         <div class="preview-stage">
           <div id="previewCard" class="vhs-spine-bar first-redeemer">
-            <!-- 1. Left Vertical Block (Teal Block with vertical rotated text "1ST" / "VHS") -->
+            <!-- 0. Top Ruler Ticks (Authentic Cassette Index Label Edge) -->
+            <div class="spine-ruler-ticks"></div>
+
+            <!-- 1. Left Vertical Block (Rotated Badge: 1ST / VHS / REDEEM) -->
             <div class="spine-left-block">
               <span id="previewIndicatorLabel" class="spine-left-text">1ST</span>
             </div>
 
             <!-- 2. Center Spine Body -->
             <div class="spine-body">
-              <div class="spine-meta-label">FIRST VISITOR</div>
+              <div class="spine-meta-row">
+                <span class="spine-meta-label">FIRST VISITOR</span>
+                <span class="spine-speed-mode">[ SP 120 ]</span>
+                <span class="spine-tape-barcode">||| | || |||</span>
+              </div>
               <div class="spine-main-content">
                 <span id="previewViewer" class="spine-username">ViewerName</span>
                 <span class="spine-hq-badge">HQ</span>
               </div>
             </div>
 
-            <!-- 3. Right 4-Stripe Stepped Color Band -->
+            <!-- 3. Right Stepped Color Band -->
             <div class="spine-stripes-block">
               <span class="spine-stripe stripe-1"></span>
               <span class="spine-stripe stripe-2"></span>
               <span class="spine-stripe stripe-3"></span>
               <span class="spine-stripe stripe-4"></span>
+              <span class="spine-stripe stripe-5"></span>
             </div>
 
             <div class="hidden-hooks" style="display: none !important;">

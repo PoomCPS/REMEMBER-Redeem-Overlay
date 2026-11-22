@@ -1,55 +1,99 @@
 /* ==========================================================================
-   1980s Analog Media & VHS Packaging Design System
+   1980s Analog Media & Blank VHS Packaging Design System
    theme.css
+   
+   References:
+   - Antony Terence: "Instagram can't touch the visual glory of blank VHS tapes" (UX Collective)
+   - Jude Smith: "The Art and Design of Blank VHS Tapes: A Lost Graphic Design Genre" (DESIGN SMITH LTD)
+   - Wondershare Filmora: "The Best 15 VHS Color Palette Ideas for Video & Design"
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&family=Kanit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
 :root {
-  /* Canvas (Paper & Magnetic Media) */
+  /* Core Canvas (Paper, Sleeve & Magnetic Tape Oxide) */
   --bg-paper: #F4F1EA;
   --bg-black: #121212;
-  --bg-gray: #E2DFD7;
+  --bg-slate: #10111A;
+  --bg-gray:  #E2DFD7;
 
   /* Ink & Typography */
   --text-primary: #1A1A1A;
-  --text-muted: #5C5A54;
+  --text-muted:   #5C5A54;
   --text-inverse: #F4F1EA;
+  --text-gold:    #FCBF49;
 
-  /* Stepped Analog Stripes */
-  --stripe-red: #E63946;
+  /* Stepped Analog TV / Broadcast Stripes */
+  --stripe-red:    #E63946;
   --stripe-orange: #F77F00;
   --stripe-yellow: #FCBF49;
-  --stripe-blue: #0096C7;
-  --stripe-green: #2A9D8F;
+  --stripe-blue:   #0096C7;
+  --stripe-green:  #2A9D8F;
 
-  /* Geometry & Strict Borders */
+  /* Classic Blank VHS Brands & Filmora Palettes */
+  --tdk-oxide:   #121212;
+  --tdk-gold:    #D4AF37;
+  --tdk-rust:    #E0604E;
+  --tdk-cream:   #EDE3D2;
+
+  --neon-black:  #0B061A;
+  --neon-indigo: #1E1145;
+  --neon-pink:   #FF007F;
+  --neon-cyan:   #00F0FF;
+
+  --bleach-charcoal: #3A3335;
+  --bleach-terra:    #E07A5F;
+  --bleach-cream:    #F4F1DE;
+  --bleach-sage:     #81B29A;
+
+  --toxic-dark:  #050F0A;
+  --toxic-forest:#0D3B22;
+  --toxic-green: #2DC653;
+  --toxic-lime:  #90BE6D;
+
+  --smpte-blue:    #003366;
+  --smpte-magenta: #990099;
+  --smpte-cyan:    #009999;
+  --smpte-red:     #CC0000;
+
+  /* Geometry & Strict Borders (Zero Softness) */
   --radius-none: 0px;
   --border-grid: 1px solid #1A1A1A;
   --border-heavy: 2px solid #1A1A1A;
+  --border-gold: 2px solid #FCBF49;
   --border-light: 1px solid #5C5A54;
+
+  /* Hard Solid Shadows (Never soft blurs) */
+  --shadow-hard: 3px 3px 0px #1A1A1A;
+  --shadow-hard-sm: 2px 2px 0px #1A1A1A;
+  --shadow-hard-dark: 4px 4px 0px #000000;
 
   /* Typography Stacks */
   --font-display: 'Archivo Black', 'Space Grotesk', 'Kanit', -apple-system, sans-serif;
   --font-body: 'Inter', 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'Space Mono', monospace;
 
   /* Tactile Mechanical Motion */
   --transition-fast: 0ms;
   --transition-step: 75ms steps(1);
 }
 
-/* Zero Softness Global Guardrail */
+/* ==========================================================================
+   Zero Softness Global Guardrail
+   ========================================================================== */
 *, *::before, *::after {
   box-sizing: border-box;
   border-radius: 0px !important;
 }
 
-/* Stepped Multi-Stripe Bars (Horizontal & Vertical) */
+/* ==========================================================================
+   Stepped Multi-Stripe Bars (Horizontal & Vertical)
+   ========================================================================== */
 .tape-stripes-h {
   display: flex;
   height: 6px;
   width: 100%;
+  border-bottom: 1px solid var(--text-primary);
 }
 
 .tape-stripes-h .stripe {
@@ -75,7 +119,31 @@
 .stripe-blue   { background-color: var(--stripe-blue); }
 .stripe-green  { background-color: var(--stripe-green); }
 
-/* Micro-Badges (Cassette Technical Stamp) */
+/* SMPTE 4-Color Broadcast Bar */
+.tape-stripes-smpte {
+  display: flex;
+  height: 6px;
+  width: 100%;
+}
+.tape-stripes-smpte .smpte-1 { flex: 1; background-color: var(--smpte-blue); }
+.tape-stripes-smpte .smpte-2 { flex: 1; background-color: var(--smpte-magenta); }
+.tape-stripes-smpte .smpte-3 { flex: 1; background-color: var(--smpte-cyan); }
+.tape-stripes-smpte .smpte-4 { flex: 1; background-color: var(--smpte-red); }
+
+/* Synthwave Neon 4-Color Bar */
+.tape-stripes-neon {
+  display: flex;
+  height: 6px;
+  width: 100%;
+}
+.tape-stripes-neon .neon-1 { flex: 1; background-color: var(--neon-black); }
+.tape-stripes-neon .neon-2 { flex: 1; background-color: var(--neon-indigo); }
+.tape-stripes-neon .neon-3 { flex: 1; background-color: var(--neon-pink); }
+.tape-stripes-neon .neon-4 { flex: 1; background-color: var(--neon-cyan); }
+
+/* ==========================================================================
+   Micro-Badges (Cassette Technical Stamp)
+   ========================================================================== */
 .badge-mono {
   display: inline-flex;
   align-items: center;
@@ -109,7 +177,21 @@
   color: #ffffff;
 }
 
-/* Mechanical Deck Button */
+.badge-mono.badge-cyan {
+  border-color: var(--neon-cyan);
+  background: var(--bg-black);
+  color: var(--neon-cyan);
+}
+
+.badge-mono.badge-gold {
+  border-color: #D4AF37;
+  background: #121212;
+  color: #F2B857;
+}
+
+/* ==========================================================================
+   Mechanical Deck Button (Tactile Hardware Keys)
+   ========================================================================== */
 .deck-btn {
   display: inline-flex;
   align-items: center;
@@ -143,6 +225,7 @@
 .deck-btn.btn-primary {
   background: var(--stripe-yellow);
   color: var(--bg-black);
+  border-color: var(--text-primary);
 }
 
 .deck-btn.btn-primary:hover {
@@ -159,6 +242,72 @@
 .deck-btn.btn-danger:hover {
   background: var(--bg-black);
   color: var(--stripe-red);
+}
+
+/* ==========================================================================
+   Authentic VHS Box & Cassette Motifs
+   ========================================================================== */
+
+/* Ruler Tick Marks (Top/Bottom index card edge) */
+.tape-ruler-ticks {
+  height: 4px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--text-primary) 0px,
+    var(--text-primary) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  opacity: 0.45;
+}
+
+/* Pseudo-Barcode Stamp */
+.tape-barcode {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  font-weight: 900;
+  opacity: 0.55;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Cassette Acrylic Window Graphic */
+.cassette-window-box {
+  position: relative;
+  border: 2px solid var(--text-primary);
+  background-color: #1A1A1A;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cassette-spool {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #5C5A54;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cassette-spool::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: var(--bg-paper);
+  border: 1px solid #1A1A1A;
+}
+
+.cassette-tape-bridge {
+  flex: 1;
+  height: 8px;
+  background-color: #2E1A47;
+  margin: 0 12px;
+  border: 1px solid #000000;
 }
 
 /* Swiss Cassette Card */
