@@ -45,7 +45,9 @@
 }
 
 /* Zero Softness Strict Guardrail */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -59,7 +61,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   padding: 24px 16px;
-  background-image: 
+  background-image:
     linear-gradient(#E2DFD7 1px, transparent 1px),
     linear-gradient(90deg, #E2DFD7 1px, transparent 1px);
   background-size: 32px 32px;
@@ -233,8 +235,15 @@ body {
 }
 
 @keyframes rec-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
 }
 
 .brand-top-meta {
@@ -477,18 +486,58 @@ input[type="text"]:focus,
 }
 
 /* Color Chip Palette Selectors (Eliminating inline styles) */
-[data-bgcolor="#00A896"], [data-color="#00A896"] { background-color: #00A896; }
-[data-bgcolor="#E63946"], [data-color="#E63946"] { background-color: #E63946; }
-[data-bgcolor="#FCBF49"], [data-color="#FCBF49"] { background-color: #FCBF49; }
-[data-bgcolor="#F77F00"], [data-color="#F77F00"] { background-color: #F77F00; }
-[data-bgcolor="#121212"], [data-color="#121212"] { background-color: #121212; }
-[data-color="#10111A"] { background-color: #10111A; }
-[data-color="#FFFFFF"] { background-color: #FFFFFF; }
-[data-color="#1A1A1A"] { background-color: #1A1A1A; }
-[data-color="#0096C7"] { background-color: #0096C7; }
-[data-color="#F4F1EA"] { background-color: #F4F1EA; }
-[data-color="#E2DFD7"] { background-color: #E2DFD7; }
-[data-color="#2A9D8F"] { background-color: #2A9D8F; }
+[data-bgcolor="#00A896"],
+[data-color="#00A896"] {
+  background-color: #00A896;
+}
+
+[data-bgcolor="#E63946"],
+[data-color="#E63946"] {
+  background-color: #E63946;
+}
+
+[data-bgcolor="#FCBF49"],
+[data-color="#FCBF49"] {
+  background-color: #FCBF49;
+}
+
+[data-bgcolor="#F77F00"],
+[data-color="#F77F00"] {
+  background-color: #F77F00;
+}
+
+[data-bgcolor="#121212"],
+[data-color="#121212"] {
+  background-color: #121212;
+}
+
+[data-color="#10111A"] {
+  background-color: #10111A;
+}
+
+[data-color="#FFFFFF"] {
+  background-color: #FFFFFF;
+}
+
+[data-color="#1A1A1A"] {
+  background-color: #1A1A1A;
+}
+
+[data-color="#0096C7"] {
+  background-color: #0096C7;
+}
+
+[data-color="#F4F1EA"] {
+  background-color: #F4F1EA;
+}
+
+[data-color="#E2DFD7"] {
+  background-color: #E2DFD7;
+}
+
+[data-color="#2A9D8F"] {
+  background-color: #2A9D8F;
+}
 
 /* Cassette Acrylic Window Motif */
 .cassette-window-box {
@@ -674,11 +723,12 @@ input[type="text"]:focus,
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #00FF00; /* OBS Green Screen / Chroma Backdrop */
+  background: #00FF00;
+  /* OBS Green Screen / Chroma Backdrop */
   border: 2px solid var(--border-color);
   padding: 40px 20px;
   margin-bottom: 20px;
-  background-image: 
+  background-image:
     linear-gradient(#00E500 1px, transparent 1px),
     linear-gradient(90deg, #00E500 1px, transparent 1px);
   background-size: 20px 20px;
@@ -712,13 +762,11 @@ input[type="text"]:focus,
   left: 0;
   right: 0;
   height: 3px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.35) 0px,
-    rgba(255, 255, 255, 0.35) 1px,
-    transparent 1px,
-    transparent 6px
-  );
+  background-image: repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.35) 0px,
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 1px,
+      transparent 6px);
   z-index: 2;
   pointer-events: none;
 }
@@ -841,11 +889,25 @@ input[type="text"]:focus,
   height: 100%;
 }
 
-.stripe-1 { background-color: var(--stripe-1, #E63946); }
-.stripe-2 { background-color: var(--stripe-2, #F77F00); }
-.stripe-3 { background-color: var(--stripe-3, #FCBF49); }
-.stripe-4 { background-color: var(--stripe-4, #0096C7); }
-.stripe-5 { background-color: var(--stripe-5, #2A9D8F); }
+.stripe-1 {
+  background-color: var(--stripe-1, #E63946);
+}
+
+.stripe-2 {
+  background-color: var(--stripe-2, #F77F00);
+}
+
+.stripe-3 {
+  background-color: var(--stripe-3, #FCBF49);
+}
+
+.stripe-4 {
+  background-color: var(--stripe-4, #0096C7);
+}
+
+.stripe-5 {
+  background-color: var(--stripe-5, #2A9D8F);
+}
 
 /* 1st Redeemer Highlight (Tape Gold Border Stamp) */
 .vhs-spine-bar.first-redeemer {
@@ -1051,6 +1113,7 @@ input[type="text"]:focus,
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
 }
 
 @media (max-width: 768px) {
@@ -1062,27 +1125,39 @@ input[type="text"]:focus,
 .editor-column {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .editor-header-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  box-sizing: border-box;
   background: var(--bg-black);
   color: var(--text-inverse);
   border: 2px solid var(--border-color);
   border-bottom: none;
-  padding: 8px 12px;
+  padding: 0 12px;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 700;
   gap: 8px;
+  overflow: hidden;
 }
 
 .editor-header-left {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.editor-header-title {
+  white-space: nowrap;
 }
 
 .deck-btn.btn-xs {
@@ -1090,6 +1165,8 @@ input[type="text"]:focus,
   font-size: 0.7rem;
   letter-spacing: 0.05em;
   box-shadow: 1px 1px 0px var(--border-color);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .editor-syntax-badge {
@@ -1099,11 +1176,15 @@ input[type="text"]:focus,
   font-size: 0.65rem;
   padding: 2px 6px;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .editor-cm-mount {
-  height: 380px;
-  background: #121212;
+  height: 380px !important;
+  min-height: 380px !important;
+  max-height: 380px !important;
+  box-sizing: border-box;
+  background: #282c34;
   overflow: hidden;
   border: 2px solid var(--border-color);
   box-shadow: 2px 2px 0px #1A1A1A;
@@ -1111,28 +1192,33 @@ input[type="text"]:focus,
 
 .editor-cm-mount .cm-editor {
   height: 100% !important;
+  min-height: 380px !important;
   max-height: 380px !important;
+  box-sizing: border-box;
 }
 
 .editor-cm-mount .cm-scroller {
   overflow: auto !important;
   height: 100% !important;
   max-height: 380px !important;
+  box-sizing: border-box;
 }
 
 .editor-fallback-textarea {
-  width: 100%;
-  height: 380px;
-  background: #121212;
-  color: #F4F1EA;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.5;
-  border: 2px solid var(--border-color);
-  box-shadow: 2px 2px 0px #1A1A1A;
-  padding: 10px;
-  resize: vertical;
-  overflow: auto;
+  width: 100% !important;
+  height: 380px !important;
+  min-height: 380px !important;
+  max-height: 380px !important;
+  box-sizing: border-box;
+  background: #282c34 !important;
+  color: #abb2bf !important;
+  font-family: var(--font-mono) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  border: none !important;
+  padding: 10px !important;
+  resize: none !important;
+  overflow: auto !important;
 }
 
 #previewCustomOverlayRoot {
