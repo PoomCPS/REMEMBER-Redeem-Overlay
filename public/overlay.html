@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,wght@0,500;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@500;700;800&family=Kanit:ital,wght@0,500;0,700;0,800;1,700;1,800&family=Space+Grotesk:wght@600;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="overlay.css">
@@ -16,68 +16,27 @@
 
 <body>
   <div class="overlay-container">
-    <div id="redeemCard" class="vhs-tape-shell hidden">
-      <!-- Tape Top Texture & Screws -->
-      <div class="vhs-top-band">
-        <span class="vhs-screw"></span>
-        <div class="vhs-top-texture"></div>
-        <span class="vhs-screw"></span>
+    <div id="redeemCard" class="vhs-spine-bar hidden">
+      <!-- 1. Left Vertical Block (Teal Block with vertical rotated text "1ST" / "VHS") -->
+      <div class="spine-left-block" id="spineLeftBlock">
+        <span id="indicatorLabel" class="spine-left-text">1ST</span>
       </div>
 
-      <!-- Main Cassette Window & Label -->
-      <div class="vhs-main-window">
-        <!-- Left Spool Reel -->
-        <div class="vhs-spool left-spool">
-          <div class="vhs-tape-pack left-pack"></div>
-          <div class="vhs-hub-cog">
-            <span class="cog-spoke spoke-1"></span>
-            <span class="cog-spoke spoke-2"></span>
-            <span class="cog-spoke spoke-3"></span>
-          </div>
-        </div>
-
-        <!-- Center Paper Label Sticker -->
-        <div class="vhs-label-sticker">
-          <!-- Top Header Stripe -->
-          <div class="vhs-label-stripe">
-            <span class="vhs-label-brand">T-120 // HI-FI</span>
-            <span class="vhs-rec-dot">● REC</span>
-          </div>
-
-          <!-- 2 Lines of Clean Content (No emojis, No points) -->
-          <div class="vhs-label-lines">
-            <!-- Line 1: 1st visitor -->
-            <div class="vhs-text-row row-status">
-              <span id="indicatorLabel" class="vhs-badge-text">1st visitor</span>
-            </div>
-            <div class="vhs-rule-line"></div>
-            <!-- Line 2: username -->
-            <div class="vhs-text-row row-username">
-              <span id="viewerName" class="vhs-username-text">Username</span>
-            </div>
-            <div class="vhs-rule-line"></div>
-            <div class="vhs-text-row row-blank"></div>
-          </div>
-        </div>
-
-        <!-- Right Spool Reel -->
-        <div class="vhs-spool right-spool">
-          <div class="vhs-tape-pack right-pack"></div>
-          <div class="vhs-hub-cog">
-            <span class="cog-spoke spoke-1"></span>
-            <span class="cog-spoke spoke-2"></span>
-            <span class="cog-spoke spoke-3"></span>
-          </div>
+      <!-- 2. Center Spine Body -->
+      <div class="spine-body" id="spineBody">
+        <div class="spine-meta-label">FIRST VISITOR</div>
+        <div class="spine-main-content">
+          <span id="viewerName" class="spine-username">Username</span>
+          <span class="spine-hq-badge" id="spineHqBadge">HQ</span>
         </div>
       </div>
 
-      <!-- Bottom Flap / Seam -->
-      <div class="vhs-bottom-flap">
-        <span class="vhs-screw"></span>
-        <div class="vhs-latch left-latch"></div>
-        <div class="vhs-bottom-ridge"></div>
-        <div class="vhs-latch right-latch"></div>
-        <span class="vhs-screw"></span>
+      <!-- 3. Right 4-Stripe Stepped Color Band -->
+      <div class="spine-stripes-block" id="spineStripes">
+        <span class="spine-stripe stripe-1"></span>
+        <span class="spine-stripe stripe-2"></span>
+        <span class="spine-stripe stripe-3"></span>
+        <span class="spine-stripe stripe-4"></span>
       </div>
 
       <!-- Hidden compatibility hooks for existing script -->

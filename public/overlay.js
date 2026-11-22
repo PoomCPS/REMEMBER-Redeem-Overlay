@@ -17,17 +17,17 @@
   const FALLBACK_POLL_INTERVAL_MS = 6000; // Background HTTP fallback sync every 6s
 
   let currentUser = {
-    badgeText: '1st visitor',
-    badgeColor: '#4A4843',
-    badgeBgColor: '#2A9D8F',
+    badgeText: '1ST',
+    badgeColor: '#10111A',
+    badgeBgColor: '#00A896',
     fontFamily: 'Kanit',
     fontSizeScale: 1.0,
-    viewerColor: '#111111',
+    viewerColor: '#FFFFFF',
     cardTheme: 'purple',
-    cardBgColor: '#161616',
+    cardBgColor: '#10111A',
     cardBgOpacity: 1.0,
-    cardBorderColor: '#1A1A1A',
-    cardGlowColor: '#2A9D8F',
+    cardBorderColor: '#000000',
+    cardGlowColor: '#F2B857',
     cardRadius: '0px',
     soundEnabled: true,
   };
@@ -236,22 +236,11 @@
     applyTheme(currentUser.cardTheme);
     cardElement.style.setProperty('--overlay-font', currentUser.fontFamily || 'Kanit');
     cardElement.style.setProperty('--overlay-scale', currentUser.fontSizeScale || 1.0);
-    cardElement.style.setProperty('--badge-color', currentUser.badgeColor || '#fbbf24');
-    cardElement.style.setProperty('--badge-bg', currentUser.badgeBgColor || 'rgba(245, 158, 11, 0.22)');
-    cardElement.style.setProperty('--badge-glow', `${currentUser.badgeColor || '#fbbf24'}66`);
-    cardElement.style.setProperty('--viewer-color', currentUser.viewerColor || '#ffffff');
-
-    // Theme & custom card properties
-    const themeKey = currentUser.cardTheme || 'purple';
-    const preset = THEME_PRESETS[themeKey];
-
-    const bgColor = currentUser.cardBgColor || preset?.bg || '#F4F1EA';
-    const borderColor = currentUser.cardBorderColor || preset?.border || '#1A1A1A';
-    const textColor = preset?.text || (bgColor === '#121212' ? '#F4F1EA' : '#1A1A1A');
-
-    cardElement.style.setProperty('--card-bg', bgColor);
-    cardElement.style.setProperty('--card-border', borderColor);
-    cardElement.style.setProperty('--card-text', textColor);
+    cardElement.style.setProperty('--badge-color', currentUser.badgeColor || '#10111A');
+    cardElement.style.setProperty('--badge-bg', currentUser.badgeBgColor || '#00A896');
+    cardElement.style.setProperty('--viewer-color', currentUser.viewerColor || '#FFFFFF');
+    cardElement.style.setProperty('--card-bg', currentUser.cardBgColor || '#10111A');
+    cardElement.style.setProperty('--card-border', currentUser.cardBorderColor || '#000000');
     cardElement.style.setProperty('--card-radius', '0px');
   }
 
@@ -279,10 +268,10 @@
       cardElement.classList.remove('first-redeemer');
     }
 
-    // Line 1: 1st visitor (no emojis or brackets)
+    // Left Block text (Default "1ST", no emojis or brackets)
     if (indicatorLabelEl) {
-      let bText = currentUser.badgeText || '1st visitor';
-      bText = bText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
+      let bText = currentUser.badgeText || '1ST';
+      bText = bText.replace(/[👑\[\]]/g, '').trim() || '1ST';
       indicatorLabelEl.textContent = bText;
       if (currentUser.badgeColor) {
         indicatorLabelEl.style.color = currentUser.badgeColor;

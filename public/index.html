@@ -145,7 +145,7 @@
           <div>
             <div class="card-stamp">[ OUTPUT LINK ]</div>
             <h2 class="card-title">OBS Browser Source URL</h2>
-            <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 360 x สูง 200)</p>
+            <p class="card-desc">นำลิงก์นี้ไปใส่ใน Browser Source ของ OBS Studio (ขนาดแนะนำ: กว้าง 480 x สูง 80)</p>
           </div>
           <button type="button" id="regenerateTokenBtn" class="deck-btn btn-sm" aria-label="Regenerate overlay token"
             title="สร้าง Token ใหม่กรณีทำลิงก์หลุด">
@@ -170,8 +170,8 @@
             <li>ในโปรแกรม <strong>OBS Studio</strong>: ดูที่กล่อง <em>Sources</em> กดปุ่ม <strong>+</strong> แล้วเลือก
               <strong>Browser</strong>
             </li>
-            <li>วางลิงก์ลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>360</strong>, Height:
-              <strong>200</strong>) แล้วกด <strong>OK</strong>
+            <li>วางลิงก์ลงในช่อง <strong>URL</strong> (ตั้งขนาด Width: <strong>480</strong>, Height:
+              <strong>80</strong>) แล้วกด <strong>OK</strong>
             </li>
           </ol>
         </div>
@@ -185,48 +185,46 @@
 
         <form id="settingsForm">
           <div class="settings-grid">
-            <!-- Custom Badge Text -->
+            <!-- Left Block Text -->
             <div class="form-group">
-              <label for="badgeTextInput">ข้อความ Badge (คนแรกของสตรีม)</label>
-              <input type="text" id="badgeTextInput" placeholder="เช่น 👑 1ST REDEEM, 👑 คนแรกของวัน…" required>
+              <label for="badgeTextInput">ข้อความแถบซ้าย (Left Block Text - หมุนแนวตั้ง 90°)</label>
+              <input type="text" id="badgeTextInput" placeholder="เช่น 1ST, VHS, FIRST…" value="1ST" required>
             </div>
 
-            <!-- Badge Accent Color -->
+            <!-- Left Block Background Color -->
             <div class="form-group">
-              <label>สีตัวอักษร &amp; เส้นขอบ Badge</label>
+              <label>สีพื้นหลังแถบซ้าย (Left Block Color)</label>
               <div class="color-picker-row">
-                <input type="color" id="badgeColorPicker" value="#FCBF49" class="color-picker">
+                <input type="color" id="badgeBgColorPicker" value="#00A896" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-chip" data-color="#E63946" style="--chip-color: #E63946;"
+                  <button type="button" class="color-bg-chip" data-bgcolor="#00A896" style="--chip-color: #00A896;"
+                    title="Teal" aria-label="Teal"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#E63946" style="--chip-color: #E63946;"
                     title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="color-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
-                    title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="color-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
-                    title="VHS Green" aria-label="VHS Green"></button>
-                  <button type="button" class="color-chip" data-color="#F77F00" style="--chip-color: #F77F00;"
+                  <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49" style="--chip-color: #FCBF49;"
+                    title="Tape Yellow" aria-label="Tape Yellow"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#F77F00" style="--chip-color: #F77F00;"
                     title="Analog Orange" aria-label="Analog Orange"></button>
+                  <button type="button" class="color-bg-chip" data-bgcolor="#121212" style="--chip-color: #121212;"
+                    title="Tape Black" aria-label="Tape Black"></button>
                 </div>
               </div>
             </div>
 
-            <!-- Badge Background Color -->
+            <!-- Left Block Text Color -->
             <div class="form-group">
-              <label>สีพื้นหลังกล่อง Badge</label>
+              <label>สีตัวอักษรแถบซ้าย (Left Block Text Color)</label>
               <div class="color-picker-row">
-                <input type="color" id="badgeBgColorPicker" value="#FCBF49" class="color-picker">
+                <input type="color" id="badgeColorPicker" value="#10111A" class="color-picker">
                 <div class="color-presets">
-                  <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49" style="--chip-color: #FCBF49;"
+                  <button type="button" class="color-chip" data-color="#10111A" style="--chip-color: #10111A;"
+                    title="Dark Navy" aria-label="Dark Navy"></button>
+                  <button type="button" class="color-chip" data-color="#FFFFFF" style="--chip-color: #FFFFFF;"
+                    title="White" aria-label="White"></button>
+                  <button type="button" class="color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
                     title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#121212" style="--chip-color: #121212;"
-                    title="Tape Black" aria-label="Tape Black"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#E63946" style="--chip-color: #E63946;"
+                  <button type="button" class="color-chip" data-color="#E63946" style="--chip-color: #E63946;"
                     title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#0096C7" style="--chip-color: #0096C7;"
-                    title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#F4F1EA" style="--chip-color: #F4F1EA;"
-                    title="Paper White" aria-label="Paper White"></button>
                 </div>
               </div>
             </div>
@@ -426,66 +424,27 @@
         </div>
 
         <div class="preview-stage">
-          <div id="previewCard" class="vhs-tape-shell first-redeemer">
-            <!-- Tape Top Texture & Screws -->
-            <div class="vhs-top-band">
-              <span class="vhs-screw"></span>
-              <div class="vhs-top-texture"></div>
-              <span class="vhs-screw"></span>
+          <div id="previewCard" class="vhs-spine-bar first-redeemer">
+            <!-- 1. Left Vertical Block (Teal Block with vertical rotated text "1ST" / "VHS") -->
+            <div class="spine-left-block">
+              <span id="previewIndicatorLabel" class="spine-left-text">1ST</span>
             </div>
 
-            <!-- Main Cassette Window & Label -->
-            <div class="vhs-main-window">
-              <!-- Left Spool Reel -->
-              <div class="vhs-spool left-spool">
-                <div class="vhs-tape-pack left-pack"></div>
-                <div class="vhs-hub-cog">
-                  <span class="cog-spoke spoke-1"></span>
-                  <span class="cog-spoke spoke-2"></span>
-                  <span class="cog-spoke spoke-3"></span>
-                </div>
-              </div>
-
-              <!-- Center Paper Label Sticker -->
-              <div class="vhs-label-sticker">
-                <!-- Top Header Stripe -->
-                <div class="vhs-label-stripe">
-                  <span class="vhs-label-brand">T-120 // HI-FI</span>
-                  <span class="vhs-rec-dot">● REC</span>
-                </div>
-
-                <!-- 2 Lines of Clean Content (1st visitor & username) -->
-                <div class="vhs-label-lines">
-                  <div class="vhs-text-row row-status">
-                    <span id="previewIndicatorLabel" class="vhs-badge-text">1st visitor</span>
-                  </div>
-                  <div class="vhs-rule-line"></div>
-                  <div class="vhs-text-row row-username">
-                    <span id="previewViewer" class="vhs-username-text">ViewerName</span>
-                  </div>
-                  <div class="vhs-rule-line"></div>
-                  <div class="vhs-text-row row-blank"></div>
-                </div>
-              </div>
-
-              <!-- Right Spool Reel -->
-              <div class="vhs-spool right-spool">
-                <div class="vhs-tape-pack right-pack"></div>
-                <div class="vhs-hub-cog">
-                  <span class="cog-spoke spoke-1"></span>
-                  <span class="cog-spoke spoke-2"></span>
-                  <span class="cog-spoke spoke-3"></span>
-                </div>
+            <!-- 2. Center Spine Body -->
+            <div class="spine-body">
+              <div class="spine-meta-label">FIRST VISITOR</div>
+              <div class="spine-main-content">
+                <span id="previewViewer" class="spine-username">ViewerName</span>
+                <span class="spine-hq-badge">HQ</span>
               </div>
             </div>
 
-            <!-- Bottom Flap / Seam -->
-            <div class="vhs-bottom-flap">
-              <span class="vhs-screw"></span>
-              <div class="vhs-latch left-latch"></div>
-              <div class="vhs-bottom-ridge"></div>
-              <div class="vhs-latch right-latch"></div>
-              <span class="vhs-screw"></span>
+            <!-- 3. Right 4-Stripe Stepped Color Band -->
+            <div class="spine-stripes-block">
+              <span class="spine-stripe stripe-1"></span>
+              <span class="spine-stripe stripe-2"></span>
+              <span class="spine-stripe stripe-3"></span>
+              <span class="spine-stripe stripe-4"></span>
             </div>
 
             <div class="hidden-hooks" style="display: none !important;">

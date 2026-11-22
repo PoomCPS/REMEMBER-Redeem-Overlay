@@ -61,12 +61,12 @@
   let cachedTwitchRewards = [];
 
   const THEME_PRESETS = {
-    purple: { bg: '#F4F1EA', opacity: '1.0', border: '#1A1A1A', glow: '#FCBF49', radius: '0px' },
-    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', radius: '0px' },
-    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', radius: '0px' },
-    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', radius: '0px' },
-    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', radius: '0px' },
-    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', radius: '0px' },
+    purple: { bg: '#10111A', opacity: '1.0', border: '#000000', glow: '#00A896', radius: '0px' }, // Dark Teal Spine
+    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', radius: '0px' }, // Gold Master
+    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', radius: '0px' }, // Red Studio
+    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', radius: '0px' }, // VHS Master
+    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', radius: '0px' }, // Analog Sunset
+    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', radius: '0px' }, // Stealth Deck
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -298,17 +298,17 @@
   if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
-    const rawBadgeText = badgeTextInput.value.trim() || '1st visitor';
-    const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
-    const badgeColor = badgeColorPicker.value || '#4A4843';
-    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || '#2A9D8F';
+    const rawBadgeText = badgeTextInput.value.trim() || '1ST';
+    const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1ST';
+    const badgeColor = badgeColorPicker.value || '#10111A';
+    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || '#00A896';
     const fontFamily = fontFamilySelect?.value || 'Kanit';
     const fontScale = fontSizeScaleSelect?.value || '1.0';
-    const viewerColor = viewerColorPicker?.value || '#111111';
+    const viewerColor = viewerColorPicker?.value || '#FFFFFF';
     const theme = cardThemeSelect.value || 'purple';
 
-    const bgColor = cardBgColorPicker?.value || '#161616';
-    const borderColor = cardBorderColorPicker?.value || '#1A1A1A';
+    const bgColor = cardBgColorPicker?.value || '#10111A';
+    const borderColor = cardBorderColorPicker?.value || '#000000';
 
     if (previewIndicatorLabel) {
       previewIndicatorLabel.textContent = badgeText;
@@ -330,7 +330,7 @@
     previewCard.style.setProperty('--card-border', borderColor);
     previewCard.style.setProperty('--card-radius', '0px');
 
-    previewCard.className = `vhs-tape-shell theme-${theme} first-redeemer`;
+    previewCard.className = `vhs-spine-bar theme-${theme} first-redeemer`;
   }
 
   // Copy Overlay URL

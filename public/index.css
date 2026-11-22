@@ -651,250 +651,126 @@ input[type="text"]:focus,
   background-size: 20px 20px;
 }
 
-/* VHS Tape Shell (Preview matching overlay) */
-.vhs-tape-shell {
+/* ==========================================================================
+   VHS Spine Bar (Preview matching overlay)
+   ========================================================================== */
+
+.vhs-spine-bar {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 320px;
-  height: 170px;
+  display: inline-flex;
+  align-items: stretch;
+  height: 68px;
+  min-width: 440px;
+  max-width: 580px;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: center center;
-  background-color: #161616;
-  border: 2px solid #0A0A0A;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.9);
-  padding: 6px 10px;
+  background-color: var(--card-bg, #10111A);
+  border: 2px solid var(--card-border, #000000);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.95);
   overflow: hidden;
   user-select: none;
   transition: opacity 75ms steps(1), transform 75ms steps(1);
 }
 
-.vhs-screw {
-  width: 6px;
-  height: 6px;
-  background: #333333;
-  border: 1px solid #111111;
-  position: relative;
-  display: inline-block;
+/* 1. Left Vertical Block (Teal Block) */
+.spine-left-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  background-color: var(--badge-bg, #00A896);
+  border-right: 2px solid var(--card-border, #000000);
   flex-shrink: 0;
 }
 
-.vhs-screw::after {
-  content: '+';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -55%);
-  font-size: 7px;
-  color: #1A1A1A;
-  font-family: monospace;
-  line-height: 1;
-}
-
-.vhs-top-band {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 14px;
-  margin-bottom: 4px;
-}
-
-.vhs-top-texture {
-  flex: 1;
-  height: 6px;
-  margin: 0 8px;
-  background: repeating-linear-gradient(
-    90deg,
-    #111111 0px,
-    #111111 2px,
-    #252525 2px,
-    #252525 4px
-  );
-  border: 1px solid #0D0D0D;
-}
-
-.vhs-main-window {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 114px;
-  background-color: #0A0A0A;
-  border: 2px solid #000000;
-  box-shadow: inset 2px 2px 0px #050505;
-  padding: 4px 8px;
-  position: relative;
-}
-
-.vhs-spool {
-  position: relative;
-  width: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #12100E;
-  border: 1px solid #000000;
-  overflow: hidden;
-}
-
-.vhs-tape-pack {
-  position: absolute;
-  border: 8px solid #231C18;
-  width: 52px;
-  height: 52px;
-}
-
-.left-pack { border-width: 12px; }
-.right-pack { border-width: 6px; }
-
-.vhs-hub-cog {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  background-color: #E5E2DA;
-  border: 1px solid #8A857A;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.vhs-hub-cog::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background-color: #0A0A0A;
-}
-
-.cog-spoke {
-  position: absolute;
-  width: 3px;
-  height: 22px;
-  background-color: #8A857A;
-}
-
-.spoke-1 { transform: rotate(0deg); }
-.spoke-2 { transform: rotate(60deg); }
-.spoke-3 { transform: rotate(120deg); }
-
-.vhs-label-sticker {
-  display: flex;
-  flex-direction: column;
-  width: 168px;
-  height: 104px;
-  background-color: #F6F4ED;
-  border: 1px solid #1A1A1A;
-  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-  margin: 0 4px;
-}
-
-.vhs-label-stripe {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 22px;
-  background-color: var(--badge-bg, #2A9D8F);
-  padding: 0 8px;
-  border-bottom: 1px solid #1A1A1A;
-}
-
-.vhs-label-brand {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: 0.08em;
-}
-
-.vhs-rec-dot {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.65rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: 0.05em;
-}
-
-.vhs-label-lines {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 4px 8px;
-  justify-content: space-around;
-  background-color: #F6F4ED;
-}
-
-.vhs-text-row {
-  display: flex;
-  align-items: center;
-}
-
-.row-status {
-  height: 18px;
-}
-
-.vhs-badge-text {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--badge-color, #4A4843);
+.spine-left-text {
+  font-family: var(--font-display, 'Archivo Black', 'Space Grotesk', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--badge-color, #10111A);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
+  transform: rotate(-90deg);
   white-space: nowrap;
 }
 
-.vhs-rule-line {
-  height: 1px;
-  background-color: #DDD8CB;
-  width: 100%;
+/* 2. Center Spine Body */
+.spine-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  padding: 0 16px;
+  background-color: var(--card-bg, #10111A);
+  gap: 2px;
+  min-width: 0;
 }
 
-.row-username {
-  height: 28px;
+.spine-meta-label {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.vhs-username-text {
+.spine-main-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.spine-username {
   font-family: var(--overlay-font, var(--font-display, 'Archivo Black', 'Kanit', sans-serif));
-  font-size: 1.15rem;
+  font-size: 1.55rem;
   font-weight: 800;
-  color: var(--viewer-color, #111111);
-  letter-spacing: -0.01em;
+  font-style: italic;
+  color: var(--viewer-color, #FFFFFF);
+  letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.1;
 }
 
-.row-blank {
-  height: 10px;
+/* Micro-Badge [ HQ ] */
+.spine-hq-badge {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #EDE3D2;
+  border: 1.5px solid #EDE3D2;
+  padding: 2px 6px;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.vhs-bottom-flap {
+/* 3. Right 4-Stripe Stepped Color Band */
+.spine-stripes-block {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 16px;
-  margin-top: 4px;
+  align-self: stretch;
+  width: 60px;
+  border-left: 2px solid var(--card-border, #000000);
+  flex-shrink: 0;
 }
 
-.vhs-door-seam,
-.vhs-bottom-ridge {
+.spine-stripe {
   flex: 1;
-  height: 2px;
-  background-color: #050505;
-  margin: 0 10px;
+  height: 100%;
 }
 
-.vhs-latch {
-  width: 10px;
-  height: 5px;
-  background-color: #0A0A0A;
-  border: 1px solid #000000;
-}
+.stripe-1 { background-color: var(--stripe-1, #5C3A38); }
+.stripe-2 { background-color: var(--stripe-2, #E0604E); }
+.stripe-3 { background-color: var(--stripe-3, #F2B857); }
+.stripe-4 { background-color: var(--stripe-4, #EDE3D2); }
 
-.vhs-tape-shell.first-redeemer {
-  border-color: #FCBF49;
-  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #FCBF49;
+/* 1st Redeemer Highlight (Tape Yellow Border Stamp) */
+.vhs-spine-bar.first-redeemer {
+  border-color: #F2B857;
+  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #F2B857;
 }
 
 .test-controls-row {
