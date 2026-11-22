@@ -33,7 +33,25 @@
   };
 
   const THEME_PRESETS = {
-    purple: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', radius: '0px' },
+    // Classic Blank VHS Tape Brands
+    polaroid: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', badgeBg: '#1A1A1A', badgeColor: '#F4F1EA', glow: '#E63946', stripes: ['#E63946', '#F77F00', '#FCBF49', '#0096C7', '#2A9D8F'] },
+    tdk: { bg: '#121212', border: '#D4AF37', text: '#F4F1EA', badgeBg: '#D4AF37', badgeColor: '#121212', glow: '#F2B857', stripes: ['#5C3A38', '#E0604E', '#F2B857', '#EDE3D2', '#D4AF37'] },
+    maxell: { bg: '#10111A', border: '#FCBF49', text: '#FFFFFF', badgeBg: '#FCBF49', badgeColor: '#10111A', glow: '#FCBF49', stripes: ['#8C6D53', '#BC6C25', '#FCBF49', '#F4F1EA', '#FCBF49'] },
+    jvc: { bg: '#0D1B2A', border: '#00F0FF', text: '#F4F1EA', badgeBg: '#00A896', badgeColor: '#0D1B2A', glow: '#00F0FF', stripes: ['#00A896', '#00F0FF', '#3A86FF', '#F4F1EA', '#00A896'] },
+    sony: { bg: '#0B061A', border: '#0096C7', text: '#F4F1EA', badgeBg: '#E63946', badgeColor: '#FFFFFF', glow: '#0096C7', stripes: ['#0096C7', '#7209B7', '#FF007F', '#F4F1EA', '#0096C7'] },
+
+    // Filmora 15 VHS Color Palettes
+    'neon-midnight': { bg: '#0B061A', border: '#00F0FF', text: '#00F0FF', badgeBg: '#FF007F', badgeColor: '#FFFFFF', glow: '#00F0FF', stripes: ['#0B061A', '#1E1145', '#FF007F', '#00F0FF', '#FF007F'] },
+    outrun: { bg: '#050505', border: '#FF9E00', text: '#FF9E00', badgeBg: '#F72585', badgeColor: '#FFFFFF', glow: '#FF9E00', stripes: ['#050505', '#7209B7', '#F72585', '#FF9E00', '#F72585'] },
+    'sun-bleached': { bg: '#3A3335', border: '#E07A5F', text: '#F4F1DE', badgeBg: '#81B29A', badgeColor: '#3A3335', glow: '#E07A5F', stripes: ['#3A3335', '#E07A5F', '#F4F1DE', '#81B29A', '#E07A5F'] },
+    'aged-attic': { bg: '#2C221E', border: '#D4A373', text: '#FAEDCD', badgeBg: '#7A5C48', badgeColor: '#FAEDCD', glow: '#D4A373', stripes: ['#2C221E', '#7A5C48', '#D4A373', '#FAEDCD', '#D4A373'] },
+    'toxic-crt': { bg: '#050F0A', border: '#2DC653', text: '#90BE6D', badgeBg: '#2DC653', badgeColor: '#050F0A', glow: '#2DC653', stripes: ['#050F0A', '#0D3B22', '#2DC653', '#90BE6D', '#2DC653'] },
+    'glitch-core': { bg: '#0D1B2A', border: '#00FF66', text: '#00FF66', badgeBg: '#FF3366', badgeColor: '#FFFFFF', glow: '#00FF66', stripes: ['#0D1B2A', '#1B263B', '#00FF66', '#FF3366', '#00FF66'] },
+    smpte: { bg: '#10111A', border: '#CC0000', text: '#FFFFFF', badgeBg: '#003366', badgeColor: '#FFFFFF', glow: '#009999', stripes: ['#003366', '#990099', '#009999', '#CC0000', '#FFFFFF'] },
+    cartoon: { bg: '#1D3557', border: '#FFB703', text: '#FFFFFF', badgeBg: '#E63946', badgeColor: '#FFFFFF', glow: '#FFB703', stripes: ['#1D3557', '#E63946', '#FFB703', '#8ECAE6', '#E63946'] },
+
+    // Backward-compatible presets
+    purple: { bg: '#10111A', border: '#000000', text: '#FFFFFF', radius: '0px' },
     midnight: { bg: '#121212', border: '#FCBF49', text: '#F4F1EA', radius: '0px' },
     cyberpunk: { bg: '#E2DFD7', border: '#E63946', text: '#1A1A1A', radius: '0px' },
     emerald: { bg: '#121212', border: '#2A9D8F', text: '#F4F1EA', radius: '0px' },
@@ -242,6 +260,17 @@
     cardElement.style.setProperty('--card-bg', currentUser.cardBgColor || '#10111A');
     cardElement.style.setProperty('--card-border', currentUser.cardBorderColor || '#000000');
     cardElement.style.setProperty('--card-radius', '0px');
+
+    // If preset defines stripes, apply them
+    const preset = THEME_PRESETS[currentUser.cardTheme];
+    if (preset && preset.stripes && preset.stripes.length >= 4) {
+      preset.stripes.forEach((color, idx) => {
+        cardElement.style.setProperty(`--stripe-${idx + 1}`, color);
+      });
+    } else if (currentUser.cardGlowColor) {
+      // Use card glow color as an accent highlight stripe
+      cardElement.style.setProperty('--stripe-3', currentUser.cardGlowColor);
+    }
   }
 
   function applyTheme(theme) {

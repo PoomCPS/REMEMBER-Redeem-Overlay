@@ -659,9 +659,9 @@ input[type="text"]:focus,
   position: relative;
   display: inline-flex;
   align-items: stretch;
-  height: 68px;
-  min-width: 440px;
-  max-width: 580px;
+  height: 70px;
+  min-width: 450px;
+  max-width: 600px;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: center center;
   background-color: var(--card-bg, #10111A);
@@ -672,15 +672,35 @@ input[type="text"]:focus,
   transition: opacity 75ms steps(1), transform 75ms steps(1);
 }
 
-/* 1. Left Vertical Block (Teal Block) */
+/* 0. Top Ruler Ticks (Authentic Cassette Index Label Edge) */
+.spine-ruler-ticks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.35) 0px,
+    rgba(255, 255, 255, 0.35) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 1. Left Vertical Block */
 .spine-left-block {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
+  width: 56px;
   background-color: var(--badge-bg, #00A896);
   border-right: 2px solid var(--card-border, #000000);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .spine-left-text {
@@ -700,19 +720,45 @@ input[type="text"]:focus,
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  padding: 0 16px;
+  padding: 4px 16px 2px;
   background-color: var(--card-bg, #10111A);
   gap: 2px;
   min-width: 0;
+  position: relative;
+}
+
+.spine-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .spine-meta-label {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.spine-speed-mode {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spine-tape-barcode {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.35);
+  user-select: none;
 }
 
 .spine-main-content {
@@ -738,7 +784,7 @@ input[type="text"]:focus,
 /* Micro-Badge [ HQ ] */
 .spine-hq-badge {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   color: #EDE3D2;
@@ -748,11 +794,11 @@ input[type="text"]:focus,
   flex-shrink: 0;
 }
 
-/* 3. Right 4-Stripe Stepped Color Band */
+/* 3. Right Stepped Color Band */
 .spine-stripes-block {
   display: flex;
   align-self: stretch;
-  width: 60px;
+  width: 65px;
   border-left: 2px solid var(--card-border, #000000);
   flex-shrink: 0;
 }
@@ -762,15 +808,16 @@ input[type="text"]:focus,
   height: 100%;
 }
 
-.stripe-1 { background-color: var(--stripe-1, #5C3A38); }
-.stripe-2 { background-color: var(--stripe-2, #E0604E); }
-.stripe-3 { background-color: var(--stripe-3, #F2B857); }
-.stripe-4 { background-color: var(--stripe-4, #EDE3D2); }
+.stripe-1 { background-color: var(--stripe-1, #E63946); }
+.stripe-2 { background-color: var(--stripe-2, #F77F00); }
+.stripe-3 { background-color: var(--stripe-3, #FCBF49); }
+.stripe-4 { background-color: var(--stripe-4, #0096C7); }
+.stripe-5 { background-color: var(--stripe-5, #2A9D8F); }
 
-/* 1st Redeemer Highlight (Tape Yellow Border Stamp) */
+/* 1st Redeemer Highlight (Tape Gold Border Stamp) */
 .vhs-spine-bar.first-redeemer {
-  border-color: #F2B857;
-  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #F2B857;
+  border-color: #FCBF49;
+  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #FCBF49;
 }
 
 .test-controls-row {
