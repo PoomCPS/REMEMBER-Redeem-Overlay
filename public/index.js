@@ -298,38 +298,26 @@
   if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
-    const badgeText = badgeTextInput.value.trim() || '👑 1ST REDEEMER';
-    const badgeColor = badgeColorPicker.value || '#fbbf24';
-    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || 'rgba(245, 158, 11, 0.22)';
+    const rawBadgeText = badgeTextInput.value.trim() || '1st visitor';
+    const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
+    const badgeColor = badgeColorPicker.value || '#4A4843';
+    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || '#2A9D8F';
     const fontFamily = fontFamilySelect?.value || 'Kanit';
     const fontScale = fontSizeScaleSelect?.value || '1.0';
-    const viewerColor = viewerColorPicker?.value || '#ffffff';
+    const viewerColor = viewerColorPicker?.value || '#111111';
     const theme = cardThemeSelect.value || 'purple';
 
-    const bgColor = cardBgColorPicker?.value || '#1c1030';
-    const bgOpacity = parseFloat(cardBgOpacitySelect?.value || '0.94');
-    const borderColor = cardBorderColorPicker?.value || '#c4b5fd';
-    const glowColor = cardGlowColorPicker?.value || '#a855f7';
-    const radius = cardRadiusSelect?.value || '16px';
-
-    const bgRgba = hexToRgba(bgColor, bgOpacity);
-    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
-    const borderRgba = hexToRgba(borderColor, 0.35);
-    const glowBoxRgba = hexToRgba(glowColor, 0.28);
-    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
+    const bgColor = cardBgColorPicker?.value || '#161616';
+    const borderColor = cardBorderColorPicker?.value || '#1A1A1A';
 
     if (previewIndicatorLabel) {
-      let bText = badgeText;
-      if (!bText.startsWith('[')) bText = `[ ${bText} ]`;
-      previewIndicatorLabel.textContent = bText;
+      previewIndicatorLabel.textContent = badgeText;
       previewIndicatorLabel.style.color = badgeColor;
     }
-    if (previewLiveIndicator) {
-      previewLiveIndicator.style.borderColor = badgeColor;
-      previewLiveIndicator.style.background = badgeBg;
-    }
 
-    if (previewViewer) previewViewer.style.color = viewerColor;
+    if (previewViewer) {
+      previewViewer.style.color = viewerColor;
+    }
 
     previewCard.style.setProperty('--overlay-font', fontFamily);
     previewCard.style.setProperty('--overlay-scale', fontScale);
@@ -338,19 +326,11 @@
     previewCard.style.setProperty('--viewer-color', viewerColor);
 
     // Custom card theme variables (Strict 1980s flat geometry)
-    const cardTextColor = (bgColor === '#121212' || bgColor === '#09090b') ? '#F4F1EA' : '#1A1A1A';
     previewCard.style.setProperty('--card-bg', bgColor);
     previewCard.style.setProperty('--card-border', borderColor);
-    previewCard.style.setProperty('--card-text', cardTextColor);
     previewCard.style.setProperty('--card-radius', '0px');
 
-    previewCard.className = `redeem-card theme-${theme} first-redeemer`;
-
-    if (currentWhitelist.length > 0) {
-      previewRewardTitle.textContent = currentWhitelist[0];
-    } else {
-      previewRewardTitle.textContent = 'แต้มตัวอย่าง (Channel Point)';
-    }
+    previewCard.className = `vhs-tape-shell theme-${theme} first-redeemer`;
   }
 
   // Copy Overlay URL

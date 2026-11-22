@@ -17,18 +17,18 @@
   const FALLBACK_POLL_INTERVAL_MS = 6000; // Background HTTP fallback sync every 6s
 
   let currentUser = {
-    badgeText: '👑 1ST REDEEMER',
-    badgeColor: '#fbbf24',
-    badgeBgColor: 'rgba(245, 158, 11, 0.22)',
+    badgeText: '1st visitor',
+    badgeColor: '#4A4843',
+    badgeBgColor: '#2A9D8F',
     fontFamily: 'Kanit',
     fontSizeScale: 1.0,
-    viewerColor: '#ffffff',
+    viewerColor: '#111111',
     cardTheme: 'purple',
-    cardBgColor: '#1c1030',
-    cardBgOpacity: 0.94,
-    cardBorderColor: '#c4b5fd',
-    cardGlowColor: '#a855f7',
-    cardRadius: '16px',
+    cardBgColor: '#161616',
+    cardBgOpacity: 1.0,
+    cardBorderColor: '#1A1A1A',
+    cardGlowColor: '#2A9D8F',
+    cardRadius: '0px',
     soundEnabled: true,
   };
 
@@ -279,13 +279,14 @@
       cardElement.classList.remove('first-redeemer');
     }
 
-    if (indicatorLabelEl && liveIndicatorEl) {
-      let bText = currentUser.badgeText || '👑 1ST REDEEM';
-      if (!bText.startsWith('[')) bText = `[ ${bText} ]`;
+    // Line 1: 1st visitor (no emojis or brackets)
+    if (indicatorLabelEl) {
+      let bText = currentUser.badgeText || '1st visitor';
+      bText = bText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
       indicatorLabelEl.textContent = bText;
-      indicatorLabelEl.style.color = currentUser.badgeColor || '#1A1A1A';
-      liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#1A1A1A';
-      liveIndicatorEl.classList.add('first-redeemer');
+      if (currentUser.badgeColor) {
+        indicatorLabelEl.style.color = currentUser.badgeColor;
+      }
     }
 
     cardElement.classList.remove('hidden');

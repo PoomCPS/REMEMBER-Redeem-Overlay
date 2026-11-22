@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1980s Analog Media / VHS Cassette Spine Label
+   Authentic 1980s VHS Cassette Tape Overlay
    public/overlay.css
    ========================================================================== */
 
@@ -22,221 +22,313 @@ html, body {
 
 .overlay-container {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 16px;
+  left: 16px;
   width: auto;
-  max-width: calc(100% - 40px);
   pointer-events: none;
 }
 
-/* 1980s Magnetic Cassette Spine Label Container */
-.redeem-card {
+/* ==========================================================================
+   VHS Cassette Shell (Physical Tape Proportions: ~320px x 170px)
+   ========================================================================== */
+
+.vhs-tape-shell {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--overlay-font, var(--font-body, 'Kanit', sans-serif));
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 170px;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: top left;
-  background: var(--card-bg, #F4F1EA);
-  border: 2px solid var(--card-border, #1A1A1A);
-  color: var(--card-text, #1A1A1A);
-  box-shadow: 3px 3px 0px #1A1A1A;
-  padding: 8px 18px 8px 12px;
+  background-color: #161616;
+  border: 2px solid #0A0A0A;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.9);
+  padding: 6px 10px;
   overflow: hidden;
-  white-space: nowrap;
+  user-select: none;
   transition: opacity 75ms steps(1), transform 75ms steps(1);
 }
 
-/* Stepped Multi-Stripe Left Anchor */
-.spine-stripes {
-  display: flex;
-  flex-direction: column;
-  width: 6px;
-  align-self: stretch;
-  margin-right: 14px;
-  border-right: 1px solid var(--card-border, #1A1A1A);
-}
-
-.spine-stripes .stripe {
-  flex: 1;
-  width: 100%;
-}
-
-.spine-stripes .stripe-red    { background-color: var(--stripe-red, #E63946); }
-.spine-stripes .stripe-orange { background-color: var(--stripe-orange, #F77F00); }
-.spine-stripes .stripe-yellow { background-color: var(--stripe-yellow, #FCBF49); }
-.spine-stripes .stripe-blue   { background-color: var(--stripe-blue, #0096C7); }
-.spine-stripes .stripe-green  { background-color: var(--stripe-green, #2A9D8F); }
-
-/* Theme Presets (1980s Tape Formats) */
-.redeem-card.theme-purple,
-.redeem-card.theme-chrome {
-  --card-bg: #F4F1EA;
-  --card-border: #1A1A1A;
-  --card-text: #1A1A1A;
-  --badge-color: #1A1A1A;
-  --badge-bg: #FCBF49;
-}
-
-.redeem-card.theme-midnight,
-.redeem-card.theme-metal {
-  --card-bg: #121212;
-  --card-border: #FCBF49;
-  --card-text: #F4F1EA;
-  --badge-color: #FCBF49;
-  --badge-bg: #1A1A1A;
-}
-
-.redeem-card.theme-cyberpunk,
-.redeem-card.theme-ferro {
-  --card-bg: #E2DFD7;
-  --card-border: #E63946;
-  --card-text: #1A1A1A;
-  --badge-color: #FFFFFF;
-  --badge-bg: #E63946;
-}
-
-.redeem-card.theme-emerald,
-.redeem-card.theme-vhs {
-  --card-bg: #121212;
-  --card-border: #2A9D8F;
-  --card-text: #F4F1EA;
-  --badge-color: #2A9D8F;
-  --badge-bg: #1A1A1A;
-}
-
-.redeem-card.theme-sunset {
-  --card-bg: #121212;
-  --card-border: #F77F00;
-  --card-text: #F4F1EA;
-  --badge-color: #F77F00;
-  --badge-bg: #1A1A1A;
-}
-
-.redeem-card.theme-stealth {
-  --card-bg: #121212;
-  --card-border: #5C5A54;
-  --card-text: #F4F1EA;
-  --badge-color: #F4F1EA;
-  --badge-bg: #1A1A1A;
-}
-
-/* Hidden state */
-.redeem-card.hidden {
+.vhs-tape-shell.hidden {
   opacity: 0;
-  transform: translateY(-8px) scale(0.98);
+  transform: translateY(-10px) scale(0.96);
   pointer-events: none;
 }
 
-/* Single Row Content Layout */
-.card-content-row {
+/* Screws in 4 Corners */
+.vhs-screw {
+  width: 6px;
+  height: 6px;
+  background: #333333;
+  border: 1px solid #111111;
   position: relative;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-size: calc(1.3rem * var(--overlay-scale, 1.0));
-  line-height: 1.2;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
-/* Monospace Micro-Badge */
-.micro-badge {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border: 1px solid var(--badge-border, #1A1A1A);
-  background: var(--badge-bg, #FCBF49);
-  color: var(--badge-color, #1A1A1A);
-}
-
-.user-chunk {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-}
-
-.prefix-at {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-weight: 800;
-  color: var(--stripe-red, #E63946);
-  margin-right: 1px;
-}
-
-.viewer-name {
-  font-family: var(--font-display, 'Archivo Black', 'Kanit', sans-serif);
-  font-weight: 700;
-  color: var(--viewer-color, var(--card-text, #1A1A1A));
-  letter-spacing: 0.02em;
-}
-
-.reward-chunk {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-  margin-left: 4px;
-}
-
-.prefix-hash {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-weight: 700;
-  color: var(--stripe-blue, #0096C7);
-  margin-right: 2px;
-}
-
-.reward-title {
-  font-family: var(--font-body, 'Inter', 'Kanit', sans-serif);
-  font-weight: 600;
-  color: var(--card-text, #1A1A1A);
-  opacity: 0.9;
-}
-
-/* 1st Redeemer Highlight */
-.redeem-card.first-redeemer {
-  border-color: var(--stripe-yellow, #FCBF49);
-  box-shadow: 4px 4px 0px #1A1A1A;
-}
-
-.redeem-card.first-redeemer .micro-badge {
-  background: var(--stripe-yellow, #FCBF49);
-  color: #121212;
-  border-color: #121212;
-}
-
-/* Mechanical Finger Cutout / Notch */
-.tape-notch {
+.vhs-screw::after {
+  content: '+';
   position: absolute;
   top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 12px;
-  background: #1A1A1A;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 7px;
+  color: #1A1A1A;
+  font-family: monospace;
+  line-height: 1;
 }
 
-/* Pulse / Replacement Animation (Tactile 75ms steps flash) */
-.redeem-card.pulse {
-  animation: tape-flash 0.4s steps(2);
+/* Top Grip Band */
+.vhs-top-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 14px;
+  margin-bottom: 4px;
 }
 
-@keyframes tape-flash {
-  0% {
-    filter: invert(1);
-    transform: scale(1.02);
-  }
-  50% {
-    filter: invert(0);
-    transform: scale(1);
-  }
-  75% {
-    filter: invert(1);
-  }
-  100% {
-    filter: invert(0);
-    transform: scale(1);
-  }
+.vhs-top-texture {
+  flex: 1;
+  height: 6px;
+  margin: 0 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #111111 0px,
+    #111111 2px,
+    #252525 2px,
+    #252525 4px
+  );
+  border: 1px solid #0D0D0D;
+}
+
+/* ==========================================================================
+   Main Window Cavity & Reel Spools
+   ========================================================================== */
+
+.vhs-main-window {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 114px;
+  background-color: #0A0A0A;
+  border: 2px solid #000000;
+  box-shadow: inset 2px 2px 0px #050505;
+  padding: 4px 8px;
+  position: relative;
+}
+
+/* Left & Right Spools */
+.vhs-spool {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #12100E;
+  border: 1px solid #000000;
+  overflow: hidden;
+}
+
+/* Magnetic Tape Pack Around Spool */
+.vhs-tape-pack {
+  position: absolute;
+  border: 8px solid #231C18;
+  width: 52px;
+  height: 52px;
+}
+
+.left-pack {
+  border-width: 12px;
+}
+
+.right-pack {
+  border-width: 6px;
+}
+
+/* White Hub with Cog Spokes */
+.vhs-hub-cog {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  background-color: #E5E2DA;
+  border: 1px solid #8A857A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.vhs-hub-cog::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #0A0A0A;
+}
+
+.cog-spoke {
+  position: absolute;
+  width: 3px;
+  height: 22px;
+  background-color: #8A857A;
+}
+
+.spoke-1 { transform: rotate(0deg); }
+.spoke-2 { transform: rotate(60deg); }
+.spoke-3 { transform: rotate(120deg); }
+
+/* Rotating animation when tape active / pulse */
+.vhs-tape-shell.pulse .left-spool .vhs-hub-cog,
+.vhs-tape-shell.pulse .right-spool .vhs-hub-cog {
+  animation: reel-spin 1.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+@keyframes reel-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Center Paper Label Sticker
+   ========================================================================== */
+
+.vhs-label-sticker {
+  display: flex;
+  flex-direction: column;
+  width: 168px;
+  height: 104px;
+  background-color: #F6F4ED;
+  border: 1px solid #1A1A1A;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  margin: 0 4px;
+}
+
+/* Top Header Stripe on Label (Emerald Green as in user image) */
+.vhs-label-stripe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  background-color: var(--badge-bg, #2A9D8F);
+  padding: 0 8px;
+  border-bottom: 1px solid #1A1A1A;
+}
+
+.vhs-label-brand {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+}
+
+.vhs-rec-dot {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.05em;
+}
+
+/* Label Content Lines */
+.vhs-label-lines {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 4px 8px;
+  justify-content: space-around;
+  background-color: #F6F4ED;
+}
+
+.vhs-text-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Line 1: 1st visitor */
+.row-status {
+  height: 18px;
+}
+
+.vhs-badge-text {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--badge-color, #4A4843);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+/* Ruled Divider Lines */
+.vhs-rule-line {
+  height: 1px;
+  background-color: #DDD8CB;
+  width: 100%;
+}
+
+/* Line 2: username */
+.row-username {
+  height: 28px;
+}
+
+.vhs-username-text {
+  font-family: var(--overlay-font, var(--font-display, 'Archivo Black', 'Kanit', sans-serif));
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--viewer-color, #111111);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+}
+
+.row-blank {
+  height: 10px;
+}
+
+/* ==========================================================================
+   Bottom Flap / Seam
+   ========================================================================== */
+
+.vhs-bottom-flap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 16px;
+  margin-top: 4px;
+}
+
+.vhs-door-seam,
+.vhs-bottom-ridge {
+  flex: 1;
+  height: 2px;
+  background-color: #050505;
+  margin: 0 10px;
+}
+
+.vhs-latch {
+  width: 10px;
+  height: 5px;
+  background-color: #0A0A0A;
+  border: 1px solid #000000;
+}
+
+/* 1st Redeemer Highlight (subtle gold border stamp) */
+.vhs-tape-shell.first-redeemer {
+  border-color: #FCBF49;
+  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #FCBF49;
+}
+
+/* Tactile Tape Pop on Arrival */
+.vhs-tape-shell.pulse {
+  animation: vhs-insert 0.4s steps(2);
+}
+
+@keyframes vhs-insert {
+  0% { transform: translateY(-4px) scale(1.02); filter: brightness(1.2); }
+  50% { transform: translateY(0px) scale(1.0); filter: brightness(1.0); }
+  100% { transform: translateY(0px) scale(1.0); }
 }
