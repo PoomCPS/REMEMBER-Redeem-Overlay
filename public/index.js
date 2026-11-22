@@ -36,6 +36,14 @@
   const newTagInput = document.getElementById('newTagInput');
   const addTagBtn = document.getElementById('addTagBtn');
 
+  // Twitch Rewards Quick Pick & Skipped Alert
+  const fetchTwitchRewardsBtn = document.getElementById('fetchTwitchRewardsBtn');
+  const twitchRewardsList = document.getElementById('twitchRewardsList');
+  const skippedAlertBanner = document.getElementById('skippedAlertBanner');
+  const skippedAlertText = document.getElementById('skippedAlertText');
+  const addSkippedToWhitelistBtn = document.getElementById('addSkippedToWhitelistBtn');
+  const dismissSkippedAlertBtn = document.getElementById('dismissSkippedAlertBtn');
+
   // Preview elements
   const previewCard = document.getElementById('previewCard');
   const previewLiveIndicator = document.getElementById('previewLiveIndicator');
@@ -48,14 +56,17 @@
   let currentUser = null;
   let currentWhitelist = [];
   let toastTimer = null;
+  let lastSkippedRewardTitle = '';
+  let dashboardWs = null;
+  let cachedTwitchRewards = [];
 
   const THEME_PRESETS = {
-    purple: { bg: '#1c1030', opacity: '0.94', border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
-    midnight: { bg: '#0f172a', opacity: '0.95', border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
-    cyberpunk: { bg: '#18181b', opacity: '0.95', border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
-    emerald: { bg: '#022c22', opacity: '0.94', border: '#34d399', glow: '#10b981', radius: '16px' },
-    sunset: { bg: '#271406', opacity: '0.94', border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
-    stealth: { bg: '#09090b', opacity: '0.98', border: '#475569', glow: '#64748b', radius: '12px' },
+    purple: { bg: '#F4F1EA', opacity: '1.0', border: '#1A1A1A', glow: '#FCBF49', radius: '0px' },
+    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', radius: '0px' },
+    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', radius: '0px' },
+    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', radius: '0px' },
+    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', radius: '0px' },
+    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', radius: '0px' },
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -133,6 +144,8 @@
 
     renderTags();
     updateLivePreview();
+    connectDashboardWs();
+    fetchTwitchRewards();
   }
 
   function updateOverlayUrl(token) {
@@ -144,7 +157,7 @@
   function renderTags() {
     whitelistTagsContainer.innerHTML = '';
     if (currentWhitelist.length === 0) {
-      whitelistTagsContainer.innerHTML = '<span style="color: var(--text-subtle); font-size: 0.85rem;">ยังไม่มีรายการแต้ม (อนุญาตให้แสดงทุกแต้ม)</span>';
+      whitelistTagsContainer.innerHTML = '<span class="hint-text">ยังไม่มีรายการแต้ม (อนุญาตให้แสดงทุกแต้ม)</span>';
       return;
     }
 
@@ -163,6 +176,7 @@
       removeBtn.addEventListener('click', () => {
         currentWhitelist.splice(index, 1);
         renderTags();
+        updateTwitchRewardChips();
         updateLivePreview();
       });
 
@@ -178,6 +192,7 @@
     if (!currentWhitelist.includes(word)) {
       currentWhitelist.push(word);
       renderTags();
+      updateTwitchRewardChips();
       updateLivePreview();
     }
     newTagInput.value = '';
@@ -283,32 +298,26 @@
   if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
-    const badgeText = badgeTextInput.value.trim() || '👑 1ST REDEEMER';
-    const badgeColor = badgeColorPicker.value || '#fbbf24';
-    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || 'rgba(245, 158, 11, 0.22)';
+    const rawBadgeText = badgeTextInput.value.trim() || '1st visitor';
+    const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
+    const badgeColor = badgeColorPicker.value || '#4A4843';
+    const badgeBg = badgeBgColorPicker?.dataset?.chosenBg || badgeBgColorPicker?.value || '#2A9D8F';
     const fontFamily = fontFamilySelect?.value || 'Kanit';
     const fontScale = fontSizeScaleSelect?.value || '1.0';
-    const viewerColor = viewerColorPicker?.value || '#ffffff';
+    const viewerColor = viewerColorPicker?.value || '#111111';
     const theme = cardThemeSelect.value || 'purple';
 
-    const bgColor = cardBgColorPicker?.value || '#1c1030';
-    const bgOpacity = parseFloat(cardBgOpacitySelect?.value || '0.94');
-    const borderColor = cardBorderColorPicker?.value || '#c4b5fd';
-    const glowColor = cardGlowColorPicker?.value || '#a855f7';
-    const radius = cardRadiusSelect?.value || '16px';
+    const bgColor = cardBgColorPicker?.value || '#161616';
+    const borderColor = cardBorderColorPicker?.value || '#1A1A1A';
 
-    const bgRgba = hexToRgba(bgColor, bgOpacity);
-    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
-    const borderRgba = hexToRgba(borderColor, 0.35);
-    const glowBoxRgba = hexToRgba(glowColor, 0.28);
-    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
+    if (previewIndicatorLabel) {
+      previewIndicatorLabel.textContent = badgeText;
+      previewIndicatorLabel.style.color = badgeColor;
+    }
 
-    previewIndicatorLabel.textContent = badgeText;
-    previewIndicatorLabel.style.color = badgeColor;
-    previewLiveIndicator.style.borderColor = badgeColor;
-    previewLiveIndicator.style.background = badgeBg;
-
-    previewViewer.style.color = viewerColor;
+    if (previewViewer) {
+      previewViewer.style.color = viewerColor;
+    }
 
     previewCard.style.setProperty('--overlay-font', fontFamily);
     previewCard.style.setProperty('--overlay-scale', fontScale);
@@ -316,20 +325,12 @@
     previewCard.style.setProperty('--badge-bg', badgeBg);
     previewCard.style.setProperty('--viewer-color', viewerColor);
 
-    // Custom card theme variables
-    previewCard.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
-    previewCard.style.setProperty('--card-border', borderRgba);
-    previewCard.style.setProperty('--card-glow', glowBoxRgba);
-    previewCard.style.setProperty('--card-glow-ambient', glowAmbientRgba);
-    previewCard.style.setProperty('--card-radius', radius);
+    // Custom card theme variables (Strict 1980s flat geometry)
+    previewCard.style.setProperty('--card-bg', bgColor);
+    previewCard.style.setProperty('--card-border', borderColor);
+    previewCard.style.setProperty('--card-radius', '0px');
 
-    previewCard.className = `redeem-card theme-${theme}`;
-
-    if (currentWhitelist.length > 0) {
-      previewRewardTitle.textContent = currentWhitelist[0];
-    } else {
-      previewRewardTitle.textContent = 'รักแรกมันแยกยาก';
-    }
+    previewCard.className = `vhs-tape-shell theme-${theme} first-redeemer`;
   }
 
   // Copy Overlay URL
@@ -407,7 +408,7 @@
   sendTestRedeemBtn.addEventListener('click', async () => {
     try {
       showToast('กำลังส่งทดสอบแต้ม...');
-      const sampleReward = currentWhitelist.length > 0 ? currentWhitelist[0] : 'รักแรกมันแยกยาก';
+      const sampleReward = currentWhitelist.length > 0 ? currentWhitelist[0] : 'แต้มแรกของวัน';
       const res = await fetch('/api/test-redemption', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -443,6 +444,148 @@
       showToast(`Error: ${err.message}`);
     }
   });
+
+  // --- Twitch Custom Rewards & Skipped Alert Logic ---
+  function showSkippedAlert(data) {
+    if (!skippedAlertBanner || !skippedAlertText) return;
+    lastSkippedRewardTitle = data.rewardTitle;
+    skippedAlertText.textContent = `ผู้ชม @${data.displayName || 'ผู้ชม'} แลกแต้ม "${data.rewardTitle}" แต่ถูกข้ามเนื่องจากไม่อยู่ใน Whitelist`;
+    skippedAlertBanner.classList.remove('hidden');
+    showToast(`⚠️ มีแต้มถูกข้าม: "${data.rewardTitle}" (ไม่อยู่ใน Whitelist)`);
+  }
+
+  if (dismissSkippedAlertBtn) {
+    dismissSkippedAlertBtn.addEventListener('click', () => {
+      skippedAlertBanner.classList.add('hidden');
+    });
+  }
+
+  if (addSkippedToWhitelistBtn) {
+    addSkippedToWhitelistBtn.addEventListener('click', () => {
+      if (lastSkippedRewardTitle && !currentWhitelist.includes(lastSkippedRewardTitle)) {
+        currentWhitelist.push(lastSkippedRewardTitle);
+        renderTags();
+        updateTwitchRewardChips();
+        updateLivePreview();
+        skippedAlertBanner.classList.add('hidden');
+        showToast(`เพิ่ม "${lastSkippedRewardTitle}" ลง Whitelist แล้ว! อย่าลืมกดบันทึกการตั้งค่า`);
+      }
+    });
+  }
+
+  async function fetchTwitchRewards() {
+    if (!twitchRewardsList) return;
+    twitchRewardsList.innerHTML = '<span class="hint-text-muted">กำลังโหลดแต้มจาก Twitch...</span>';
+
+    try {
+      const res = await fetch('/api/twitch/custom-rewards');
+      const data = await res.json();
+
+      if (!data.success) {
+        twitchRewardsList.innerHTML = `<span class="hint-text-error">โหลดแต้มไม่สำเร็จ: ${data.error || 'Unknown error'}</span>`;
+        return;
+      }
+
+      if (!data.isAffiliate) {
+        twitchRewardsList.innerHTML = `<span class="hint-text">${data.message || 'ช่องนี้ยังไม่ได้เปิดระบบ Channel Points'}</span>`;
+        return;
+      }
+
+      cachedTwitchRewards = data.rewards || [];
+      if (cachedTwitchRewards.length === 0) {
+        twitchRewardsList.innerHTML = '<span class="hint-text">ไม่พบรายการแต้มในช่องของคุณ</span>';
+        return;
+      }
+
+      renderTwitchRewardsList();
+    } catch (err) {
+      twitchRewardsList.innerHTML = `<span class="hint-text-error">Error: ${err.message}</span>`;
+    }
+  }
+
+  function renderTwitchRewardsList() {
+    if (!twitchRewardsList) return;
+    twitchRewardsList.innerHTML = '';
+
+    cachedTwitchRewards.forEach((r) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      const isSelected = currentWhitelist.includes(r.title);
+      chip.className = `twitch-reward-chip ${isSelected ? 'active' : ''}`;
+      chip.setAttribute('data-reward-title', r.title);
+
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = `${isSelected ? '✓ ' : '+ '}${r.title}`;
+
+      const costSpan = document.createElement('span');
+      costSpan.className = 'chip-cost';
+      costSpan.textContent = `(${r.cost.toLocaleString()} pts)`;
+
+      chip.appendChild(titleSpan);
+      chip.appendChild(costSpan);
+
+      chip.addEventListener('click', () => {
+        const title = r.title;
+        const idx = currentWhitelist.indexOf(title);
+        if (idx >= 0) {
+          currentWhitelist.splice(idx, 1);
+        } else {
+          currentWhitelist.push(title);
+        }
+        renderTags();
+        updateTwitchRewardChips();
+        updateLivePreview();
+      });
+
+      twitchRewardsList.appendChild(chip);
+    });
+  }
+
+  function updateTwitchRewardChips() {
+    if (!twitchRewardsList) return;
+    const chips = twitchRewardsList.querySelectorAll('.twitch-reward-chip');
+    chips.forEach((chip) => {
+      const title = chip.getAttribute('data-reward-title');
+      const isSelected = currentWhitelist.includes(title);
+      if (isSelected) {
+        chip.classList.add('active');
+        const firstSpan = chip.querySelector('span:first-child');
+        if (firstSpan) firstSpan.textContent = `✓ ${title}`;
+      } else {
+        chip.classList.remove('active');
+        const firstSpan = chip.querySelector('span:first-child');
+        if (firstSpan) firstSpan.textContent = `+ ${title}`;
+      }
+    });
+  }
+
+  if (fetchTwitchRewardsBtn) {
+    fetchTwitchRewardsBtn.addEventListener('click', fetchTwitchRewards);
+  }
+
+  function connectDashboardWs() {
+    if (dashboardWs) return;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    dashboardWs = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+    dashboardWs.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.type === 'SKIPPED_REDEMPTION') {
+          showSkippedAlert(payload.data);
+        } else if (payload.type === 'REDEMPTION') {
+          previewViewer.textContent = payload.data.displayName;
+          previewRewardTitle.textContent = payload.data.rewardTitle;
+          showToast(`🎉 มีการแลกแต้มสด: ${payload.data.displayName} (${payload.data.rewardTitle})`);
+        }
+      } catch {}
+    };
+
+    dashboardWs.onclose = () => {
+      dashboardWs = null;
+      setTimeout(connectDashboardWs, 5000);
+    };
+  }
 
   // Logout
   logoutBtn.addEventListener('click', async () => {

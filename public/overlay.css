@@ -1,7 +1,13 @@
+/* ==========================================================================
+   Authentic 1980s VHS Cassette Tape Overlay
+   public/overlay.css
+   ========================================================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 0px !important;
 }
 
 html, body {
@@ -9,264 +15,320 @@ html, body {
   height: 100%;
   background: transparent !important;
   overflow: hidden;
-  font-family: 'Outfit', 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body, 'Inter', 'Kanit', sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .overlay-container {
   position: absolute;
-  top: 24px;
-  left: 24px;
-  max-width: 540px;
-  width: calc(100% - 48px);
+  top: 16px;
+  left: 16px;
+  width: auto;
   pointer-events: none;
 }
 
-/* Card Container */
-.redeem-card {
+/* ==========================================================================
+   VHS Cassette Shell (Physical Tape Proportions: ~320px x 170px)
+   ========================================================================== */
+
+.vhs-tape-shell {
   position: relative;
-  font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
-  transform: scale(var(--overlay-scale, 1.0));
-  transform-origin: top left;
-  background: var(--card-bg, linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%));
-  border: 1px solid var(--card-border, rgba(196, 181, 253, 0.28));
-  border-radius: var(--card-radius, 16px);
-  box-shadow: 
-    0 10px 30px -5px rgba(0, 0, 0, 0.6),
-    0 0 25px -2px var(--card-glow, rgba(167, 139, 250, 0.28)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 16px 20px;
-  color: #ffffff;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.3s ease,
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
-  overflow: hidden;
-}
-
-.redeem-card.theme-purple {
-  --card-bg: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
-  --card-border: rgba(196, 181, 253, 0.28);
-  --card-glow: rgba(167, 139, 250, 0.28);
-  --card-glow-ambient: rgba(168, 85, 247, 0.35);
-  --card-radius: 16px;
-}
-
-.redeem-card.theme-midnight {
-  --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
-  --card-border: rgba(56, 189, 248, 0.3);
-  --card-glow: rgba(56, 189, 248, 0.25);
-  --card-glow-ambient: rgba(56, 189, 248, 0.35);
-  --card-radius: 16px;
-}
-
-.redeem-card.theme-cyberpunk {
-  --card-bg: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
-  --card-border: rgba(244, 63, 94, 0.35);
-  --card-glow: rgba(244, 63, 94, 0.25);
-  --card-glow-ambient: rgba(244, 63, 94, 0.35);
-  --card-radius: 8px;
-}
-
-.redeem-card.theme-emerald {
-  --card-bg: linear-gradient(135deg, rgba(2, 44, 34, 0.94) 0%, rgba(1, 20, 15, 0.98) 100%);
-  --card-border: rgba(52, 211, 153, 0.35);
-  --card-glow: rgba(16, 185, 129, 0.28);
-  --card-glow-ambient: rgba(16, 185, 129, 0.35);
-  --card-radius: 16px;
-}
-
-.redeem-card.theme-sunset {
-  --card-bg: linear-gradient(135deg, rgba(39, 20, 6, 0.94) 0%, rgba(20, 10, 3, 0.98) 100%);
-  --card-border: rgba(251, 191, 36, 0.38);
-  --card-glow: rgba(245, 158, 11, 0.28);
-  --card-glow-ambient: rgba(245, 158, 11, 0.35);
-  --card-radius: 16px;
-}
-
-.redeem-card.theme-stealth {
-  --card-bg: linear-gradient(135deg, rgba(9, 9, 11, 0.98) 0%, rgba(4, 4, 6, 0.99) 100%);
-  --card-border: rgba(255, 255, 255, 0.16);
-  --card-glow: rgba(255, 255, 255, 0.08);
-  --card-glow-ambient: rgba(255, 255, 255, 0.12);
-  --card-radius: 12px;
-}
-
-/* Hidden state for smooth entry/exit */
-.redeem-card.hidden {
-  opacity: 0;
-  transform: translateY(-20px) scale(0.95);
-  pointer-events: none;
-}
-
-/* Ambient glow orb behind card */
-.card-glow {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, var(--card-glow-ambient, rgba(168, 85, 247, 0.35)) 0%, rgba(168, 85, 247, 0) 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(10px);
-  transition: background 0.3s ease;
-}
-
-.card-content {
-  position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  width: 320px;
+  height: 170px;
+  transform: scale(var(--overlay-scale, 1.0));
+  transform-origin: top left;
+  background-color: #161616;
+  border: 2px solid #0A0A0A;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.9);
+  padding: 6px 10px;
+  overflow: hidden;
+  user-select: none;
+  transition: opacity 75ms steps(1), transform 75ms steps(1);
 }
 
-/* Top Header Bar */
-.card-header {
+.vhs-tape-shell.hidden {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.96);
+  pointer-events: none;
+}
+
+/* Screws in 4 Corners */
+.vhs-screw {
+  width: 6px;
+  height: 6px;
+  background: #333333;
+  border: 1px solid #111111;
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.vhs-screw::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 7px;
+  color: #1A1A1A;
+  font-family: monospace;
+  line-height: 1;
+}
+
+/* Top Grip Band */
+.vhs-top-band {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 8px;
+  height: 14px;
+  margin-bottom: 4px;
 }
 
-.channel-points-badge {
+.vhs-top-texture {
+  flex: 1;
+  height: 6px;
+  margin: 0 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    #111111 0px,
+    #111111 2px,
+    #252525 2px,
+    #252525 4px
+  );
+  border: 1px solid #0D0D0D;
+}
+
+/* ==========================================================================
+   Main Window Cavity & Reel Spools
+   ========================================================================== */
+
+.vhs-main-window {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  height: 114px;
+  background-color: #0A0A0A;
+  border: 2px solid #000000;
+  box-shadow: inset 2px 2px 0px #050505;
+  padding: 4px 8px;
+  position: relative;
 }
 
-.points-icon {
-  width: 16px;
-  height: 16px;
-  color: #38bdf8;
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7));
+/* Left & Right Spools */
+.vhs-spool {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #12100E;
+  border: 1px solid #000000;
+  overflow: hidden;
 }
 
-.badge-text {
-  font-family: 'Outfit', sans-serif;
+/* Magnetic Tape Pack Around Spool */
+.vhs-tape-pack {
+  position: absolute;
+  border: 8px solid #231C18;
+  width: 52px;
+  height: 52px;
+}
+
+.left-pack {
+  border-width: 12px;
+}
+
+.right-pack {
+  border-width: 6px;
+}
+
+/* White Hub with Cog Spokes */
+.vhs-hub-cog {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  background-color: #E5E2DA;
+  border: 1px solid #8A857A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.vhs-hub-cog::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: #0A0A0A;
+}
+
+.cog-spoke {
+  position: absolute;
+  width: 3px;
+  height: 22px;
+  background-color: #8A857A;
+}
+
+.spoke-1 { transform: rotate(0deg); }
+.spoke-2 { transform: rotate(60deg); }
+.spoke-3 { transform: rotate(120deg); }
+
+/* Rotating animation when tape active / pulse */
+.vhs-tape-shell.pulse .left-spool .vhs-hub-cog,
+.vhs-tape-shell.pulse .right-spool .vhs-hub-cog {
+  animation: reel-spin 1.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+@keyframes reel-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Center Paper Label Sticker
+   ========================================================================== */
+
+.vhs-label-sticker {
+  display: flex;
+  flex-direction: column;
+  width: 168px;
+  height: 104px;
+  background-color: #F6F4ED;
+  border: 1px solid #1A1A1A;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  margin: 0 4px;
+}
+
+/* Top Header Stripe on Label (Emerald Green as in user image) */
+.vhs-label-stripe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  background-color: var(--badge-bg, #2A9D8F);
+  padding: 0 8px;
+  border-bottom: 1px solid #1A1A1A;
+}
+
+.vhs-label-brand {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+}
+
+.vhs-rec-dot {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.05em;
+}
+
+/* Label Content Lines */
+.vhs-label-lines {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 4px 8px;
+  justify-content: space-around;
+  background-color: #F6F4ED;
+}
+
+.vhs-text-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Line 1: 1st visitor */
+.row-status {
+  height: 18px;
+}
+
+.vhs-badge-text {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  color: var(--badge-color, #4A4843);
   text-transform: uppercase;
-  color: #c4b5fd;
-  text-shadow: 0 0 8px rgba(196, 181, 253, 0.4);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
-.live-indicator {
+/* Ruled Divider Lines */
+.vhs-rule-line {
+  height: 1px;
+  background-color: #DDD8CB;
+  width: 100%;
+}
+
+/* Line 2: username */
+.row-username {
+  height: 28px;
+}
+
+.vhs-username-text {
+  font-family: var(--overlay-font, var(--font-display, 'Archivo Black', 'Kanit', sans-serif));
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--viewer-color, #111111);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+}
+
+.row-blank {
+  height: 10px;
+}
+
+/* ==========================================================================
+   Bottom Flap / Seam
+   ========================================================================== */
+
+.vhs-bottom-flap {
   display: flex;
   align-items: center;
-  gap: 5px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(167, 139, 250, 0.3);
-  padding: 2px 8px;
-  border-radius: 20px;
+  justify-content: space-between;
+  height: 16px;
+  margin-top: 4px;
 }
 
-.live-indicator .dot {
-  width: 6px;
-  height: 6px;
-  background: #a78bfa;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #a78bfa;
-  animation: pulse-dot 2s infinite ease-in-out;
+.vhs-door-seam,
+.vhs-bottom-ridge {
+  flex: 1;
+  height: 2px;
+  background-color: #050505;
+  margin: 0 10px;
 }
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 0.6; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.2); }
+.vhs-latch {
+  width: 10px;
+  height: 5px;
+  background-color: #0A0A0A;
+  border: 1px solid #000000;
 }
 
-.indicator-label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #ddd6fe;
+/* 1st Redeemer Highlight (subtle gold border stamp) */
+.vhs-tape-shell.first-redeemer {
+  border-color: #FCBF49;
+  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #FCBF49;
 }
 
-.live-indicator.first-redeemer {
-  background: var(--badge-bg, rgba(245, 158, 11, 0.22));
-  border-color: var(--badge-color, rgba(251, 191, 36, 0.65));
-  box-shadow: 0 0 12px var(--badge-glow, rgba(245, 158, 11, 0.4));
+/* Tactile Tape Pop on Arrival */
+.vhs-tape-shell.pulse {
+  animation: vhs-insert 0.4s steps(2);
 }
 
-.live-indicator.first-redeemer .dot {
-  background: var(--badge-color, #fbbf24);
-  box-shadow: 0 0 10px var(--badge-color, #fbbf24);
+@keyframes vhs-insert {
+  0% { transform: translateY(-4px) scale(1.02); filter: brightness(1.2); }
+  50% { transform: translateY(0px) scale(1.0); filter: brightness(1.0); }
+  100% { transform: translateY(0px) scale(1.0); }
 }
-
-.live-indicator.first-redeemer .indicator-label {
-  color: var(--badge-color, #fef08a);
-  font-weight: 800;
-}
-
-/* Viewer Name Section */
-.viewer-section {
-  display: flex;
-  align-items: baseline;
-}
-
-.viewer-name {
-  font-family: inherit;
-  font-size: 1.45rem;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--viewer-color, #ffffff);
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-/* Reward Title Section */
-.reward-section {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(196, 181, 253, 0.12);
-  word-break: break-word;
-}
-
-.reward-prefix {
-  font-weight: 600;
-  color: #a78bfa;
-  flex-shrink: 0;
-  font-size: 0.85rem;
-  letter-spacing: 0.02em;
-}
-
-.reward-title {
-  font-weight: 500;
-  color: #f1f5f9;
-  overflow-wrap: anywhere;
-}
-
-/* Pulse animation on new redemption replacement */
-.redeem-card.pulse {
-  animation: redeem-pulse 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes redeem-pulse {
-  0% {
-    transform: scale(0.98);
-    box-shadow: 0 0 0 rgba(167, 139, 250, 0.8);
-  }
-  40% {
-    transform: scale(1.03);
-    box-shadow: 0 0 35px rgba(167, 139, 250, 0.6), inset 0 0 15px rgba(196, 181, 253, 0.3);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px -2px rgba(167, 139, 250, 0.28);
-  }
-}
-

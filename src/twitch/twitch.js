@@ -21,17 +21,6 @@ export class TwitchMultiUserManager extends EventEmitter {
   }
 
   setupListeners() {
-    twitchEventSub.on('ready', async () => {
-      this.ready = true;
-      this.addLog('EventSub is ready. Subscribing all registered users...');
-      await this.subscribeAllUsers();
-    });
-
-    twitchEventSub.on('disconnected', () => {
-      this.ready = false;
-      this.addLog('EventSub disconnected.');
-    });
-
     // Handle incoming Channel Points Redemption
     twitchEventSub.on('redemption', ({ broadcasterId, redemption }) => {
       const user = userRepo.findUserById(broadcasterId);
@@ -55,6 +44,12 @@ export class TwitchMultiUserManager extends EventEmitter {
 
       if (!isAllowed) {
         this.addLog(`⚠️ ข้ามแต้ม "${redemption.rewardTitle}" ของ @${user.login} (ไม่ตรงกับ Whitelist: ${JSON.stringify(whitelist)})`);
+        broadcaster.broadcastToUser(broadcasterId, 'SKIPPED_REDEMPTION', {
+          rewardTitle: redemption.rewardTitle,
+          displayName: redemption.displayName,
+          whitelist,
+          timestamp: new Date().toISOString(),
+        });
         return;
       }
 
@@ -99,7 +94,9 @@ export class TwitchMultiUserManager extends EventEmitter {
       console.warn('[Twitch Multi-User] Twitch Client ID or Secret missing in .env');
       return;
     }
-    twitchEventSub.connect();
+    this.ready = true;
+    this.addLog('Subscribing all registered users to Twitch EventSub...');
+    await this.subscribeAllUsers();
   }
 
   async subscribeAllUsers() {

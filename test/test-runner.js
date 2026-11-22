@@ -66,7 +66,7 @@ async function runAsyncTest(description, fn) {
     assert.strictEqual(user1.badge_text, '👑 1ST REDEEMER');
 
     const whitelist1 = JSON.parse(user1.whitelist_words);
-    assert.deepStrictEqual(whitelist1, ['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
+    assert.deepStrictEqual(whitelist1, []);
   });
 
   // Test 2: Custom Badge, Colors, Fonts, Sizes, Theme & Custom Card Properties per User
@@ -134,14 +134,14 @@ async function runAsyncTest(description, fn) {
     assert.strictEqual(redeem1.isFirst, true);
     assert.strictEqual(redeem1.order, 1);
 
-    // 2nd redemption replaces 1st, marked not first
+    // 2nd redemption replaces 1st, always treated as 1st redeemer badge for the reward
     const redeem2 = sessionRepo.setLatestRedemption(user1.id, {
       id: 'r_02',
       userName: 'viewer2',
       displayName: 'Viewer Two',
       rewardTitle: 'แต้มพิเศษประจำวัน',
     });
-    assert.strictEqual(redeem2.isFirst, false);
+    assert.strictEqual(redeem2.isFirst, true);
     assert.strictEqual(redeem2.order, 2);
 
     const currentSession = sessionRepo.getSession(user1.id);

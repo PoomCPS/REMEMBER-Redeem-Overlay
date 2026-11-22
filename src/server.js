@@ -71,7 +71,9 @@ const optionalAuth = (req, res, next) => {
 
 // Static files
 const publicDir = path.join(config.paths.rootDir, 'public');
+const designDir = path.join(config.paths.rootDir, 'design');
 app.use(express.static(publicDir));
+app.use('/design', express.static(designDir));
 
 // WebSocket Broadcaster
 broadcaster.init(server);
@@ -95,23 +97,27 @@ app.get('/api/debug-status', optionalAuth, (req, res) => {
     return res.status(401).json({ error: 'Unauthorized: Debug status requires authentication in production' });
   }
 
-  const users = userRepo.getAllUsers().map(u => ({
-    id: u.id,
-    login: u.login,
-    displayName: u.display_name,
-    overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
-    tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
-    whitelistWords: JSON.parse(u.whitelist_words || '[]'),
-    subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
-  }));
+  const users = userRepo.getAllUsers().map(u => {
+    const conn = twitchEventSub.userConnections?.get(u.id);
+    return {
+      id: u.id,
+      login: u.login,
+      displayName: u.display_name,
+      overlayTokenPrefix: u.overlay_token ? u.overlay_token.substring(0, 10) + '...' : null,
+      tokenExpiresInSec: Math.round((u.token_expires_at - Date.now()) / 1000),
+      whitelistWords: JSON.parse(u.whitelist_words || '[]'),
+      subscriptions: twitchEventSub.userSubscriptions?.get(u.id) || 'not_attempted_yet',
+      eventSubConnected: Boolean(conn?.ws && conn.ws.readyState === 1),
+      sessionId: conn?.sessionId || null,
+    };
+  });
 
   res.json({
     status: 'ok',
     serverTime: new Date().toISOString(),
     eventSub: {
-      connected: Boolean(twitchEventSub.ws && twitchEventSub.ws.readyState === 1),
-      sessionId: twitchEventSub.sessionId,
-      reconnectAttempts: twitchEventSub.reconnectAttempts,
+      activeConnections: twitchEventSub.userConnections ? twitchEventSub.userConnections.size : 0,
+      connectedUsers: Array.from(twitchEventSub.userConnections?.keys() || []),
     },
     userCount: users.length,
     users,
@@ -323,6 +329,77 @@ app.post('/api/settings', requireAuth, (req, res) => {
 app.post('/api/regenerate-token', requireAuth, (req, res) => {
   const newToken = userRepo.regenerateOverlayToken(req.user.id);
   res.json({ success: true, overlayToken: newToken });
+});
+
+// 6.1 Fetch Streamer Custom Rewards from Twitch Helix API
+app.get('/api/twitch/custom-rewards', requireAuth, async (req, res) => {
+  try {
+    const user = userRepo.findUserById(req.user.id);
+    if (!user || !user.access_token) {
+      return res.status(401).json({ error: 'User token not available' });
+    }
+
+    // Refresh token if expired or about to expire (< 120s)
+    let accessToken = user.access_token;
+    try {
+      const validation = await twitchOAuth.validateToken(accessToken);
+      if (!validation.valid || validation.expiresIn < 120) {
+        const refreshed = await twitchOAuth.refreshAccessToken(user.refresh_token);
+        accessToken = refreshed.access_token;
+        user.access_token = refreshed.access_token;
+        user.refresh_token = refreshed.refresh_token || user.refresh_token;
+        user.token_expires_at = Date.now() + (refreshed.expires_in || 3600) * 1000;
+        userRepo.upsertUser(user);
+      }
+    } catch (tokenErr) {
+      console.warn(`[Twitch Helix] Token validation warning for @${user.login}:`, tokenErr.message);
+    }
+
+    const twitchRes = await fetch(
+      `https://api.twitch.tv/helix/channel_points/custom_rewards?broadcaster_id=${encodeURIComponent(user.id)}`,
+      {
+        headers: {
+          'Client-Id': config.twitch.clientId,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (twitchRes.status === 403 || twitchRes.status === 404) {
+      // Non-affiliate / non-partner account or channel points disabled
+      return res.json({
+        success: true,
+        isAffiliate: false,
+        rewards: [],
+        message: 'ช่องนี้อาจยังไม่ได้เป็น Twitch Affiliate/Partner หรือยังไม่ได้เปิดระบบ Channel Points',
+      });
+    }
+
+    if (!twitchRes.ok) {
+      const errText = await twitchRes.text();
+      return res.status(twitchRes.status).json({ error: `Twitch API error: ${errText}` });
+    }
+
+    const data = await twitchRes.json();
+    const rewards = (data.data || []).map((r) => ({
+      id: r.id,
+      title: r.title,
+      cost: r.cost,
+      isEnabled: r.is_enabled,
+      backgroundColor: r.background_color,
+      defaultImage: r.default_image?.url_1x || null,
+      customImage: r.image?.url_1x || null,
+    }));
+
+    res.json({
+      success: true,
+      isAffiliate: true,
+      rewards,
+    });
+  } catch (err) {
+    console.error('[API Custom Rewards Error]:', err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // 7. Trigger Test Redemption

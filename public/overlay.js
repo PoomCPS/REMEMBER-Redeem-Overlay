@@ -17,28 +17,32 @@
   const FALLBACK_POLL_INTERVAL_MS = 6000; // Background HTTP fallback sync every 6s
 
   let currentUser = {
-    badgeText: '👑 1ST REDEEMER',
-    badgeColor: '#fbbf24',
-    badgeBgColor: 'rgba(245, 158, 11, 0.22)',
+    badgeText: '1st visitor',
+    badgeColor: '#4A4843',
+    badgeBgColor: '#2A9D8F',
     fontFamily: 'Kanit',
     fontSizeScale: 1.0,
-    viewerColor: '#ffffff',
+    viewerColor: '#111111',
     cardTheme: 'purple',
-    cardBgColor: '#1c1030',
-    cardBgOpacity: 0.94,
-    cardBorderColor: '#c4b5fd',
-    cardGlowColor: '#a855f7',
-    cardRadius: '16px',
+    cardBgColor: '#161616',
+    cardBgOpacity: 1.0,
+    cardBorderColor: '#1A1A1A',
+    cardGlowColor: '#2A9D8F',
+    cardRadius: '0px',
     soundEnabled: true,
   };
 
   const THEME_PRESETS = {
-    purple: { bg: '#1c1030', opacity: 0.94, border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
-    midnight: { bg: '#0f172a', opacity: 0.95, border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
-    cyberpunk: { bg: '#18181b', opacity: 0.95, border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
-    emerald: { bg: '#022c22', opacity: 0.94, border: '#34d399', glow: '#10b981', radius: '16px' },
-    sunset: { bg: '#271406', opacity: 0.94, border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
-    stealth: { bg: '#09090b', opacity: 0.98, border: '#475569', glow: '#64748b', radius: '12px' },
+    purple: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', radius: '0px' },
+    midnight: { bg: '#121212', border: '#FCBF49', text: '#F4F1EA', radius: '0px' },
+    cyberpunk: { bg: '#E2DFD7', border: '#E63946', text: '#1A1A1A', radius: '0px' },
+    emerald: { bg: '#121212', border: '#2A9D8F', text: '#F4F1EA', radius: '0px' },
+    sunset: { bg: '#121212', border: '#F77F00', text: '#F4F1EA', radius: '0px' },
+    stealth: { bg: '#121212', border: '#5C5A54', text: '#F4F1EA', radius: '0px' },
+    chrome: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', radius: '0px' },
+    metal: { bg: '#121212', border: '#FCBF49', text: '#F4F1EA', radius: '0px' },
+    ferro: { bg: '#E2DFD7', border: '#E63946', text: '#1A1A1A', radius: '0px' },
+    vhs: { bg: '#121212', border: '#2A9D8F', text: '#F4F1EA', radius: '0px' }
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -241,25 +245,14 @@
     const themeKey = currentUser.cardTheme || 'purple';
     const preset = THEME_PRESETS[themeKey];
 
-    const bgColor = currentUser.cardBgColor || preset?.bg || '#1c1030';
-    const bgOpacity = currentUser.cardBgOpacity !== undefined && currentUser.cardBgOpacity !== null 
-      ? Number(currentUser.cardBgOpacity) 
-      : (preset?.opacity ?? 0.94);
-    const borderColor = currentUser.cardBorderColor || preset?.border || '#c4b5fd';
-    const glowColor = currentUser.cardGlowColor || preset?.glow || '#a855f7';
-    const radius = currentUser.cardRadius || preset?.radius || '16px';
+    const bgColor = currentUser.cardBgColor || preset?.bg || '#F4F1EA';
+    const borderColor = currentUser.cardBorderColor || preset?.border || '#1A1A1A';
+    const textColor = preset?.text || (bgColor === '#121212' ? '#F4F1EA' : '#1A1A1A');
 
-    const bgRgba = hexToRgba(bgColor, bgOpacity);
-    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
-    const borderRgba = hexToRgba(borderColor, 0.35);
-    const glowBoxRgba = hexToRgba(glowColor, 0.28);
-    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
-
-    cardElement.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
-    cardElement.style.setProperty('--card-border', borderRgba);
-    cardElement.style.setProperty('--card-glow', glowBoxRgba);
-    cardElement.style.setProperty('--card-glow-ambient', glowAmbientRgba);
-    cardElement.style.setProperty('--card-radius', radius);
+    cardElement.style.setProperty('--card-bg', bgColor);
+    cardElement.style.setProperty('--card-border', borderColor);
+    cardElement.style.setProperty('--card-text', textColor);
+    cardElement.style.setProperty('--card-radius', '0px');
   }
 
   function applyTheme(theme) {
@@ -276,21 +269,23 @@
     const rewardTitle = redemption.rewardTitle || 'Reward';
 
     // Safe rendering with textContent
-    viewerNameEl.textContent = displayName;
-    rewardTitleEl.textContent = rewardTitle;
+    if (viewerNameEl) viewerNameEl.textContent = displayName;
+    if (rewardTitleEl) rewardTitleEl.textContent = rewardTitle;
 
     // Badge styling for 1st redeemer
-    if (indicatorLabelEl && liveIndicatorEl) {
-      if (redemption.isFirst) {
-        indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
-        indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
-        liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#fbbf24';
-        liveIndicatorEl.classList.add('first-redeemer');
-      } else {
-        indicatorLabelEl.textContent = 'LATEST';
-        indicatorLabelEl.style.color = '';
-        liveIndicatorEl.style.borderColor = '';
-        liveIndicatorEl.classList.remove('first-redeemer');
+    if (redemption.isFirst) {
+      cardElement.classList.add('first-redeemer');
+    } else {
+      cardElement.classList.remove('first-redeemer');
+    }
+
+    // Line 1: 1st visitor (no emojis or brackets)
+    if (indicatorLabelEl) {
+      let bText = currentUser.badgeText || '1st visitor';
+      bText = bText.replace(/[👑\[\]]/g, '').trim() || '1st visitor';
+      indicatorLabelEl.textContent = bText;
+      if (currentUser.badgeColor) {
+        indicatorLabelEl.style.color = currentUser.badgeColor;
       }
     }
 

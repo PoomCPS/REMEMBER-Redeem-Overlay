@@ -12,6 +12,15 @@ if (!fs.existsSync(dbDir)) {
 const dbPath = path.join(dbDir, 'app.db');
 export const db = new DatabaseSync(dbPath);
 
+// Enable WAL mode (Write-Ahead Logging) and busy timeout for robust performance & concurrency
+try {
+  db.exec('PRAGMA journal_mode = WAL;');
+  db.exec('PRAGMA busy_timeout = 5000;');
+  db.exec('PRAGMA synchronous = NORMAL;');
+} catch (err) {
+  console.warn('[DB] PRAGMA config warning:', err.message);
+}
+
 // Initialize schema
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
@@ -35,7 +44,7 @@ db.exec(`
     card_border_color TEXT DEFAULT '#c4b5fd',
     card_glow_color TEXT DEFAULT '#a855f7',
     card_radius TEXT DEFAULT '16px',
-    whitelist_words TEXT DEFAULT '["รักแรกมันแยกยาก","คนแรกเลยล่ะ","กระผมมาเป็นคนแรกเลยนะ"]',
+    whitelist_words TEXT DEFAULT '[]',
     sound_enabled INTEGER DEFAULT 1,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
@@ -70,6 +79,14 @@ try { db.exec("ALTER TABLE users ADD COLUMN card_bg_opacity REAL DEFAULT 0.94;")
 try { db.exec("ALTER TABLE users ADD COLUMN card_border_color TEXT DEFAULT '#c4b5fd';"); } catch {}
 try { db.exec("ALTER TABLE users ADD COLUMN card_glow_color TEXT DEFAULT '#a855f7';"); } catch {}
 try { db.exec("ALTER TABLE users ADD COLUMN card_radius TEXT DEFAULT '16px';"); } catch {}
+
+// Safe migration: Reset untouched legacy default whitelist to empty ([]) so all rewards are allowed by default
+try {
+  const legacyDefault = JSON.stringify(['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
+  db.prepare(`UPDATE users SET whitelist_words = '[]' WHERE whitelist_words = ?`).run(legacyDefault);
+} catch (err) {
+  console.warn('[DB Migration] Whitelist migration note:', err.message);
+}
 
 export const userRepo = {
   findUserById(id) {
@@ -116,7 +133,7 @@ export const userRepo = {
       return this.findUserById(userData.id);
     } else {
       const overlayToken = `usr_${crypto.randomBytes(16).toString('hex')}`;
-      const defaultWhitelist = JSON.stringify(['รักแรกมันแยกยาก', 'คนแรกเลยล่ะ', 'กระผมมาเป็นคนแรกเลยนะ']);
+      const defaultWhitelist = '[]';
       const stmt = db.prepare(`
         INSERT INTO users (
           id, login, display_name, profile_image_url, access_token, refresh_token,
@@ -307,7 +324,8 @@ export const sessionRepo = {
   setLatestRedemption(userId, redemption) {
     const current = this.getSession(userId);
     const newCount = (current.redemptionCount || 0) + 1;
-    const isFirst = newCount === 1;
+    // Always mark as 1st redeemer (isFirst: true) because Twitch limits this reward to 1 per stream
+    const isFirst = redemption.isFirst !== undefined ? Boolean(redemption.isFirst) : true;
 
     const formatted = {
       ...redemption,

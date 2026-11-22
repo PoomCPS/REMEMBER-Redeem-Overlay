@@ -8,43 +8,82 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&amp;family=Kanit:wght@300;400;500;600;700&amp;family=Mitr:wght@400;500;600&amp;family=Outfit:wght@400;600;700;800&amp;family=Prompt:wght@400;500;600;700&amp;family=Sarabun:wght@400;500;600;700&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@500;700;800&family=Space+Grotesk:wght@600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="overlay.css">
 </head>
 
 <body>
   <div class="overlay-container">
-    <div id="redeemCard" class="redeem-card hidden">
-      <!-- Glow ambient backdrop -->
-      <div class="card-glow"></div>
-      <!-- Content wrapper -->
-      <div class="card-content">
-        <!-- Top Tag / Header -->
-        <div class="card-header">
-          <div class="channel-points-badge">
-            <svg class="points-icon" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-            </svg>
-            <span class="badge-text">CHANNEL POINT REDEEM</span>
-          </div>
-          <div id="liveIndicator" class="live-indicator">
-            <span class="dot"></span>
-            <span id="indicatorLabel" class="indicator-label">LATEST</span>
+    <div id="redeemCard" class="vhs-tape-shell hidden">
+      <!-- Tape Top Texture & Screws -->
+      <div class="vhs-top-band">
+        <span class="vhs-screw"></span>
+        <div class="vhs-top-texture"></div>
+        <span class="vhs-screw"></span>
+      </div>
+
+      <!-- Main Cassette Window & Label -->
+      <div class="vhs-main-window">
+        <!-- Left Spool Reel -->
+        <div class="vhs-spool left-spool">
+          <div class="vhs-tape-pack left-pack"></div>
+          <div class="vhs-hub-cog">
+            <span class="cog-spoke spoke-1"></span>
+            <span class="cog-spoke spoke-2"></span>
+            <span class="cog-spoke spoke-3"></span>
           </div>
         </div>
 
-        <!-- Main Redeeming Viewer Name -->
-        <div class="viewer-section">
-          <div id="viewerName" class="viewer-name">ViewerName</div>
+        <!-- Center Paper Label Sticker -->
+        <div class="vhs-label-sticker">
+          <!-- Top Header Stripe -->
+          <div class="vhs-label-stripe">
+            <span class="vhs-label-brand">T-120 // HI-FI</span>
+            <span class="vhs-rec-dot">● REC</span>
+          </div>
+
+          <!-- 2 Lines of Clean Content (No emojis, No points) -->
+          <div class="vhs-label-lines">
+            <!-- Line 1: 1st visitor -->
+            <div class="vhs-text-row row-status">
+              <span id="indicatorLabel" class="vhs-badge-text">1st visitor</span>
+            </div>
+            <div class="vhs-rule-line"></div>
+            <!-- Line 2: username -->
+            <div class="vhs-text-row row-username">
+              <span id="viewerName" class="vhs-username-text">Username</span>
+            </div>
+            <div class="vhs-rule-line"></div>
+            <div class="vhs-text-row row-blank"></div>
+          </div>
         </div>
 
-        <!-- Redeemed Reward Title -->
-        <div class="reward-section">
-          <span class="reward-prefix">Reward:</span>
-          <span id="rewardTitle" class="reward-title">Reward Title</span>
+        <!-- Right Spool Reel -->
+        <div class="vhs-spool right-spool">
+          <div class="vhs-tape-pack right-pack"></div>
+          <div class="vhs-hub-cog">
+            <span class="cog-spoke spoke-1"></span>
+            <span class="cog-spoke spoke-2"></span>
+            <span class="cog-spoke spoke-3"></span>
+          </div>
         </div>
+      </div>
+
+      <!-- Bottom Flap / Seam -->
+      <div class="vhs-bottom-flap">
+        <span class="vhs-screw"></span>
+        <div class="vhs-latch left-latch"></div>
+        <div class="vhs-bottom-ridge"></div>
+        <div class="vhs-latch right-latch"></div>
+        <span class="vhs-screw"></span>
+      </div>
+
+      <!-- Hidden compatibility hooks for existing script -->
+      <div class="hidden-hooks" style="display: none !important;">
+        <span id="liveIndicator"></span>
+        <span id="rewardTitle"></span>
       </div>
     </div>
   </div>
