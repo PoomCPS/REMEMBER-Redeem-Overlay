@@ -1,3 +1,12 @@
+import { createRetroEditors } from './codemirror-loader.js';
+import {
+  renderCustomTemplate,
+  scopeCss,
+  populateDomHooks,
+  DEFAULT_VHS_STARTER_HTML,
+  DEFAULT_VHS_STARTER_CSS
+} from './template-engine.js';
+
 (() => {
   // Elements
   const guestView = document.getElementById('guestView');
@@ -16,6 +25,18 @@
   const copyUrlText = document.getElementById('copyUrlText');
   const openOverlayLink = document.getElementById('openOverlayLink');
   const regenerateTokenBtn = document.getElementById('regenerateTokenBtn');
+
+  // Deck Tabs & Mode
+  const tabPresetBtn = document.getElementById('tabPresetBtn');
+  const tabManualBtn = document.getElementById('tabManualBtn');
+  const presetTabPane = document.getElementById('presetTabPane');
+  const manualTabPane = document.getElementById('manualTabPane');
+  const configModeInput = document.getElementById('configModeInput');
+
+  // Manual CodeMirror Blocks
+  const htmlEditorContainer = document.getElementById('htmlEditorContainer');
+  const cssEditorContainer = document.getElementById('cssEditorContainer');
+  const loadStarterTemplateBtn = document.getElementById('loadStarterTemplateBtn');
 
   // Settings
   const settingsForm = document.getElementById('settingsForm');
@@ -46,6 +67,8 @@
 
   // Preview elements
   const previewCard = document.getElementById('previewCard');
+  const previewCustomOverlayRoot = document.getElementById('previewCustomOverlayRoot');
+  const previewCustomStyle = document.getElementById('previewCustomStyle');
   const previewLiveIndicator = document.getElementById('previewLiveIndicator');
   const previewIndicatorLabel = document.getElementById('previewIndicatorLabel');
   const previewViewer = document.getElementById('previewViewer');
@@ -59,14 +82,34 @@
   let lastSkippedRewardTitle = '';
   let dashboardWs = null;
   let cachedTwitchRewards = [];
+  let cmEditors = null;
+  let previewDebounceTimer = null;
 
   const THEME_PRESETS = {
-    purple: { bg: '#10111A', opacity: '1.0', border: '#000000', glow: '#00A896', radius: '0px' }, // Dark Teal Spine
-    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', radius: '0px' }, // Gold Master
-    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', radius: '0px' }, // Red Studio
-    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', radius: '0px' }, // VHS Master
-    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', radius: '0px' }, // Analog Sunset
-    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', radius: '0px' }, // Stealth Deck
+    // Classic Blank VHS Tape Brands
+    polaroid: { bg: '#F4F1EA', opacity: '1.0', border: '#1A1A1A', glow: '#E63946', badgeBg: '#1A1A1A', badgeColor: '#F4F1EA', viewerColor: '#1A1A1A', radius: '0px', stripes: ['#E63946', '#F77F00', '#FCBF49', '#0096C7', '#2A9D8F'] },
+    tdk: { bg: '#121212', opacity: '1.0', border: '#D4AF37', glow: '#F2B857', badgeBg: '#D4AF37', badgeColor: '#121212', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#5C3A38', '#E0604E', '#F2B857', '#EDE3D2', '#D4AF37'] },
+    maxell: { bg: '#10111A', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', badgeBg: '#FCBF49', badgeColor: '#10111A', viewerColor: '#FFFFFF', radius: '0px', stripes: ['#8C6D53', '#BC6C25', '#FCBF49', '#F4F1EA', '#FCBF49'] },
+    jvc: { bg: '#0D1B2A', opacity: '1.0', border: '#00F0FF', glow: '#00F0FF', badgeBg: '#00A896', badgeColor: '#0D1B2A', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#00A896', '#00F0FF', '#3A86FF', '#F4F1EA', '#00A896'] },
+    sony: { bg: '#0B061A', opacity: '1.0', border: '#0096C7', glow: '#0096C7', badgeBg: '#E63946', badgeColor: '#FFFFFF', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#0096C7', '#7209B7', '#FF007F', '#F4F1EA', '#0096C7'] },
+
+    // Filmora 15 VHS Palettes
+    'neon-midnight': { bg: '#0B061A', opacity: '1.0', border: '#00F0FF', glow: '#00F0FF', badgeBg: '#FF007F', badgeColor: '#FFFFFF', viewerColor: '#00F0FF', radius: '0px', stripes: ['#0B061A', '#1E1145', '#FF007F', '#00F0FF', '#FF007F'] },
+    outrun: { bg: '#050505', opacity: '1.0', border: '#FF9E00', glow: '#FF9E00', badgeBg: '#F72585', badgeColor: '#FFFFFF', viewerColor: '#FF9E00', radius: '0px', stripes: ['#050505', '#7209B7', '#F72585', '#FF9E00', '#F72585'] },
+    'sun-bleached': { bg: '#3A3335', opacity: '1.0', border: '#E07A5F', glow: '#E07A5F', badgeBg: '#81B29A', badgeColor: '#3A3335', viewerColor: '#F4F1DE', radius: '0px', stripes: ['#3A3335', '#E07A5F', '#F4F1DE', '#81B29A', '#E07A5F'] },
+    'aged-attic': { bg: '#2C221E', opacity: '1.0', border: '#D4A373', glow: '#D4A373', badgeBg: '#7A5C48', badgeColor: '#FAEDCD', viewerColor: '#FAEDCD', radius: '0px', stripes: ['#2C221E', '#7A5C48', '#D4A373', '#FAEDCD', '#D4A373'] },
+    'toxic-crt': { bg: '#050F0A', opacity: '1.0', border: '#2DC653', glow: '#2DC653', badgeBg: '#2DC653', badgeColor: '#050F0A', viewerColor: '#90BE6D', radius: '0px', stripes: ['#050F0A', '#0D3B22', '#2DC653', '#90BE6D', '#2DC653'] },
+    'glitch-core': { bg: '#0D1B2A', opacity: '1.0', border: '#00FF66', glow: '#00FF66', badgeBg: '#FF3366', badgeColor: '#FFFFFF', viewerColor: '#00FF66', radius: '0px', stripes: ['#0D1B2A', '#1B263B', '#00FF66', '#FF3366', '#00FF66'] },
+    smpte: { bg: '#10111A', opacity: '1.0', border: '#CC0000', glow: '#009999', badgeBg: '#003366', badgeColor: '#FFFFFF', viewerColor: '#FFFFFF', radius: '0px', stripes: ['#003366', '#990099', '#009999', '#CC0000', '#FFFFFF'] },
+    cartoon: { bg: '#1D3557', opacity: '1.0', border: '#FFB703', glow: '#FFB703', badgeBg: '#E63946', badgeColor: '#FFFFFF', viewerColor: '#FFFFFF', radius: '0px', stripes: ['#1D3557', '#E63946', '#FFB703', '#8ECAE6', '#E63946'] },
+
+    // Classic Studio Presets
+    purple: { bg: '#10111A', opacity: '1.0', border: '#000000', glow: '#00A896', badgeBg: '#00A896', badgeColor: '#10111A', viewerColor: '#FFFFFF', radius: '0px', stripes: ['#5C3A38', '#E0604E', '#F2B857', '#EDE3D2', '#00A896'] },
+    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', badgeBg: '#FCBF49', badgeColor: '#121212', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#121212', '#5C5A54', '#FCBF49', '#F4F1EA', '#FCBF49'] },
+    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', badgeBg: '#E63946', badgeColor: '#FFFFFF', viewerColor: '#1A1A1A', radius: '0px', stripes: ['#E63946', '#F77F00', '#FCBF49', '#0096C7', '#2A9D8F'] },
+    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', badgeBg: '#2A9D8F', badgeColor: '#121212', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#0D3B22', '#2A9D8F', '#90BE6D', '#F4F1EA', '#2A9D8F'] },
+    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', badgeBg: '#F77F00', badgeColor: '#121212', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#E63946', '#F77F00', '#FCBF49', '#EDE3D2', '#F77F00'] },
+    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', badgeBg: '#5C5A54', badgeColor: '#F4F1EA', viewerColor: '#F4F1EA', radius: '0px', stripes: ['#121212', '#2A2A2A', '#5C5A54', '#8C8C8C', '#5C5A54'] },
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -142,10 +185,75 @@
     if (cardRadiusSelect) cardRadiusSelect.value = currentUser.cardRadius || '16px';
     soundToggle.checked = Boolean(currentUser.soundEnabled);
 
+    if (configModeInput) {
+      configModeInput.value = currentUser.configMode || 'preset';
+      switchTab(configModeInput.value);
+    }
+
+    if (!cmEditors && htmlEditorContainer && cssEditorContainer) {
+      createRetroEditors({
+        htmlContainer: htmlEditorContainer,
+        cssContainer: cssEditorContainer,
+        initialHtml: currentUser.customHtml || DEFAULT_VHS_STARTER_HTML,
+        initialCss: currentUser.customCss || DEFAULT_VHS_STARTER_CSS,
+        onHtmlChange: () => schedulePreviewUpdate(),
+        onCssChange: () => schedulePreviewUpdate(),
+      }).then((editors) => {
+        cmEditors = editors;
+        updateLivePreview();
+      }).catch((err) => {
+        console.warn('[CodeMirror init error]:', err);
+      });
+    } else if (cmEditors) {
+      cmEditors.setHtml(currentUser.customHtml || DEFAULT_VHS_STARTER_HTML);
+      cmEditors.setCss(currentUser.customCss || DEFAULT_VHS_STARTER_CSS);
+    }
+
     renderTags();
     updateLivePreview();
     connectDashboardWs();
     fetchTwitchRewards();
+  }
+
+  function switchTab(mode) {
+    if (!tabPresetBtn || !tabManualBtn) return;
+    if (mode === 'manual') {
+      tabPresetBtn.classList.remove('active');
+      tabManualBtn.classList.add('active');
+      if (presetTabPane) presetTabPane.classList.add('hidden');
+      if (manualTabPane) manualTabPane.classList.remove('hidden');
+      if (configModeInput) configModeInput.value = 'manual';
+      if (currentUser) currentUser.configMode = 'manual';
+    } else {
+      tabManualBtn.classList.remove('active');
+      tabPresetBtn.classList.add('active');
+      if (manualTabPane) manualTabPane.classList.add('hidden');
+      if (presetTabPane) presetTabPane.classList.remove('hidden');
+      if (configModeInput) configModeInput.value = 'preset';
+      if (currentUser) currentUser.configMode = 'preset';
+    }
+    updateLivePreview();
+  }
+
+  if (tabPresetBtn) tabPresetBtn.addEventListener('click', () => switchTab('preset'));
+  if (tabManualBtn) tabManualBtn.addEventListener('click', () => switchTab('manual'));
+
+  if (loadStarterTemplateBtn) {
+    loadStarterTemplateBtn.addEventListener('click', () => {
+      if (cmEditors) {
+        cmEditors.setHtml(DEFAULT_VHS_STARTER_HTML);
+        cmEditors.setCss(DEFAULT_VHS_STARTER_CSS);
+        showToast('โหลด VHS Starter Template เรียบร้อย!');
+        schedulePreviewUpdate();
+      }
+    });
+  }
+
+  function schedulePreviewUpdate() {
+    if (previewDebounceTimer) clearTimeout(previewDebounceTimer);
+    previewDebounceTimer = setTimeout(() => {
+      updateLivePreview();
+    }, 300);
   }
 
   function updateOverlayUrl(token) {
@@ -271,6 +379,12 @@
       if (cardBorderColorPicker) cardBorderColorPicker.value = preset.border;
       if (cardGlowColorPicker) cardGlowColorPicker.value = preset.glow;
       if (cardRadiusSelect) cardRadiusSelect.value = preset.radius;
+      if (preset.badgeBg && badgeBgColorPicker) {
+        badgeBgColorPicker.value = preset.badgeBg;
+        badgeBgColorPicker.dataset.chosenBg = preset.badgeBg;
+      }
+      if (preset.badgeColor && badgeColorPicker) badgeColorPicker.value = preset.badgeColor;
+      if (preset.viewerColor && viewerColorPicker) viewerColorPicker.value = preset.viewerColor;
     }
     updateLivePreview();
   });
@@ -298,6 +412,39 @@
   if (viewerColorPicker) viewerColorPicker.addEventListener('input', updateLivePreview);
 
   function updateLivePreview() {
+    const mode = configModeInput?.value || currentUser?.configMode || 'preset';
+
+    if (mode === 'manual') {
+      if (previewCard) previewCard.classList.add('hidden');
+      if (previewCustomOverlayRoot && previewCustomStyle) {
+        const rawHtml = cmEditors ? cmEditors.getHtml() : (currentUser?.customHtml || DEFAULT_VHS_STARTER_HTML);
+        const rawCss = cmEditors ? cmEditors.getCss() : (currentUser?.customCss || DEFAULT_VHS_STARTER_CSS);
+
+        previewCustomStyle.textContent = scopeCss(rawCss, '#previewCustomOverlayRoot');
+
+        const rawBadgeText = badgeTextInput?.value?.trim() || '1ST';
+        const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1ST';
+
+        const sampleData = {
+          displayName: previewViewer?.textContent || 'ViewerName',
+          userName: 'viewer_name',
+          rewardTitle: currentWhitelist.length > 0 ? currentWhitelist[0] : 'รักแรกมันแยกยาก',
+          badgeText: badgeText,
+          order: 1,
+        };
+
+        previewCustomOverlayRoot.innerHTML = renderCustomTemplate(rawHtml, sampleData);
+        populateDomHooks(previewCustomOverlayRoot, sampleData);
+        previewCustomOverlayRoot.classList.remove('hidden');
+      }
+      return;
+    }
+
+    // Preset mode
+    if (previewCustomOverlayRoot) previewCustomOverlayRoot.classList.add('hidden');
+    if (previewCustomStyle) previewCustomStyle.textContent = '';
+    if (previewCard) previewCard.classList.remove('hidden');
+
     const rawBadgeText = badgeTextInput.value.trim() || '1ST';
     const badgeText = rawBadgeText.replace(/[👑\[\]]/g, '').trim() || '1ST';
     const badgeColor = badgeColorPicker.value || '#10111A';
@@ -329,6 +476,16 @@
     previewCard.style.setProperty('--card-bg', bgColor);
     previewCard.style.setProperty('--card-border', borderColor);
     previewCard.style.setProperty('--card-radius', '0px');
+
+    // Apply preset or custom stripes
+    const preset = THEME_PRESETS[theme];
+    if (preset && preset.stripes && preset.stripes.length >= 4) {
+      preset.stripes.forEach((color, idx) => {
+        previewCard.style.setProperty(`--stripe-${idx + 1}`, color);
+      });
+    } else if (cardGlowColorPicker?.value) {
+      previewCard.style.setProperty('--stripe-3', cardGlowColorPicker.value);
+    }
 
     previewCard.className = `vhs-spine-bar theme-${theme} first-redeemer`;
   }
@@ -383,6 +540,9 @@
       cardRadius: cardRadiusSelect?.value || '16px',
       soundEnabled: soundToggle.checked,
       whitelistWords: currentWhitelist,
+      configMode: configModeInput?.value || 'preset',
+      customHtml: cmEditors ? cmEditors.getHtml() : (currentUser?.customHtml || ''),
+      customCss: cmEditors ? cmEditors.getCss() : (currentUser?.customCss || ''),
     };
 
     try {
@@ -395,7 +555,13 @@
 
       const data = await res.json();
       if (data.success) {
+        if (currentUser && data.user) {
+          currentUser.configMode = data.user.config_mode;
+          currentUser.customHtml = data.user.custom_html;
+          currentUser.customCss = data.user.custom_css;
+        }
         showToast('บันทึกการตั้งค่าสำเร็จ! หน้าจอ OBS จะอัปเดตทันที');
+        updateLivePreview();
       } else {
         showToast(`บันทึกไม่สำเร็จ: ${data.error}`);
       }

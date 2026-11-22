@@ -6,6 +6,7 @@ import WebSocket from 'ws';
 import express from 'express';
 import { db, userRepo, sessionRepo, authRepo } from '../src/db/db.js';
 import { MultiUserBroadcaster } from '../src/websocket/broadcaster.js';
+import * as templateEngine from '../public/template-engine.js';
 
 console.log('====================================================');
 console.log('  RUNNING MULTI-USER TEST SUITE: REMEMBER Overlay');
@@ -114,6 +115,45 @@ async function runAsyncTest(description, fn) {
     assert.strictEqual(freshUser2.card_border_color, '#c4b5fd');
     assert.strictEqual(freshUser2.card_glow_color, '#a855f7');
     assert.strictEqual(freshUser2.card_radius, '16px');
+  });
+
+  // Test 2.1: Tabbed Tape Configuration - Manual CodeMirror 6 Mode (config_mode, custom_html, custom_css)
+  runTest('Update user to manual mode with custom HTML and custom CSS', () => {
+    const updated = userRepo.updateUserSettings(user1.id, {
+      configMode: 'manual',
+      customHtml: '<div class="custom-card"><span class="badge">{{badge}}</span><span class="viewer">{{viewer}}</span></div>',
+      customCss: '.custom-card { background: #000; color: #fff; }',
+    });
+
+    assert.strictEqual(updated.config_mode, 'manual');
+    assert.strictEqual(updated.custom_html, '<div class="custom-card"><span class="badge">{{badge}}</span><span class="viewer">{{viewer}}</span></div>');
+    assert.strictEqual(updated.custom_css, '.custom-card { background: #000; color: #fff; }');
+
+    // Verify User 2 defaults to preset
+    const freshUser2 = userRepo.findUserById(user2.id);
+    assert.strictEqual(freshUser2.config_mode || 'preset', 'preset');
+  });
+
+  // Test 2.2: Template Engine & Scoped CSS
+  runTest('Template engine replaces placeholders and scopes CSS rules', () => {
+    const { renderCustomTemplate, scopeCss } = templateEngine;
+    const template = '<div class="card"><span class="badge">{{badge}}</span> <span class="user">{{viewer}}</span> (<span class="reward">{{reward}}</span>)</div>';
+    const output = renderCustomTemplate(template, {
+      displayName: 'AliceInStream',
+      rewardTitle: 'VIP First',
+      badgeText: '1ST',
+    });
+
+    assert.ok(output.includes('1ST'));
+    assert.ok(output.includes('AliceInStream'));
+    assert.ok(output.includes('VIP First'));
+    assert.ok(!output.includes('{{viewer}}'));
+
+    const css = '.card { color: red; } h1, h2 { margin: 0; }';
+    const scoped = scopeCss(css, '#customRoot');
+    assert.ok(scoped.includes('#customRoot .card'));
+    assert.ok(scoped.includes('#customRoot h1'));
+    assert.ok(scoped.includes('#customRoot h2'));
   });
 
   // Test 3: Session Stream Start & 1st Redeemer Order
@@ -241,9 +281,28 @@ async function runAsyncTest(description, fn) {
     assert.ok(u1Redeem, 'User 1 should receive redemption');
     assert.strictEqual(u1Redeem.data.displayName, 'ViewerForU1');
 
-    // Confirm User 2 did NOT receive User 1's redemption! (Strict Isolation)
+    // Broadcast Manual Settings update only to User 1
+    broadcaster.broadcastSettingsUpdate(user1.id, {
+      configMode: 'manual',
+      customHtml: '<div class="custom-test">{{viewer}}</div>',
+      customCss: '.custom-test { color: #f00; }',
+    });
+
+    for (let i = 0; i < 20; i++) {
+      if (messagesUser1.some((m) => m.type === 'SETTINGS_UPDATED')) break;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+
+    const u1Settings = messagesUser1.find((m) => m.type === 'SETTINGS_UPDATED');
+    assert.ok(u1Settings, 'User 1 should receive settings update');
+    assert.strictEqual(u1Settings.data.configMode, 'manual');
+    assert.strictEqual(u1Settings.data.customHtml, '<div class="custom-test">{{viewer}}</div>');
+
+    // Confirm User 2 did NOT receive User 1's redemption or settings! (Strict Isolation)
     const u2Redeem = messagesUser2.find((m) => m.type === 'REDEMPTION');
     assert.strictEqual(u2Redeem, undefined, 'User 2 must NOT receive User 1 redemptions');
+    const u2Settings = messagesUser2.find((m) => m.type === 'SETTINGS_UPDATED');
+    assert.strictEqual(u2Settings, undefined, 'User 2 must NOT receive User 1 settings update');
 
     // Cleanup
     await new Promise((r) => {

@@ -1,6 +1,11 @@
 /* ==========================================================================
-   Authentic 1980s VHS Box Spine Overlay (Side of Video Tape Box)
+   Authentic 1980s Blank VHS Box Spine Overlay (Side of Video Tape Box)
    public/overlay.css
+   
+   References:
+   - Antony Terence: "Instagram can't touch the visual glory of blank VHS tapes" (UX Collective)
+   - Jude Smith: "The Art and Design of Blank VHS Tapes: A Lost Graphic Design Genre" (DESIGN SMITH LTD)
+   - Wondershare Filmora: "The Best 15 VHS Color Palette Ideas for Video & Design"
    ========================================================================== */
 
 * {
@@ -10,7 +15,8 @@
   border-radius: 0px !important;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   background: transparent !important;
@@ -29,16 +35,16 @@ html, body {
 }
 
 /* ==========================================================================
-   VHS Spine Bar Container (~460px x 68px)
+   VHS Spine Bar Container (~470px x 70px)
    ========================================================================== */
 
 .vhs-spine-bar {
   position: relative;
   display: inline-flex;
   align-items: stretch;
-  height: 68px;
-  min-width: 440px;
-  max-width: 580px;
+  height: 70px;
+  min-width: 450px;
+  max-width: 600px;
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: top left;
   background-color: var(--card-bg, #10111A);
@@ -55,15 +61,33 @@ html, body {
   pointer-events: none;
 }
 
-/* 1. Left Vertical Block (Teal Block) */
+/* 0. Top Ruler Ticks (Authentic Cassette Index Label Edge) */
+.spine-ruler-ticks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-image: repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.35) 0px,
+      rgba(255, 255, 255, 0.35) 1px,
+      transparent 1px,
+      transparent 6px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 1. Left Vertical Block (Brand / Channel / Redeemer Stamp) */
 .spine-left-block {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
+  width: 56px;
   background-color: var(--badge-bg, #00A896);
   border-right: 2px solid var(--card-border, #000000);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .spine-left-text {
@@ -83,19 +107,45 @@ html, body {
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  padding: 0 16px;
+  padding: 4px 16px 2px;
   background-color: var(--card-bg, #10111A);
   gap: 2px;
   min-width: 0;
+  position: relative;
+}
+
+.spine-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .spine-meta-label {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.spine-speed-mode {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.spine-tape-barcode {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.35);
+  user-select: none;
 }
 
 .spine-main-content {
@@ -121,7 +171,7 @@ html, body {
 /* Micro-Badge [ HQ ] */
 .spine-hq-badge {
   font-family: var(--font-mono, 'JetBrains Mono', monospace);
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   color: #EDE3D2;
@@ -131,11 +181,11 @@ html, body {
   flex-shrink: 0;
 }
 
-/* 3. Right 4-Stripe Stepped Color Band */
+/* 3. Right Stepped Color Band (Broadcast Television Chroma Bars) */
 .spine-stripes-block {
   display: flex;
   align-self: stretch;
-  width: 60px;
+  width: 65px;
   border-left: 2px solid var(--card-border, #000000);
   flex-shrink: 0;
 }
@@ -145,15 +195,30 @@ html, body {
   height: 100%;
 }
 
-.stripe-1 { background-color: var(--stripe-1, #5C3A38); }
-.stripe-2 { background-color: var(--stripe-2, #E0604E); }
-.stripe-3 { background-color: var(--stripe-3, #F2B857); }
-.stripe-4 { background-color: var(--stripe-4, #EDE3D2); }
+.stripe-1 {
+  background-color: var(--stripe-1, #E63946);
+}
 
-/* 1st Redeemer Highlight (Tape Yellow Border Stamp) */
+.stripe-2 {
+  background-color: var(--stripe-2, #F77F00);
+}
+
+.stripe-3 {
+  background-color: var(--stripe-3, #FCBF49);
+}
+
+.stripe-4 {
+  background-color: var(--stripe-4, #0096C7);
+}
+
+.stripe-5 {
+  background-color: var(--stripe-5, #2A9D8F);
+}
+
+/* First Redeemer Highlight: Tape Gold Border Stamp */
 .vhs-spine-bar.first-redeemer {
-  border-color: #F2B857;
-  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #F2B857;
+  border-color: #FCBF49;
+  box-shadow: 4px 4px 0px #000000, 0 0 0 1px #FCBF49;
 }
 
 /* Tactile Pop on Arrival */
@@ -162,7 +227,316 @@ html, body {
 }
 
 @keyframes spine-pop {
-  0% { transform: scale(1.03); filter: invert(0.8); }
-  50% { transform: scale(0.99); filter: invert(0); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1.03);
+    filter: invert(0.8);
+  }
+
+  50% {
+    transform: scale(0.99);
+    filter: invert(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   THEME PRESETS: Classic Blank VHS Brands & Filmora Palettes
+   ========================================================================== */
+
+/* 1. Polaroid Spectra Rainbow (Off-white paper, 5-stripe TV rainbow) */
+.vhs-spine-bar.theme-polaroid {
+  --card-bg: #F4F1EA;
+  --card-border: #1A1A1A;
+  --badge-bg: #1A1A1A;
+  --badge-color: #F4F1EA;
+  --viewer-color: #1A1A1A;
+  --stripe-1: #E63946;
+  --stripe-2: #F77F00;
+  --stripe-3: #FCBF49;
+  --stripe-4: #0096C7;
+  --stripe-5: #2A9D8F;
+}
+
+.vhs-spine-bar.theme-polaroid .spine-meta-label,
+.vhs-spine-bar.theme-polaroid .spine-speed-mode,
+.vhs-spine-bar.theme-polaroid .spine-tape-barcode {
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.vhs-spine-bar.theme-polaroid .spine-hq-badge {
+  color: #1A1A1A;
+  border-color: #1A1A1A;
+}
+
+.vhs-spine-bar.theme-polaroid .spine-ruler-ticks {
+  background-image: repeating-linear-gradient(90deg,
+      rgba(26, 26, 26, 0.4) 0px,
+      rgba(26, 26, 26, 0.4) 1px,
+      transparent 1px,
+      transparent 6px);
+}
+
+/* 2. TDK Super Avilyn SA (Oxide black, gold rules, crimson/orange stepped band) */
+.vhs-spine-bar.theme-tdk {
+  --card-bg: #121212;
+  --card-border: #D4AF37;
+  --badge-bg: #D4AF37;
+  --badge-color: #121212;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #5C3A38;
+  --stripe-2: #E0604E;
+  --stripe-3: #F2B857;
+  --stripe-4: #EDE3D2;
+  --stripe-5: #D4AF37;
+}
+
+/* 3. Maxell Epitaxial Gold (Studio black, gold accents) */
+.vhs-spine-bar.theme-maxell {
+  --card-bg: #10111A;
+  --card-border: #FCBF49;
+  --badge-bg: #FCBF49;
+  --badge-color: #10111A;
+  --viewer-color: #FFFFFF;
+  --stripe-1: #8C6D53;
+  --stripe-2: #BC6C25;
+  --stripe-3: #FCBF49;
+  --stripe-4: #F4F1EA;
+  --stripe-5: #FCBF49;
+}
+
+/* 4. JVC Super HG Master (Deep navy, electric cyan, master teal) */
+.vhs-spine-bar.theme-jvc {
+  --card-bg: #0D1B2A;
+  --card-border: #00F0FF;
+  --badge-bg: #00A896;
+  --badge-color: #0D1B2A;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #00A896;
+  --stripe-2: #00F0FF;
+  --stripe-3: #3A86FF;
+  --stripe-4: #F4F1EA;
+  --stripe-5: #00A896;
+}
+
+/* 5. Sony Dynamic Chroma (Broadcast blue, ferric magenta) */
+.vhs-spine-bar.theme-sony {
+  --card-bg: #0B061A;
+  --card-border: #0096C7;
+  --badge-bg: #E63946;
+  --badge-color: #FFFFFF;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #0096C7;
+  --stripe-2: #7209B7;
+  --stripe-3: #FF007F;
+  --stripe-4: #F4F1EA;
+  --stripe-5: #0096C7;
+}
+
+/* 6. Filmora: Neon Midnight (Arcade Synthwave) */
+.vhs-spine-bar.theme-neon-midnight {
+  --card-bg: #0B061A;
+  --card-border: #00F0FF;
+  --badge-bg: #FF007F;
+  --badge-color: #FFFFFF;
+  --viewer-color: #00F0FF;
+  --stripe-1: #0B061A;
+  --stripe-2: #1E1145;
+  --stripe-3: #FF007F;
+  --stripe-4: #00F0FF;
+  --stripe-5: #FF007F;
+}
+
+/* 7. Filmora: Outrun Horizon (Sunset Drive) */
+.vhs-spine-bar.theme-outrun {
+  --card-bg: #050505;
+  --card-border: #FF9E00;
+  --badge-bg: #F72585;
+  --badge-color: #FFFFFF;
+  --viewer-color: #FF9E00;
+  --stripe-1: #050505;
+  --stripe-2: #7209B7;
+  --stripe-3: #F72585;
+  --stripe-4: #FF9E00;
+  --stripe-5: #F72585;
+}
+
+/* 8. Filmora: Sun-Bleached 1988 (Camcorder Nostalgia) */
+.vhs-spine-bar.theme-sun-bleached {
+  --card-bg: #3A3335;
+  --card-border: #E07A5F;
+  --badge-bg: #81B29A;
+  --badge-color: #3A3335;
+  --viewer-color: #F4F1DE;
+  --stripe-1: #3A3335;
+  --stripe-2: #E07A5F;
+  --stripe-3: #F4F1DE;
+  --stripe-4: #81B29A;
+  --stripe-5: #E07A5F;
+}
+
+/* 9. Filmora: Aged Attic Tape (Warm Sepia Childhood) */
+.vhs-spine-bar.theme-aged-attic {
+  --card-bg: #2C221E;
+  --card-border: #D4A373;
+  --badge-bg: #7A5C48;
+  --badge-color: #FAEDCD;
+  --viewer-color: #FAEDCD;
+  --stripe-1: #2C221E;
+  --stripe-2: #7A5C48;
+  --stripe-3: #D4A373;
+  --stripe-4: #FAEDCD;
+  --stripe-5: #D4A373;
+}
+
+/* 10. Filmora: Toxic CRT (Phosphor Terminal Green) */
+.vhs-spine-bar.theme-toxic-crt {
+  --card-bg: #050F0A;
+  --card-border: #2DC653;
+  --badge-bg: #2DC653;
+  --badge-color: #050F0A;
+  --viewer-color: #90BE6D;
+  --stripe-1: #050F0A;
+  --stripe-2: #0D3B22;
+  --stripe-3: #2DC653;
+  --stripe-4: #90BE6D;
+  --stripe-5: #2DC653;
+}
+
+/* 11. Filmora: Glitch Core (Cybernetic Warning) */
+.vhs-spine-bar.theme-glitch-core {
+  --card-bg: #0D1B2A;
+  --card-border: #00FF66;
+  --badge-bg: #FF3366;
+  --badge-color: #FFFFFF;
+  --viewer-color: #00FF66;
+  --stripe-1: #0D1B2A;
+  --stripe-2: #1B263B;
+  --stripe-3: #00FF66;
+  --stripe-4: #FF3366;
+  --stripe-5: #00FF66;
+}
+
+/* 12. Filmora: SMPTE Color Bars (Television Broadcast Calibration) */
+.vhs-spine-bar.theme-smpte {
+  --card-bg: #10111A;
+  --card-border: #CC0000;
+  --badge-bg: #003366;
+  --badge-color: #FFFFFF;
+  --viewer-color: #FFFFFF;
+  --stripe-1: #003366;
+  --stripe-2: #990099;
+  --stripe-3: #009999;
+  --stripe-4: #CC0000;
+  --stripe-5: #FFFFFF;
+}
+
+/* 13. Filmora: Saturday Morning Cartoon (Primary High Saturation) */
+.vhs-spine-bar.theme-cartoon {
+  --card-bg: #1D3557;
+  --card-border: #FFB703;
+  --badge-bg: #E63946;
+  --badge-color: #FFFFFF;
+  --viewer-color: #FFFFFF;
+  --stripe-1: #1D3557;
+  --stripe-2: #E63946;
+  --stripe-3: #FFB703;
+  --stripe-4: #8ECAE6;
+  --stripe-5: #E63946;
+}
+
+/* Backward-compatible aliases */
+.vhs-spine-bar.theme-purple {
+  --card-bg: #10111A;
+  --card-border: #000000;
+  --badge-bg: #00A896;
+  --badge-color: #10111A;
+  --viewer-color: #FFFFFF;
+  --stripe-1: #5C3A38;
+  --stripe-2: #E0604E;
+  --stripe-3: #F2B857;
+  --stripe-4: #EDE3D2;
+  --stripe-5: #00A896;
+}
+
+.vhs-spine-bar.theme-midnight {
+  --card-bg: #121212;
+  --card-border: #FCBF49;
+  --badge-bg: #FCBF49;
+  --badge-color: #121212;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #121212;
+  --stripe-2: #5C5A54;
+  --stripe-3: #FCBF49;
+  --stripe-4: #F4F1EA;
+  --stripe-5: #FCBF49;
+}
+
+.vhs-spine-bar.theme-cyberpunk {
+  --card-bg: #E2DFD7;
+  --card-border: #E63946;
+  --badge-bg: #E63946;
+  --badge-color: #FFFFFF;
+  --viewer-color: #1A1A1A;
+  --stripe-1: #E63946;
+  --stripe-2: #F77F00;
+  --stripe-3: #FCBF49;
+  --stripe-4: #0096C7;
+  --stripe-5: #2A9D8F;
+}
+
+.vhs-spine-bar.theme-cyberpunk .spine-meta-label,
+.vhs-spine-bar.theme-cyberpunk .spine-speed-mode,
+.vhs-spine-bar.theme-cyberpunk .spine-tape-barcode {
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.vhs-spine-bar.theme-cyberpunk .spine-hq-badge {
+  color: #1A1A1A;
+  border-color: #1A1A1A;
+}
+
+.vhs-spine-bar.theme-emerald {
+  --card-bg: #121212;
+  --card-border: #2A9D8F;
+  --badge-bg: #2A9D8F;
+  --badge-color: #121212;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #0D3B22;
+  --stripe-2: #2A9D8F;
+  --stripe-3: #90BE6D;
+  --stripe-4: #F4F1EA;
+  --stripe-5: #2A9D8F;
+}
+
+.vhs-spine-bar.theme-sunset {
+  --card-bg: #121212;
+  --card-border: #F77F00;
+  --badge-bg: #F77F00;
+  --badge-color: #121212;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #E63946;
+  --stripe-2: #F77F00;
+  --stripe-3: #FCBF49;
+  --stripe-4: #EDE3D2;
+  --stripe-5: #F77F00;
+}
+
+.vhs-spine-bar.theme-stealth {
+  --card-bg: #121212;
+  --card-border: #5C5A54;
+  --badge-bg: #5C5A54;
+  --badge-color: #F4F1EA;
+  --viewer-color: #F4F1EA;
+  --stripe-1: #121212;
+  --stripe-2: #2A2A2A;
+  --stripe-3: #5C5A54;
+  --stripe-4: #8C8C8C;
+  --stripe-5: #5C5A54;
+}
+
+.hidden-hooks {
+  display: none !important;
 }

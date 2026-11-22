@@ -264,6 +264,9 @@ app.get('/api/me', requireAuth, (req, res) => {
       cardRadius: user.card_radius || '16px',
       whitelistWords,
       soundEnabled: Boolean(user.sound_enabled),
+      configMode: user.config_mode || 'preset',
+      customHtml: user.custom_html || '',
+      customCss: user.custom_css || '',
     },
     session,
   });
@@ -286,6 +289,9 @@ app.post('/api/settings', requireAuth, (req, res) => {
     cardRadius,
     whitelistWords,
     soundEnabled,
+    configMode,
+    customHtml,
+    customCss,
   } = req.body;
 
   const updated = userRepo.updateUserSettings(req.user.id, {
@@ -303,6 +309,9 @@ app.post('/api/settings', requireAuth, (req, res) => {
     cardRadius,
     whitelistWords,
     soundEnabled,
+    configMode,
+    customHtml,
+    customCss,
   });
 
   // Broadcast settings update to live overlays
@@ -320,6 +329,9 @@ app.post('/api/settings', requireAuth, (req, res) => {
     cardGlowColor: updated.card_glow_color,
     cardRadius: updated.card_radius,
     soundEnabled: Boolean(updated.sound_enabled),
+    configMode: updated.config_mode || 'preset',
+    customHtml: updated.custom_html || '',
+    customCss: updated.custom_css || '',
   });
 
   res.json({ success: true, user: updated });
@@ -464,6 +476,9 @@ app.get('/api/overlay-data', (req, res) => {
       cardGlowColor: user.card_glow_color || '#a855f7',
       cardRadius: user.card_radius || '16px',
       soundEnabled: Boolean(user.sound_enabled),
+      configMode: user.config_mode || 'preset',
+      customHtml: user.custom_html || '',
+      customCss: user.custom_css || '',
     },
     session,
   });

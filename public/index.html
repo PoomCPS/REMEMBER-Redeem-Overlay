@@ -12,6 +12,7 @@
     rel="stylesheet">
   <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="index.css">
+  <style id="previewCustomStyle"></style>
 </head>
 
 <body>
@@ -35,13 +36,26 @@
           <span class="badge-mono">[ STEREO HI-FI ]</span>
           <span class="badge-mono badge-yellow">[ TYPE-II / CHROME ]</span>
           <span class="badge-mono">[ T-120 // 60 MIN ]</span>
+          <span class="badge-mono badge-cyan">[ SP / LP / EP ]</span>
         </div>
 
         <h1 class="hero-title">REMEMBER<br><span class="hero-subtitle-lead">TWITCH FIRST REDEEMER // OVERLAY</span></h1>
 
+        <!-- Cassette Tape Spool Acrylic Window Motif -->
+        <div class="cassette-window-box">
+          <div class="cassette-spool"></div>
+          <div class="cassette-tape-bridge"></div>
+          <div class="cassette-window-label">
+            BLANK VHS CASSETTE // T-120 HIGH GRADE
+          </div>
+          <div class="cassette-tape-bridge"></div>
+          <div class="cassette-spool"></div>
+        </div>
+
         <p class="hero-subtitle">
           ระบบแสดงผู้ชมที่แลกแต้ม <strong>คนแรกของสตรีม</strong> อัตโนมัติบน OBS Studio
-          สไตล์ป้ายม้วนเทปคาสเซ็ทอนาล็อกยุค 1980s ตรวจจับตรงผ่าน Twitch EventSub แม่นยำ รวดเร็ว และเป็นเอกลักษณ์
+          ดีไซน์ม้วนเทปเปล่า Blank VHS ยุค 1980s (TDK, Maxell, Sony, JVC, Polaroid) พร้อมพาเลทสี Filmora 15 ธีม
+          ตรวจจับตรงผ่าน Twitch EventSub คมชัดระดับบรอดคาสต์
         </p>
 
         <div class="hero-actions">
@@ -177,230 +191,315 @@
         </div>
       </section>
 
-      <!-- 2. Settings Form: Custom Badge and Whitelist Words -->
+      <!-- 2. Settings Form: Custom Badge, Whitelist Words, and Manual Code -->
       <section class="card settings-card">
         <div class="card-stamp">[ TAPE CONFIGURATION ]</div>
         <h2 class="card-title">การปรับแต่ง Overlay ประจำช่องของคุณ</h2>
-        <p class="card-desc">ปรับเปลี่ยนข้อความป้าย สี และรายการแต้มที่อนุญาตให้แสดง</p>
+        <p class="card-desc">เลือกปรับแต่งด้วยปุ่มสไตล์ม้วนเทป 1980s หรือเขียนโค้ด HTML/CSS ด้วยตนเองแบบอิสระ</p>
+
+        <!-- Deck Channel Mode Tabs -->
+        <div class="deck-tabs-header">
+          <button type="button" id="tabPresetBtn" class="deck-tab-btn active" data-tab="preset">
+            <span class="tab-channel">[ CH-01 ]</span> NORMAL VHS CONFIG
+          </button>
+          <button type="button" id="tabManualBtn" class="deck-tab-btn" data-tab="manual">
+            <span class="tab-channel">[ CH-02 ]</span> MANUAL CODE (CODEMIRROR 6)
+          </button>
+        </div>
 
         <form id="settingsForm">
-          <div class="settings-grid">
-            <!-- Left Block Text -->
-            <div class="form-group">
-              <label for="badgeTextInput">ข้อความแถบซ้าย (Left Block Text - หมุนแนวตั้ง 90°)</label>
-              <input type="text" id="badgeTextInput" placeholder="เช่น 1ST, VHS, FIRST…" value="1ST" required>
-            </div>
+          <input type="hidden" id="configModeInput" value="preset">
 
-            <!-- Left Block Background Color -->
-            <div class="form-group">
-              <label>สีพื้นหลังแถบซ้าย (Left Block Color)</label>
-              <div class="color-picker-row">
-                <input type="color" id="badgeBgColorPicker" value="#00A896" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="color-bg-chip" data-bgcolor="#00A896" style="--chip-color: #00A896;"
-                    title="Teal" aria-label="Teal"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#E63946" style="--chip-color: #E63946;"
-                    title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#F77F00" style="--chip-color: #F77F00;"
-                    title="Analog Orange" aria-label="Analog Orange"></button>
-                  <button type="button" class="color-bg-chip" data-bgcolor="#121212" style="--chip-color: #121212;"
-                    title="Tape Black" aria-label="Tape Black"></button>
+          <!-- TAB PANE 1: PRESET NORMAL CONFIG -->
+          <div id="presetTabPane" class="tab-pane active">
+            <div class="settings-grid">
+              <!-- Left Block Text -->
+              <div class="form-group">
+                <label for="badgeTextInput">ข้อความแถบซ้าย (Left Block Text - หมุนแนวตั้ง 90°)</label>
+                <input type="text" id="badgeTextInput" placeholder="เช่น 1ST, VHS, FIRST…" value="1ST" required>
+              </div>
+
+              <!-- Left Block Background Color -->
+              <div class="form-group">
+                <label>สีพื้นหลังแถบซ้าย (Left Block Color)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="badgeBgColorPicker" value="#00A896" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="color-bg-chip" data-bgcolor="#00A896"
+                      title="Teal" aria-label="Teal"></button>
+                    <button type="button" class="color-bg-chip" data-bgcolor="#E63946"
+                      title="Signal Red" aria-label="Signal Red"></button>
+                    <button type="button" class="color-bg-chip" data-bgcolor="#FCBF49"
+                      title="Tape Yellow" aria-label="Tape Yellow"></button>
+                    <button type="button" class="color-bg-chip" data-bgcolor="#F77F00"
+                      title="Analog Orange" aria-label="Analog Orange"></button>
+                    <button type="button" class="color-bg-chip" data-bgcolor="#121212"
+                      title="Tape Black" aria-label="Tape Black"></button>
+                  </div>
                 </div>
+              </div>
+
+              <!-- Left Block Text Color -->
+              <div class="form-group">
+                <label>สีตัวอักษรแถบซ้าย (Left Block Text Color)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="badgeColorPicker" value="#10111A" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="color-chip" data-color="#10111A"
+                      title="Dark Navy" aria-label="Dark Navy"></button>
+                    <button type="button" class="color-chip" data-color="#FFFFFF"
+                      title="White" aria-label="White"></button>
+                    <button type="button" class="color-chip" data-color="#FCBF49"
+                      title="Tape Yellow" aria-label="Tape Yellow"></button>
+                    <button type="button" class="color-chip" data-color="#E63946"
+                      title="Signal Red" aria-label="Signal Red"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Font Family -->
+              <div class="form-group">
+                <label for="fontFamilySelect">ฟอนต์ตัวอักษร (Typography Stack)</label>
+                <select id="fontFamilySelect" class="form-select">
+                  <option value="Kanit" selected>Kanit (คานิท - ชัด หนา เรโทร)</option>
+                  <option value="Archivo Black">Archivo Black (ดิสเพลย์หนาหนัก สไตล์หัวม้วนเทป)</option>
+                  <option value="Space Grotesk">Space Grotesk (สวิสโกรเทสก์ คมชัด)</option>
+                  <option value="JetBrains Mono">JetBrains Mono (โมโนสเปซ ข้อมูลเทคนิค)</option>
+                  <option value="Prompt">Prompt (พร้อมท์ - เรียบหรู สะอาดตา)</option>
+                  <option value="Sarabun">Sarabun (สารบัญ - คลาสสิก อ่านง่าย)</option>
+                </select>
+              </div>
+
+              <!-- Size Scale -->
+              <div class="form-group">
+                <label for="fontSizeScaleSelect">ขนาดสเกล Overlay (Size Scale)</label>
+                <select id="fontSizeScaleSelect" class="form-select">
+                  <option value="0.85">85% (กะทัดรัด มินิมอล)</option>
+                  <option value="1.0" selected>100% (ขนาดมาตรฐาน - ค่าเริ่มต้น)</option>
+                  <option value="1.2">120% (ขนาดใหญ่ เด่นชัด)</option>
+                  <option value="1.4">140% (ขนาดใหญ่พิเศษ ชัดเต็มตา 1080p/4K)</option>
+                </select>
+              </div>
+
+              <!-- Viewer Name Color -->
+              <div class="form-group">
+                <label>สีชื่อผู้ชม (Viewer Name Ink)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="viewerColorPicker" value="#1A1A1A" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="viewer-color-chip" data-color="#1A1A1A"
+                      title="Charcoal Ink" aria-label="Charcoal Ink"></button>
+                    <button type="button" class="viewer-color-chip" data-color="#FFFFFF"
+                      title="White Ink" aria-label="White Ink"></button>
+                    <button type="button" class="viewer-color-chip" data-color="#FCBF49"
+                      title="Gold Yellow" aria-label="Gold Yellow"></button>
+                    <button type="button" class="viewer-color-chip" data-color="#E63946"
+                      title="Signal Red" aria-label="Signal Red"></button>
+                    <button type="button" class="viewer-color-chip" data-color="#0096C7"
+                      title="Cyan Blue" aria-label="Cyan Blue"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Theme Preset Selector -->
+              <div class="form-group">
+                <label for="cardThemeSelect">รูปแบบม้วนเทป (1980s Blank VHS &amp; Filmora Presets)</label>
+                <select id="cardThemeSelect" class="form-select">
+                  <optgroup label="📼 CLASSIC BLANK TAPE BRANDS (UX Collective / Design Smith)">
+                    <option value="polaroid">📼 POLAROID SPECTRA (กระดาษออฟไวท์ แถบรุ้ง 5 สีคลาสสิก)</option>
+                    <option value="tdk">📼 TDK SUPER AVILYN SA (เทปดำ ขอบทอง รหัสแถบส้มแดง)</option>
+                    <option value="maxell">📼 MAXELL EPITAXIAL GOLD (ดำด้าน ขอบทองเรโทร ตัวหนังสือขาว)</option>
+                    <option value="jvc">📼 JVC SUPER HG MASTER (มิดไนท์เนวี่ ไฮไลต์ฟ้าไซแอน)</option>
+                    <option value="sony">📼 SONY DYNAMIC CHROMA (น้ำเงินโครมา แถบมาเจนต้า)</option>
+                  </optgroup>
+                  <optgroup label="🌈 FILMORA RETRO VHS COLOR PALETTES">
+                    <option value="neon-midnight">🌆 NEON MIDNIGHT (ซินธ์เวฟ 80s ม่วงเข้ม ชมพูนีออน ฟ้าไซแอน)</option>
+                    <option value="outrun">🏎️ OUTRUN HORIZON (อาทิตย์อัสดง ซันเซ็ตออเรนจ์ ชมพูฮอตพิงค์)</option>
+                    <option value="sun-bleached">📹 SUN-BLEACHED 1988 (แคมคอร์เดอร์เรโทร ดินเผา เทาเสจ ครีมอบอุ่น)
+                    </option>
+                    <option value="aged-attic">📦 AGED ATTIC TAPE (ม้วนเทปเก่าในห้องใต้หลังคา เซเปีย น้ำตาลทราย)
+                    </option>
+                    <option value="toxic-crt">📺 TOXIC CRT (หน้าจอฟอสฟอร์เขียว เทอร์มินอล 80s)</option>
+                    <option value="glitch-core">⚡ GLITCH CORE (ไซเบอร์เนติก เนวี่มืด เขียวแมทริกซ์ แดงเตือนภัย)</option>
+                    <option value="smpte">📡 SMPTE COLOR BARS (แถบทดสอบสัญญาณโทรทัศน์บรอดคาสต์)</option>
+                    <option value="cartoon">🎨 SATURDAY CARTOON (การ์ตูนเช้าวันเสาร์ แดงสด เหลือง ฟ้า)</option>
+                  </optgroup>
+                  <optgroup label="🎛️ STUDIO DECK CLASSICS">
+                    <option value="purple" selected>📼 TYPE-II CHROME (กระดาษออฟไวท์ ขอบหมึกดำ - ค่าเริ่มต้น)</option>
+                    <option value="midnight">📼 TYPE-IV METAL (เทปดำด้าน ขอบทองเรโทร)</option>
+                    <option value="cyberpunk">📼 TYPE-I FERRO (ปลอกเทปสีเทา ขอบแดงสตูดิโอ)</option>
+                    <option value="emerald">📼 VHS MASTER (เทปดำ ขอบเขียวมาสเตอร์)</option>
+                    <option value="sunset">📼 ANALOG SUNSET (เทปดำ แถบส้มอนาล็อก)</option>
+                    <option value="stealth">📼 STEALTH DECK (ดำสนิท สวิตช์มินิมอล)</option>
+                  </optgroup>
+                  <option value="custom">🎨 Custom (ปรับแต่งสีอิสระ)</option>
+                </select>
+              </div>
+
+              <!-- Custom Card Background Color -->
+              <div class="form-group">
+                <label>สีพื้นหลังการ์ด (Tape Canvas)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="cardBgColorPicker" value="#F4F1EA" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="card-bg-chip" data-color="#F4F1EA"
+                      title="Paper White" aria-label="Paper White"></button>
+                    <button type="button" class="card-bg-chip" data-color="#121212"
+                      title="Tape Black" aria-label="Tape Black"></button>
+                    <button type="button" class="card-bg-chip" data-color="#E2DFD7"
+                      title="Sleeve Gray" aria-label="Sleeve Gray"></button>
+                    <button type="button" class="card-bg-chip" data-color="#1A1A1A"
+                      title="Charcoal" aria-label="Charcoal"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Background Opacity -->
+              <div class="form-group">
+                <label for="cardBgOpacitySelect">ความทึบแสงพื้นหลัง (Opacity)</label>
+                <select id="cardBgOpacitySelect" class="form-select">
+                  <option value="1.0" selected>100% (ทึบแสง แข็งแรง คมชัด - ค่าแนะนำ 80s)</option>
+                  <option value="0.94">94% (โปร่งเล็กน้อย)</option>
+                  <option value="0.85">85% (กึ่งโปร่งแสง)</option>
+                </select>
+              </div>
+
+              <!-- Custom Card Border Color -->
+              <div class="form-group">
+                <label>สีเส้นขอบการ์ด (Solid Border)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="cardBorderColorPicker" value="#1A1A1A" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="card-border-chip" data-color="#1A1A1A"
+                      title="Charcoal" aria-label="Charcoal"></button>
+                    <button type="button" class="card-border-chip" data-color="#FCBF49"
+                      title="Gold Yellow" aria-label="Gold Yellow"></button>
+                    <button type="button" class="card-border-chip" data-color="#E63946"
+                      title="Signal Red" aria-label="Signal Red"></button>
+                    <button type="button" class="card-border-chip" data-color="#0096C7"
+                      title="Ferric Blue" aria-label="Ferric Blue"></button>
+                    <button type="button" class="card-border-chip" data-color="#2A9D8F"
+                      title="VHS Green" aria-label="VHS Green"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Custom Card Glow Color (Mapped to Retro Stripe Accent) -->
+              <div class="form-group">
+                <label>สีแถบไฮไลต์ (Accent Stripe Color)</label>
+                <div class="color-picker-row">
+                  <input type="color" id="cardGlowColorPicker" value="#FCBF49" class="color-picker">
+                  <div class="color-presets">
+                    <button type="button" class="card-glow-chip" data-color="#FCBF49"
+                      title="Tape Yellow" aria-label="Tape Yellow"></button>
+                    <button type="button" class="card-glow-chip" data-color="#E63946"
+                      title="Signal Red" aria-label="Signal Red"></button>
+                    <button type="button" class="card-glow-chip" data-color="#0096C7"
+                      title="Ferric Blue" aria-label="Ferric Blue"></button>
+                    <button type="button" class="card-glow-chip" data-color="#2A9D8F"
+                      title="VHS Green" aria-label="VHS Green"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Corner Radius (Enforced 0px) -->
+              <div class="form-group">
+                <label for="cardRadiusSelect">ความโค้งมนของมุมการ์ด (Geometry)</label>
+                <select id="cardRadiusSelect" class="form-select">
+                  <option value="0px" selected>0px (เหลี่ยมคมชัด สไตล์ม้วนเทป 1980s)</option>
+                </select>
+              </div>
+
+              <!-- Sound Alert Toggle -->
+              <div class="form-group">
+                <label>เสียงแจ้งเตือน</label>
+                <label class="toggle-label">
+                  <input type="checkbox" id="soundToggle" checked>
+                  <span>เล่นเสียง Chime สั้นๆ เมื่อมีคนแลกแต้มคนแรก</span>
+                </label>
               </div>
             </div>
 
-            <!-- Left Block Text Color -->
-            <div class="form-group">
-              <label>สีตัวอักษรแถบซ้าย (Left Block Text Color)</label>
-              <div class="color-picker-row">
-                <input type="color" id="badgeColorPicker" value="#10111A" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="color-chip" data-color="#10111A" style="--chip-color: #10111A;"
-                    title="Dark Navy" aria-label="Dark Navy"></button>
-                  <button type="button" class="color-chip" data-color="#FFFFFF" style="--chip-color: #FFFFFF;"
-                    title="White" aria-label="White"></button>
-                  <button type="button" class="color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="color-chip" data-color="#E63946" style="--chip-color: #E63946;"
-                    title="Signal Red" aria-label="Signal Red"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Font Family -->
-            <div class="form-group">
-              <label for="fontFamilySelect">ฟอนต์ตัวอักษร (Typography Stack)</label>
-              <select id="fontFamilySelect" class="form-select">
-                <option value="Kanit" selected>Kanit (คานิท - ชัด หนา เรโทร)</option>
-                <option value="Archivo Black">Archivo Black (ดิสเพลย์หนาหนัก สไตล์หัวม้วนเทป)</option>
-                <option value="Space Grotesk">Space Grotesk (สวิสโกรเทสก์ คมชัด)</option>
-                <option value="JetBrains Mono">JetBrains Mono (โมโนสเปซ ข้อมูลเทคนิค)</option>
-                <option value="Prompt">Prompt (พร้อมท์ - เรียบหรู สะอาดตา)</option>
-                <option value="Sarabun">Sarabun (สารบัญ - คลาสสิก อ่านง่าย)</option>
-              </select>
-            </div>
-
-            <!-- Size Scale -->
-            <div class="form-group">
-              <label for="fontSizeScaleSelect">ขนาดสเกล Overlay (Size Scale)</label>
-              <select id="fontSizeScaleSelect" class="form-select">
-                <option value="0.85">85% (กะทัดรัด มินิมอล)</option>
-                <option value="1.0" selected>100% (ขนาดมาตรฐาน - ค่าเริ่มต้น)</option>
-                <option value="1.2">120% (ขนาดใหญ่ เด่นชัด)</option>
-                <option value="1.4">140% (ขนาดใหญ่พิเศษ ชัดเต็มตา 1080p/4K)</option>
-              </select>
-            </div>
-
-            <!-- Viewer Name Color -->
-            <div class="form-group">
-              <label>สีชื่อผู้ชม (Viewer Name Ink)</label>
-              <div class="color-picker-row">
-                <input type="color" id="viewerColorPicker" value="#1A1A1A" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="viewer-color-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
-                    title="Charcoal Ink" aria-label="Charcoal Ink"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#FFFFFF" style="--chip-color: #FFFFFF;"
-                    title="White Ink" aria-label="White Ink"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Gold Yellow" aria-label="Gold Yellow"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#E63946" style="--chip-color: #E63946;"
-                    title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="viewer-color-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
-                    title="Cyan Blue" aria-label="Cyan Blue"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Theme Preset Selector -->
-            <div class="form-group">
-              <label for="cardThemeSelect">รูปแบบม้วนเทป (1980s Tape Presets)</label>
-              <select id="cardThemeSelect" class="form-select">
-                <option value="purple" selected>📼 TYPE-II CHROME (กระดาษออฟไวท์ ขอบหมึกดำ - แนะนำ)</option>
-                <option value="midnight">📼 TYPE-IV METAL (เทปดำด้าน ขอบทองเรโทร)</option>
-                <option value="cyberpunk">📼 TYPE-I FERRO (ปลอกเทปสีเทา ขอบแดงสตูดิโอ)</option>
-                <option value="emerald">📼 VHS MASTER (เทปดำ ขอบเขียวมาสเตอร์)</option>
-                <option value="sunset">📼 ANALOG SUNSET (เทปดำ แถบส้มอนาล็อก)</option>
-                <option value="stealth">📼 STEALTH DECK (ดำสนิท สวิตช์มินิมอล)</option>
-                <option value="custom">🎨 Custom (ปรับแต่งสีอิสระ)</option>
-              </select>
-            </div>
-
-            <!-- Custom Card Background Color -->
-            <div class="form-group">
-              <label>สีพื้นหลังการ์ด (Tape Canvas)</label>
-              <div class="color-picker-row">
-                <input type="color" id="cardBgColorPicker" value="#F4F1EA" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="card-bg-chip" data-color="#F4F1EA" style="--chip-color: #F4F1EA;"
-                    title="Paper White" aria-label="Paper White"></button>
-                  <button type="button" class="card-bg-chip" data-color="#121212" style="--chip-color: #121212;"
-                    title="Tape Black" aria-label="Tape Black"></button>
-                  <button type="button" class="card-bg-chip" data-color="#E2DFD7" style="--chip-color: #E2DFD7;"
-                    title="Sleeve Gray" aria-label="Sleeve Gray"></button>
-                  <button type="button" class="card-bg-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
-                    title="Charcoal" aria-label="Charcoal"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Background Opacity -->
-            <div class="form-group">
-              <label for="cardBgOpacitySelect">ความทึบแสงพื้นหลัง (Opacity)</label>
-              <select id="cardBgOpacitySelect" class="form-select">
-                <option value="1.0" selected>100% (ทึบแสง แข็งแรง คมชัด - ค่าแนะนำ 80s)</option>
-                <option value="0.94">94% (โปร่งเล็กน้อย)</option>
-                <option value="0.85">85% (กึ่งโปร่งแสง)</option>
-              </select>
-            </div>
-
-            <!-- Custom Card Border Color -->
-            <div class="form-group">
-              <label>สีเส้นขอบการ์ด (Solid Border)</label>
-              <div class="color-picker-row">
-                <input type="color" id="cardBorderColorPicker" value="#1A1A1A" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="card-border-chip" data-color="#1A1A1A" style="--chip-color: #1A1A1A;"
-                    title="Charcoal" aria-label="Charcoal"></button>
-                  <button type="button" class="card-border-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Gold Yellow" aria-label="Gold Yellow"></button>
-                  <button type="button" class="card-border-chip" data-color="#E63946" style="--chip-color: #E63946;"
-                    title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="card-border-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
-                    title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="card-border-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
-                    title="VHS Green" aria-label="VHS Green"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Custom Card Glow Color (Mapped to Retro Stripe Accent) -->
-            <div class="form-group">
-              <label>สีแถบไฮไลต์ (Accent Stripe Color)</label>
-              <div class="color-picker-row">
-                <input type="color" id="cardGlowColorPicker" value="#FCBF49" class="color-picker">
-                <div class="color-presets">
-                  <button type="button" class="card-glow-chip" data-color="#FCBF49" style="--chip-color: #FCBF49;"
-                    title="Tape Yellow" aria-label="Tape Yellow"></button>
-                  <button type="button" class="card-glow-chip" data-color="#E63946" style="--chip-color: #E63946;"
-                    title="Signal Red" aria-label="Signal Red"></button>
-                  <button type="button" class="card-glow-chip" data-color="#0096C7" style="--chip-color: #0096C7;"
-                    title="Ferric Blue" aria-label="Ferric Blue"></button>
-                  <button type="button" class="card-glow-chip" data-color="#2A9D8F" style="--chip-color: #2A9D8F;"
-                    title="VHS Green" aria-label="VHS Green"></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Corner Radius (Enforced 0px) -->
-            <div class="form-group">
-              <label for="cardRadiusSelect">ความโค้งมนของมุมการ์ด (Geometry)</label>
-              <select id="cardRadiusSelect" class="form-select">
-                <option value="0px" selected>0px (เหลี่ยมคมชัด สไตล์ม้วนเทป 1980s)</option>
-              </select>
-            </div>
-
-            <!-- Sound Alert Toggle -->
-            <div class="form-group">
-              <label>เสียงแจ้งเตือน</label>
-              <label class="toggle-label">
-                <input type="checkbox" id="soundToggle" checked>
-                <span>เล่นเสียง Chime สั้นๆ เมื่อมีคนแลกแต้มคนแรก</span>
+            <!-- Whitelist Reward Words (Wishlist) -->
+            <div class="whitelist-section">
+              <label class="section-label">
+                <span>รายการแต้มที่อนุญาตให้แสดง (Reward Whitelist)</span>
+                <span class="label-hint">💡 หากปล่อยว่างไว้ ระบบจะอนุญาตให้แสดง<strong>ทุกแต้ม</strong>ที่แลกในสตรีม
+                  (หรือระบุชื่อแต้มเพื่อจำกัดเฉพาะแต้มพิเศษ)</span>
               </label>
-            </div>
-          </div>
 
-          <!-- Whitelist Reward Words (Wishlist) -->
-          <div class="whitelist-section">
-            <label class="section-label">
-              <span>รายการแต้มที่อนุญาตให้แสดง (Reward Whitelist)</span>
-              <span class="label-hint">💡 หากปล่อยว่างไว้ ระบบจะอนุญาตให้แสดง<strong>ทุกแต้ม</strong>ที่แลกในสตรีม
-                (หรือระบุชื่อแต้มเพื่อจำกัดเฉพาะแต้มพิเศษ)</span>
-            </label>
+              <!-- Tags Container -->
+              <div id="whitelistTagsContainer" class="tags-container"></div>
 
-            <!-- Tags Container -->
-            <div id="whitelistTagsContainer" class="tags-container"></div>
-
-            <!-- Add Tag Input -->
-            <div class="add-tag-row">
-              <input type="text" id="newTagInput" placeholder="พิมพ์ชื่อแต้ม เช่น คนแรก แล้วกด Enter หรือคลิกเพิ่ม">
-              <button type="button" id="addTagBtn" class="deck-btn">
-                [ + ADD TAG ]
-              </button>
-            </div>
-
-            <!-- Twitch Rewards Quick-Pick Panel -->
-            <div class="twitch-rewards-container" id="twitchRewardsContainer">
-              <div class="twitch-rewards-header">
-                <span class="twitch-rewards-title">แต้มจากช่อง Twitch ของคุณ (คลิกเพื่อเพิ่ม/ลบ):</span>
-                <button type="button" id="fetchTwitchRewardsBtn" class="deck-btn btn-sm">[ 🔄 FETCH REWARDS ]</button>
+              <!-- Add Tag Input -->
+              <div class="add-tag-row">
+                <input type="text" id="newTagInput" placeholder="พิมพ์ชื่อแต้ม เช่น คนแรก แล้วกด Enter หรือคลิกเพิ่ม">
+                <button type="button" id="addTagBtn" class="deck-btn">
+                  [ + ADD TAG ]
+                </button>
               </div>
-              <div id="twitchRewardsList" class="twitch-rewards-list">
-                <span class="hint-text">คลิก "FETCH REWARDS" เพื่อเลือกแต้มในช่องของคุณ</span>
+
+              <!-- Twitch Rewards Quick-Pick Panel -->
+              <div class="twitch-rewards-container" id="twitchRewardsContainer">
+                <div class="twitch-rewards-header">
+                  <span class="twitch-rewards-title">แต้มจากช่อง Twitch ของคุณ (คลิกเพื่อเพิ่ม/ลบ):</span>
+                  <button type="button" id="fetchTwitchRewardsBtn" class="deck-btn btn-sm">[ 🔄 FETCH REWARDS ]</button>
+                </div>
+                <div id="twitchRewardsList" class="twitch-rewards-list">
+                  <span class="hint-text">คลิก "FETCH REWARDS" เพื่อเลือกแต้มในช่องของคุณ</span>
+                </div>
               </div>
             </div>
-          </div>
+          </div> <!-- End #presetTabPane -->
+
+          <!-- TAB PANE 2: MANUAL CODEMIRROR 6 OVERRIDE -->
+          <div id="manualTabPane" class="tab-pane hidden">
+            <div class="manual-deck-panel">
+              <div class="manual-toolbar">
+                <div>
+                  <div class="badge-mono">[ FULL CUSTOMIZATION // CODEMIRROR 6 ]</div>
+                  <p class="manual-toolbar-desc">เขียน HTML และ CSS เพื่อออกแบบ Overlay ด้วยตัวเองได้อย่างอิสระ 100%</p>
+                </div>
+                <div class="manual-toolbar-actions">
+                  <button type="button" id="loadStarterTemplateBtn" class="deck-btn btn-sm">
+                    [ ↺ LOAD VHS STARTER TEMPLATE ]
+                  </button>
+                </div>
+              </div>
+
+              <!-- Template Tag Cheatsheet -->
+              <div class="template-tags-banner">
+                <span class="tags-banner-title">ตัวแปรไดนามิก (Template Tags):</span>
+                <div class="tags-pill-row">
+                  <span class="tag-pill"><code>{{viewer}}</code> <em>ชื่อคนแลกแต้ม</em></span>
+                  <span class="tag-pill"><code>{{reward}}</code> <em>ชื่อของรางวัล</em></span>
+                  <span class="tag-pill"><code>{{badge}}</code> <em>ข้อความป้าย</em></span>
+                  <span class="tag-pill"><code>{{order}}</code> <em>ลำดับการแลก</em></span>
+                </div>
+              </div>
+
+              <!-- CodeMirror 6 Blocks Grid -->
+              <div class="codemirror-grid">
+                <!-- HTML Block -->
+                <div class="editor-column">
+                  <div class="editor-header-bar">
+                    <span class="editor-header-title">[ 01. CUSTOM HTML ]</span>
+                    <span class="editor-syntax-badge">HTML5</span>
+                  </div>
+                  <div id="htmlEditorContainer" class="editor-cm-mount"></div>
+                </div>
+
+                <!-- CSS Block -->
+                <div class="editor-column">
+                  <div class="editor-header-bar">
+                    <span class="editor-header-title">[ 02. CUSTOM CSS ]</span>
+                    <span class="editor-syntax-badge">CSS3 (CONTAINER SCOPED)</span>
+                  </div>
+                  <div id="cssEditorContainer" class="editor-cm-mount"></div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- End #manualTabPane -->
 
           <div class="form-submit-row">
             <button type="submit" class="deck-btn btn-primary btn-save">
@@ -424,30 +523,39 @@
         </div>
 
         <div class="preview-stage">
+          <div id="previewCustomOverlayRoot" class="hidden"></div>
           <div id="previewCard" class="vhs-spine-bar first-redeemer">
-            <!-- 1. Left Vertical Block (Teal Block with vertical rotated text "1ST" / "VHS") -->
+            <!-- 0. Top Ruler Ticks (Authentic Cassette Index Label Edge) -->
+            <div class="spine-ruler-ticks"></div>
+
+            <!-- 1. Left Vertical Block (Rotated Badge: 1ST / VHS / REDEEM) -->
             <div class="spine-left-block">
               <span id="previewIndicatorLabel" class="spine-left-text">1ST</span>
             </div>
 
             <!-- 2. Center Spine Body -->
             <div class="spine-body">
-              <div class="spine-meta-label">FIRST VISITOR</div>
+              <div class="spine-meta-row">
+                <span class="spine-meta-label">FIRST VISITOR</span>
+                <span class="spine-speed-mode">[ SP 120 ]</span>
+                <span class="spine-tape-barcode">||| | || |||</span>
+              </div>
               <div class="spine-main-content">
                 <span id="previewViewer" class="spine-username">ViewerName</span>
                 <span class="spine-hq-badge">HQ</span>
               </div>
             </div>
 
-            <!-- 3. Right 4-Stripe Stepped Color Band -->
+            <!-- 3. Right Stepped Color Band -->
             <div class="spine-stripes-block">
               <span class="spine-stripe stripe-1"></span>
               <span class="spine-stripe stripe-2"></span>
               <span class="spine-stripe stripe-3"></span>
               <span class="spine-stripe stripe-4"></span>
+              <span class="spine-stripe stripe-5"></span>
             </div>
 
-            <div class="hidden-hooks" style="display: none !important;">
+            <div class="hidden-hooks">
               <span id="previewLiveIndicator"></span>
               <span id="previewRewardTitle"></span>
             </div>
@@ -463,7 +571,7 @@
     </main>
   </div>
 
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </body>
 
 </html>

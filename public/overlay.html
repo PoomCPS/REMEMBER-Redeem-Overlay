@@ -12,42 +12,52 @@
     rel="stylesheet">
   <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="overlay.css">
+  <style id="customOverlayStyle"></style>
 </head>
 
 <body>
   <div class="overlay-container">
+    <div id="customOverlayRoot" class="hidden"></div>
     <div id="redeemCard" class="vhs-spine-bar hidden">
-      <!-- 1. Left Vertical Block (Teal Block with vertical rotated text "1ST" / "VHS") -->
+      <!-- 0. Top Index Tick Ruler (Authentic Cassette Sleeve Tick Marks) -->
+      <div class="spine-ruler-ticks"></div>
+
+      <!-- 1. Left Vertical Block (Rotated Badge: 1ST / VHS / REDEEM) -->
       <div class="spine-left-block" id="spineLeftBlock">
         <span id="indicatorLabel" class="spine-left-text">1ST</span>
       </div>
 
       <!-- 2. Center Spine Body -->
       <div class="spine-body" id="spineBody">
-        <div class="spine-meta-label">FIRST VISITOR</div>
+        <div class="spine-meta-row">
+          <span class="spine-meta-label">FIRST VISITOR</span>
+          <span class="spine-speed-mode">[ SP 120 ]</span>
+          <span class="spine-tape-barcode">||| | || |||</span>
+        </div>
         <div class="spine-main-content">
           <span id="viewerName" class="spine-username">Username</span>
           <span class="spine-hq-badge" id="spineHqBadge">HQ</span>
         </div>
       </div>
 
-      <!-- 3. Right 4-Stripe Stepped Color Band -->
+      <!-- 3. Right Stepped Color Band (Chroma Test Pattern) -->
       <div class="spine-stripes-block" id="spineStripes">
         <span class="spine-stripe stripe-1"></span>
         <span class="spine-stripe stripe-2"></span>
         <span class="spine-stripe stripe-3"></span>
         <span class="spine-stripe stripe-4"></span>
+        <span class="spine-stripe stripe-5"></span>
       </div>
 
       <!-- Hidden compatibility hooks for existing script -->
-      <div class="hidden-hooks" style="display: none !important;">
+      <div class="hidden-hooks">
         <span id="liveIndicator"></span>
         <span id="rewardTitle"></span>
       </div>
     </div>
   </div>
 
-  <script src="overlay.js"></script>
+  <script type="module" src="overlay.js"></script>
 </body>
 
 </html>

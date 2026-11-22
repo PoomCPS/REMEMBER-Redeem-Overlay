@@ -46,6 +46,9 @@ db.exec(`
     card_radius TEXT DEFAULT '16px',
     whitelist_words TEXT DEFAULT '[]',
     sound_enabled INTEGER DEFAULT 1,
+    config_mode TEXT DEFAULT 'preset',
+    custom_html TEXT DEFAULT '',
+    custom_css TEXT DEFAULT '',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
@@ -79,6 +82,9 @@ try { db.exec("ALTER TABLE users ADD COLUMN card_bg_opacity REAL DEFAULT 0.94;")
 try { db.exec("ALTER TABLE users ADD COLUMN card_border_color TEXT DEFAULT '#c4b5fd';"); } catch {}
 try { db.exec("ALTER TABLE users ADD COLUMN card_glow_color TEXT DEFAULT '#a855f7';"); } catch {}
 try { db.exec("ALTER TABLE users ADD COLUMN card_radius TEXT DEFAULT '16px';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN config_mode TEXT DEFAULT 'preset';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN custom_html TEXT DEFAULT '';"); } catch {}
+try { db.exec("ALTER TABLE users ADD COLUMN custom_css TEXT DEFAULT '';"); } catch {}
 
 // Safe migration: Reset untouched legacy default whitelist to empty ([]) so all rewards are allowed by default
 try {
@@ -180,6 +186,9 @@ export const userRepo = {
     cardRadius,
     whitelistWords,
     soundEnabled,
+    configMode,
+    customHtml,
+    customCss,
   }) {
     const now = new Date().toISOString();
     const cleanWords = Array.isArray(whitelistWords) 
@@ -205,6 +214,9 @@ export const userRepo = {
         card_radius = COALESCE(?, card_radius),
         whitelist_words = COALESCE(?, whitelist_words),
         sound_enabled = COALESCE(?, sound_enabled),
+        config_mode = COALESCE(?, config_mode),
+        custom_html = COALESCE(?, custom_html),
+        custom_css = COALESCE(?, custom_css),
         updated_at = ?
       WHERE id = ?
     `);
@@ -224,6 +236,9 @@ export const userRepo = {
       cardRadius !== undefined ? String(cardRadius).trim() : null,
       cleanWords !== undefined ? cleanWords : null,
       soundEnabled !== undefined ? (soundEnabled ? 1 : 0) : null,
+      configMode !== undefined ? String(configMode).trim() : null,
+      customHtml !== undefined ? String(customHtml) : null,
+      customCss !== undefined ? String(customCss) : null,
       now,
       userId
     );
