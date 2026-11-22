@@ -1,0 +1,24 @@
+/* theme.css */
+:root {
+    /* Canvas */
+    --bg-paper: #F4F1EA;
+    --bg-black: #121212;
+    --bg-gray: #E2DFD7;
+
+    /* Ink */
+    --text-primary: #1A1A1A;
+    --text-muted: #5C5A54;
+    --text-inverse: #F4F1EA;
+
+    /* Analog Stripes */
+    --stripe-red: #E63946;
+    --stripe-orange: #F77F00;
+    --stripe-yellow: #FCBF49;
+    --stripe-blue: #0096C7;
+    --stripe-green: #2A9D8F;
+
+    /* Hard Geometry */
+    --radius-none: 0px;
+    --border-grid: 1px solid #1A1A1A;
+    --border-heavy: 2px solid #1A1A1A;
+}
