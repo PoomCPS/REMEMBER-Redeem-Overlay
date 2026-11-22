@@ -4,50 +4,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REMEMBER Redeem Overlay - Control Dashboard</title>
+  <title>REMEMBER // DIAGNOSTIC DECK - OBS &amp; Twitch Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&amp;family=Outfit:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
   <div class="app-layout">
-    <!-- Header -->
+    <!-- Header Panel -->
     <header class="app-header">
       <div class="header-brand">
-        <div class="brand-logo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-            </polygon>
-          </svg>
-        </div>
+        <div class="deck-indicator-led"></div>
         <div>
-          <h1 class="brand-title">REMEMBER <span class="highlight">Redeem Overlay</span></h1>
-          <p class="brand-subtitle">OBS Studio 32.2.2 &amp; Twitch Channel Points Integration</p>
+          <div class="brand-meta">
+            <span class="badge-mono">[ DIAGNOSTIC UNIT ]</span>
+            <span class="badge-mono badge-inverse">[ CH-01 / 02 ]</span>
+          </div>
+          <h1 class="brand-title">REMEMBER <span class="highlight">HARDWARE RACK</span></h1>
+          <p class="brand-subtitle">OBS Studio 32.2.2 &amp; Twitch Channel Points Subsystem</p>
         </div>
       </div>
       <div class="header-actions">
-        <button type="button" id="copyOverlayBtn" class="btn btn-secondary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          <span id="copyOverlayText">Copy Overlay URL</span>
+        <button type="button" id="copyOverlayBtn" class="deck-btn">
+          <span id="copyOverlayText">[ COPY OVERLAY URL ]</span>
         </button>
-        <a href="/overlay.html" target="_blank" class="btn btn-outline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          Open Overlay
+        <a href="/overlay.html" target="_blank" class="deck-btn btn-primary">
+          [ ↗ OPEN OVERLAY ]
         </a>
       </div>
     </header>
+
+    <!-- Stepped Stripe Divider -->
+    <div class="tape-stripes-h">
+      <span class="stripe stripe-red"></span>
+      <span class="stripe stripe-orange"></span>
+      <span class="stripe stripe-yellow"></span>
+      <span class="stripe stripe-blue"></span>
+      <span class="stripe stripe-green"></span>
+    </div>
 
     <!-- Toast Notification Banner -->
     <div id="toast" class="toast hidden"></div>
@@ -55,53 +54,54 @@
     <main class="dashboard-grid">
       <!-- 1. Connection Status Cards -->
       <section class="card status-grid-container">
+        <div class="card-stamp">[ SYSTEM MONITOR // BUS STATUS ]</div>
         <h2 class="card-title">Integration Status</h2>
         <div class="status-grid">
           <!-- Twitch Status Card -->
           <div class="status-card" id="twitchStatusCard">
             <div class="status-header">
-              <span class="status-name">Twitch EventSub</span>
-              <span id="twitchBadge" class="badge badge-offline">Checking...</span>
+              <span class="status-name">TWITCH EVENTSUB</span>
+              <span id="twitchBadge" class="badge badge-offline">[ CHECKING ]</span>
             </div>
             <div class="status-body">
               <div id="twitchUserInfo" class="status-detail">Not connected</div>
               <div id="twitchErrorMsg" class="status-subtext error-text hidden"></div>
             </div>
             <div class="status-actions">
-              <a id="twitchLoginBtn" href="/auth/twitch/login" class="btn btn-sm btn-twitch hidden">Connect Twitch</a>
-              <button type="button" id="reconnectTwitchBtn" class="btn btn-sm btn-secondary">Reconnect Twitch</button>
-              <button type="button" id="disconnectTwitchBtn" class="btn btn-sm btn-ghost hidden">Disconnect</button>
+              <a id="twitchLoginBtn" href="/auth/twitch/login" class="deck-btn btn-sm btn-twitch hidden">[ CONNECT TWITCH ]</a>
+              <button type="button" id="reconnectTwitchBtn" class="deck-btn btn-sm">[ RECONNECT ]</button>
+              <button type="button" id="disconnectTwitchBtn" class="deck-btn btn-sm hidden">[ DISCONNECT ]</button>
             </div>
           </div>
 
           <!-- OBS Status Card -->
           <div class="status-card" id="obsStatusCard">
             <div class="status-header">
-              <span class="status-name">OBS WebSocket</span>
-              <span id="obsBadge" class="badge badge-offline">Checking...</span>
+              <span class="status-name">OBS WEBSOCKET</span>
+              <span id="obsBadge" class="badge badge-offline">[ CHECKING ]</span>
             </div>
             <div class="status-body">
               <div id="obsUrlInfo" class="status-detail">ws://127.0.0.1:4455</div>
               <div id="obsErrorMsg" class="status-subtext error-text hidden"></div>
             </div>
             <div class="status-actions">
-              <button type="button" id="reconnectObsBtn" class="btn btn-sm btn-secondary">Reconnect OBS</button>
-              <button type="button" id="toggleObsConfigBtn" class="btn btn-sm btn-ghost">Settings</button>
+              <button type="button" id="reconnectObsBtn" class="deck-btn btn-sm">[ RECONNECT ]</button>
+              <button type="button" id="toggleObsConfigBtn" class="deck-btn btn-sm">[ CONFIG ]</button>
             </div>
           </div>
 
           <!-- Livestream Status Card -->
           <div class="status-card" id="streamStatusCard">
             <div class="status-header">
-              <span class="status-name">OBS Stream State</span>
-              <span id="streamBadge" class="badge badge-neutral">OFFLINE</span>
+              <span class="status-name">STREAM STATE</span>
+              <span id="streamBadge" class="badge badge-neutral">[ OFFLINE ]</span>
             </div>
             <div class="status-body">
               <div id="streamSessionInfo" class="status-detail">No active livestream</div>
-              <div class="status-subtext">Session resets automatically when stream starts</div>
+              <div class="status-subtext">Session resets automatically on stream start</div>
             </div>
             <div class="status-actions">
-              <button type="button" id="resetOverlayBtn" class="btn btn-sm btn-danger">Reset Overlay</button>
+              <button type="button" id="resetOverlayBtn" class="deck-btn btn-sm btn-danger">[ RESET OVERLAY ]</button>
             </div>
           </div>
         </div>
@@ -118,101 +118,43 @@
               <input type="text" id="obsUrlInput" value="ws://127.0.0.1:4455" required>
             </div>
             <div class="form-group">
-              <label for="obsPasswordInput">Server Password (Leave blank if disabled in OBS)</label>
-              <input type="password" id="obsPasswordInput" placeholder="OBS WebSocket Password"
-                autocomplete="current-password">
+              <label for="obsPasswordInput">Password (Optional)</label>
+              <input type="password" id="obsPasswordInput" placeholder="Leave blank if no password is set">
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Save &amp; Connect</button>
+            <div class="form-actions">
+              <button type="submit" class="deck-btn btn-primary">[ SAVE &amp; CONNECT ]</button>
+              <button type="button" id="cancelObsConfigBtn" class="deck-btn">[ CANCEL ]</button>
+            </div>
           </form>
         </div>
       </section>
 
-      <!-- 2. Latest Redemption Preview -->
-      <section class="card">
+      <!-- 2. Active Session Card -->
+      <section class="card active-session-card">
+        <div class="card-stamp">[ CURRENT STREAM DATA ]</div>
+        <h2 class="card-title">Live Redemption State</h2>
+        <div id="activeSessionContent" class="session-content">
+          <div class="session-empty">No active livestream session recorded.</div>
+        </div>
+      </section>
+
+      <!-- 3. Diagnostics & Activity Log -->
+      <section class="card logs-card">
         <div class="card-header-row">
-          <h2 class="card-title">Latest Redemption Preview</h2>
-          <span class="card-hint">Single-item persistent display</span>
-        </div>
-
-        <div class="preview-stage">
-          <div id="previewCard" class="redeem-preview-box empty">
-            <div id="previewEmptyMessage" class="preview-empty">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              <span>No redemption currently active</span>
-            </div>
-
-            <div id="previewActiveContent" class="preview-content hidden">
-              <div class="preview-badge-row">
-                <span id="previewBadge" class="preview-badge">CHANNEL POINT REDEEM</span>
-                <span id="previewTimestamp" class="preview-time">Just now</span>
-              </div>
-              <div id="previewViewer" class="preview-viewer">ViewerName</div>
-              <div class="preview-reward">
-                <!-- <span class="reward-tag">Reward:</span> -->
-                <span id="previewRewardTitle" class="reward-name">Reward Name</span>
-              </div>
-            </div>
+          <div>
+            <div class="card-stamp">[ DIAGNOSTIC LOG // TELEMETRY ]</div>
+            <h2 class="card-title">Telemetry &amp; Activity Log</h2>
+          </div>
+          <div class="log-actions">
+            <button type="button" id="clearLogsBtn" class="deck-btn btn-sm">[ CLEAR LOGS ]</button>
           </div>
         </div>
-      </section>
-
-      <!-- 3. Test Redemption Section -->
-      <section class="card">
-        <h2 class="card-title">Test Redemption Generator</h2>
-        <div class="card-desc">
-          <span>Active Reward Whitelist: </span>
-          <span class="badge badge-online">รักแรกมันแยกยาก</span>
-          <span class="badge badge-online">คนแรกเลยล่ะ</span>
-          <span class="badge badge-online">กระผมมาเป็นคนแรกเลยนะ</span>
-          <p class="whitelist-notice">ระบบจะแสดงเฉพาะ 3
-            แต้มนี้เท่านั้น แต้มอื่นๆ จะไม่ถูกนำมาแสดงบนจอ</p>
+        <div id="logsContainer" class="logs-container">
+          <div class="log-entry log-info">
+            <span class="log-time">[00:00:00]</span>
+            <span class="log-msg">Diagnostic deck initialized. Waiting for events...</span>
+          </div>
         </div>
-
-        <form id="testRedeemForm" class="test-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="testViewerInput">Viewer Username / Display Name</label>
-              <input type="text" id="testViewerInput" placeholder="e.g. สมชาย หรือ StreamFan99" value="ผู้ชมคนแรก"
-                required>
-            </div>
-            <div class="form-group">
-              <label for="testRewardInput">Reward Title</label>
-              <input type="text" id="testRewardInput" placeholder="e.g. กระผมมาเป็นคนแรกเลยนะ"
-                value="กระผมมาเป็นคนแรกเลยนะ" required>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="testRedeemSubmitBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-              </svg>
-              Send Test Redemption
-            </button>
-            <button type="button" id="quickTestFirst1Btn" class="btn btn-outline btn-sm">Preset:
-              รักแรกมันแยกยาก</button>
-            <button type="button" id="quickTestFirst2Btn" class="btn btn-outline btn-sm">Preset: คนแรกเลยล่ะ</button>
-            <button type="button" id="quickTestFirst3Btn" class="btn btn-outline btn-sm">Preset:
-              กระผมมาเป็นคนแรกเลยนะ</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- 4. Quick OBS Setup Instructions -->
-      <section class="card instructions-card">
-        <h2 class="card-title">OBS Browser Source Setup</h2>
-        <ol class="setup-steps">
-          <li>In OBS Studio, click <strong>+</strong> under the <strong>Sources</strong> dock.</li>
-          <li>Select <strong>Browser</strong> and name it (e.g. <code>REMEMBER Redeem Overlay</code>).</li>
-          <li>Set URL to: <code id="instructionsUrl">http://localhost:3000/overlay.html</code></li>
-          <li>Recommended Dimensions: Width <strong>600</strong>, Height <strong>250</strong> (or 1920x1080 full
-            canvas).</li>
-          <li>Check <strong>"Shutdown source when not visible"</strong> = <em>Unchecked</em>, <strong>"Refresh browser
-              when scene becomes active"</strong> = <em>Unchecked</em>.</li>
-        </ol>
       </section>
     </main>
   </div>

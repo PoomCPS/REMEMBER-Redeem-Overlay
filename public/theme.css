@@ -1,0 +1,171 @@
+/* ==========================================================================
+   1980s Analog Media & VHS Packaging Design System
+   theme.css
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&family=Kanit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  /* Canvas (Paper & Magnetic Media) */
+  --bg-paper: #F4F1EA;
+  --bg-black: #121212;
+  --bg-gray: #E2DFD7;
+
+  /* Ink & Typography */
+  --text-primary: #1A1A1A;
+  --text-muted: #5C5A54;
+  --text-inverse: #F4F1EA;
+
+  /* Stepped Analog Stripes */
+  --stripe-red: #E63946;
+  --stripe-orange: #F77F00;
+  --stripe-yellow: #FCBF49;
+  --stripe-blue: #0096C7;
+  --stripe-green: #2A9D8F;
+
+  /* Geometry & Strict Borders */
+  --radius-none: 0px;
+  --border-grid: 1px solid #1A1A1A;
+  --border-heavy: 2px solid #1A1A1A;
+  --border-light: 1px solid #5C5A54;
+
+  /* Typography Stacks */
+  --font-display: 'Archivo Black', 'Space Grotesk', 'Kanit', -apple-system, sans-serif;
+  --font-body: 'Inter', 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Tactile Mechanical Motion */
+  --transition-fast: 0ms;
+  --transition-step: 75ms steps(1);
+}
+
+/* Zero Softness Global Guardrail */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: 0px !important;
+}
+
+/* Stepped Multi-Stripe Bars (Horizontal & Vertical) */
+.tape-stripes-h {
+  display: flex;
+  height: 6px;
+  width: 100%;
+}
+
+.tape-stripes-h .stripe {
+  flex: 1;
+  height: 100%;
+}
+
+.tape-stripes-v {
+  display: flex;
+  flex-direction: column;
+  width: 6px;
+  height: 100%;
+}
+
+.tape-stripes-v .stripe {
+  flex: 1;
+  width: 100%;
+}
+
+.stripe-red    { background-color: var(--stripe-red); }
+.stripe-orange { background-color: var(--stripe-orange); }
+.stripe-yellow { background-color: var(--stripe-yellow); }
+.stripe-blue   { background-color: var(--stripe-blue); }
+.stripe-green  { background-color: var(--stripe-green); }
+
+/* Micro-Badges (Cassette Technical Stamp) */
+.badge-mono {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid var(--text-primary);
+  background: var(--bg-paper);
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.badge-mono.badge-inverse {
+  border-color: var(--text-inverse);
+  background: var(--bg-black);
+  color: var(--text-inverse);
+}
+
+.badge-mono.badge-yellow {
+  border-color: var(--stripe-yellow);
+  background: var(--bg-black);
+  color: var(--stripe-yellow);
+}
+
+.badge-mono.badge-red {
+  border-color: var(--stripe-red);
+  background: var(--stripe-red);
+  color: #ffffff;
+}
+
+/* Mechanical Deck Button */
+.deck-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  border: 2px solid var(--text-primary);
+  background: var(--bg-paper);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--transition-step), color var(--transition-step);
+  box-shadow: 2px 2px 0px var(--text-primary);
+}
+
+.deck-btn:hover {
+  background: var(--text-primary);
+  color: var(--bg-paper);
+}
+
+.deck-btn:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.deck-btn.btn-primary {
+  background: var(--stripe-yellow);
+  color: var(--bg-black);
+}
+
+.deck-btn.btn-primary:hover {
+  background: var(--bg-black);
+  color: var(--stripe-yellow);
+  border-color: var(--stripe-yellow);
+}
+
+.deck-btn.btn-danger {
+  background: var(--stripe-red);
+  color: #ffffff;
+}
+
+.deck-btn.btn-danger:hover {
+  background: var(--bg-black);
+  color: var(--stripe-red);
+}
+
+/* Swiss Cassette Card */
+.cassette-card {
+  position: relative;
+  background: var(--bg-paper);
+  border: 2px solid var(--text-primary);
+  padding: 20px;
+  box-shadow: 3px 3px 0px var(--text-primary);
+}

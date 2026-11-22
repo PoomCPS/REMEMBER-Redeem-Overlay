@@ -8,19 +8,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&amp;family=Kanit:wght@300;400;500;600;700&amp;family=Mitr:wght@400;500;600&amp;family=Outfit:wght@400;600;700;800&amp;family=Prompt:wght@400;500;600;700&amp;family=Sarabun:wght@400;500;600;700&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;700;800&family=Kanit:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="/design/theme.css">
   <link rel="stylesheet" href="overlay.css">
 </head>
 
 <body>
   <div class="overlay-container">
     <div id="redeemCard" class="redeem-card hidden">
-      <!-- Glow ambient backdrop -->
-      <div class="card-glow"></div>
-      
-      <!-- Single row content: @user #แต้มที่แลก -->
+      <!-- 1980s Stepped Analog Stripe Anchor -->
+      <div class="tape-stripes-v spine-stripes">
+        <span class="stripe stripe-red"></span>
+        <span class="stripe stripe-orange"></span>
+        <span class="stripe stripe-yellow"></span>
+        <span class="stripe stripe-blue"></span>
+        <span class="stripe stripe-green"></span>
+      </div>
+
+      <!-- Single row content: [ 👑 1ST REDEEM ] @user #แต้มที่แลก -->
       <div class="card-content-row">
+        <span id="liveIndicator" class="micro-badge">
+          <span id="indicatorLabel" class="badge-text">[ 👑 1ST REDEEM ]</span>
+        </span>
         <span class="user-chunk">
           <span class="prefix-at">@</span><span id="viewerName" class="viewer-name">ViewerName</span>
         </span>
@@ -28,6 +38,9 @@
           <span class="prefix-hash">#</span><span id="rewardTitle" class="reward-title">Reward Title</span>
         </span>
       </div>
+
+      <!-- Mechanical Notch Detail -->
+      <div class="tape-notch"></div>
     </div>
   </div>
 

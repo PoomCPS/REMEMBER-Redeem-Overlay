@@ -71,7 +71,9 @@ const optionalAuth = (req, res, next) => {
 
 // Static files
 const publicDir = path.join(config.paths.rootDir, 'public');
+const designDir = path.join(config.paths.rootDir, 'design');
 app.use(express.static(publicDir));
+app.use('/design', express.static(designDir));
 
 // WebSocket Broadcaster
 broadcaster.init(server);

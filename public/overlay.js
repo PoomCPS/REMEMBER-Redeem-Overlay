@@ -33,12 +33,16 @@
   };
 
   const THEME_PRESETS = {
-    purple: { bg: '#1c1030', opacity: 0.94, border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
-    midnight: { bg: '#0f172a', opacity: 0.95, border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
-    cyberpunk: { bg: '#18181b', opacity: 0.95, border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
-    emerald: { bg: '#022c22', opacity: 0.94, border: '#34d399', glow: '#10b981', radius: '16px' },
-    sunset: { bg: '#271406', opacity: 0.94, border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
-    stealth: { bg: '#09090b', opacity: 0.98, border: '#475569', glow: '#64748b', radius: '12px' },
+    purple: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', radius: '0px' },
+    midnight: { bg: '#121212', border: '#FCBF49', text: '#F4F1EA', radius: '0px' },
+    cyberpunk: { bg: '#E2DFD7', border: '#E63946', text: '#1A1A1A', radius: '0px' },
+    emerald: { bg: '#121212', border: '#2A9D8F', text: '#F4F1EA', radius: '0px' },
+    sunset: { bg: '#121212', border: '#F77F00', text: '#F4F1EA', radius: '0px' },
+    stealth: { bg: '#121212', border: '#5C5A54', text: '#F4F1EA', radius: '0px' },
+    chrome: { bg: '#F4F1EA', border: '#1A1A1A', text: '#1A1A1A', radius: '0px' },
+    metal: { bg: '#121212', border: '#FCBF49', text: '#F4F1EA', radius: '0px' },
+    ferro: { bg: '#E2DFD7', border: '#E63946', text: '#1A1A1A', radius: '0px' },
+    vhs: { bg: '#121212', border: '#2A9D8F', text: '#F4F1EA', radius: '0px' }
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -241,25 +245,14 @@
     const themeKey = currentUser.cardTheme || 'purple';
     const preset = THEME_PRESETS[themeKey];
 
-    const bgColor = currentUser.cardBgColor || preset?.bg || '#1c1030';
-    const bgOpacity = currentUser.cardBgOpacity !== undefined && currentUser.cardBgOpacity !== null 
-      ? Number(currentUser.cardBgOpacity) 
-      : (preset?.opacity ?? 0.94);
-    const borderColor = currentUser.cardBorderColor || preset?.border || '#c4b5fd';
-    const glowColor = currentUser.cardGlowColor || preset?.glow || '#a855f7';
-    const radius = currentUser.cardRadius || preset?.radius || '16px';
+    const bgColor = currentUser.cardBgColor || preset?.bg || '#F4F1EA';
+    const borderColor = currentUser.cardBorderColor || preset?.border || '#1A1A1A';
+    const textColor = preset?.text || (bgColor === '#121212' ? '#F4F1EA' : '#1A1A1A');
 
-    const bgRgba = hexToRgba(bgColor, bgOpacity);
-    const bgRgbaDark = hexToRgba(bgColor, Math.min(1.0, bgOpacity + 0.04));
-    const borderRgba = hexToRgba(borderColor, 0.35);
-    const glowBoxRgba = hexToRgba(glowColor, 0.28);
-    const glowAmbientRgba = hexToRgba(glowColor, 0.35);
-
-    cardElement.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
-    cardElement.style.setProperty('--card-border', borderRgba);
-    cardElement.style.setProperty('--card-glow', glowBoxRgba);
-    cardElement.style.setProperty('--card-glow-ambient', glowAmbientRgba);
-    cardElement.style.setProperty('--card-radius', radius);
+    cardElement.style.setProperty('--card-bg', bgColor);
+    cardElement.style.setProperty('--card-border', borderColor);
+    cardElement.style.setProperty('--card-text', textColor);
+    cardElement.style.setProperty('--card-radius', '0px');
   }
 
   function applyTheme(theme) {
@@ -287,9 +280,11 @@
     }
 
     if (indicatorLabelEl && liveIndicatorEl) {
-      indicatorLabelEl.textContent = currentUser.badgeText || '👑 1ST REDEEMER';
-      indicatorLabelEl.style.color = currentUser.badgeColor || '#fbbf24';
-      liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#fbbf24';
+      let bText = currentUser.badgeText || '👑 1ST REDEEM';
+      if (!bText.startsWith('[')) bText = `[ ${bText} ]`;
+      indicatorLabelEl.textContent = bText;
+      indicatorLabelEl.style.color = currentUser.badgeColor || '#1A1A1A';
+      liveIndicatorEl.style.borderColor = currentUser.badgeColor || '#1A1A1A';
       liveIndicatorEl.classList.add('first-redeemer');
     }
 

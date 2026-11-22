@@ -61,12 +61,12 @@
   let cachedTwitchRewards = [];
 
   const THEME_PRESETS = {
-    purple: { bg: '#1c1030', opacity: '0.94', border: '#c4b5fd', glow: '#a855f7', radius: '16px' },
-    midnight: { bg: '#0f172a', opacity: '0.95', border: '#38bdf8', glow: '#38bdf8', radius: '16px' },
-    cyberpunk: { bg: '#18181b', opacity: '0.95', border: '#f43f5e', glow: '#f43f5e', radius: '8px' },
-    emerald: { bg: '#022c22', opacity: '0.94', border: '#34d399', glow: '#10b981', radius: '16px' },
-    sunset: { bg: '#271406', opacity: '0.94', border: '#fbbf24', glow: '#f59e0b', radius: '16px' },
-    stealth: { bg: '#09090b', opacity: '0.98', border: '#475569', glow: '#64748b', radius: '12px' },
+    purple: { bg: '#F4F1EA', opacity: '1.0', border: '#1A1A1A', glow: '#FCBF49', radius: '0px' },
+    midnight: { bg: '#121212', opacity: '1.0', border: '#FCBF49', glow: '#FCBF49', radius: '0px' },
+    cyberpunk: { bg: '#E2DFD7', opacity: '1.0', border: '#E63946', glow: '#E63946', radius: '0px' },
+    emerald: { bg: '#121212', opacity: '1.0', border: '#2A9D8F', glow: '#2A9D8F', radius: '0px' },
+    sunset: { bg: '#121212', opacity: '1.0', border: '#F77F00', glow: '#F77F00', radius: '0px' },
+    stealth: { bg: '#121212', opacity: '1.0', border: '#5C5A54', glow: '#5C5A54', radius: '0px' },
   };
 
   function hexToRgba(hex, alpha = 1.0) {
@@ -319,7 +319,9 @@
     const glowAmbientRgba = hexToRgba(glowColor, 0.35);
 
     if (previewIndicatorLabel) {
-      previewIndicatorLabel.textContent = badgeText;
+      let bText = badgeText;
+      if (!bText.startsWith('[')) bText = `[ ${bText} ]`;
+      previewIndicatorLabel.textContent = bText;
       previewIndicatorLabel.style.color = badgeColor;
     }
     if (previewLiveIndicator) {
@@ -333,15 +335,14 @@
     previewCard.style.setProperty('--overlay-scale', fontScale);
     previewCard.style.setProperty('--badge-color', badgeColor);
     previewCard.style.setProperty('--badge-bg', badgeBg);
-    previewCard.style.setProperty('--badge-glow', `${badgeColor}66`);
     previewCard.style.setProperty('--viewer-color', viewerColor);
 
-    // Custom card theme variables
-    previewCard.style.setProperty('--card-bg', `linear-gradient(135deg, ${bgRgba} 0%, ${bgRgbaDark} 100%)`);
-    previewCard.style.setProperty('--card-border', borderRgba);
-    previewCard.style.setProperty('--card-glow', glowBoxRgba);
-    previewCard.style.setProperty('--card-glow-ambient', glowAmbientRgba);
-    previewCard.style.setProperty('--card-radius', radius);
+    // Custom card theme variables (Strict 1980s flat geometry)
+    const cardTextColor = (bgColor === '#121212' || bgColor === '#09090b') ? '#F4F1EA' : '#1A1A1A';
+    previewCard.style.setProperty('--card-bg', bgColor);
+    previewCard.style.setProperty('--card-border', borderColor);
+    previewCard.style.setProperty('--card-text', cardTextColor);
+    previewCard.style.setProperty('--card-radius', '0px');
 
     previewCard.className = `redeem-card theme-${theme} first-redeemer`;
 

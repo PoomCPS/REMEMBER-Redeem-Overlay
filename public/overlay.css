@@ -1,7 +1,13 @@
+/* ==========================================================================
+   1980s Analog Media / VHS Cassette Spine Label
+   public/overlay.css
+   ========================================================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 0px !important;
 }
 
 html, body {
@@ -9,126 +15,143 @@ html, body {
   height: 100%;
   background: transparent !important;
   overflow: hidden;
-  font-family: 'Outfit', 'Kanit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body, 'Inter', 'Kanit', sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .overlay-container {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 20px;
+  left: 20px;
   width: auto;
-  max-width: calc(100% - 48px);
+  max-width: calc(100% - 40px);
   pointer-events: none;
 }
 
-/* Card Container */
+/* 1980s Magnetic Cassette Spine Label Container */
 .redeem-card {
   position: relative;
   display: inline-flex;
   align-items: center;
-  font-family: var(--overlay-font, 'Kanit'), -apple-system, sans-serif;
+  font-family: var(--overlay-font, var(--font-body, 'Kanit', sans-serif));
   transform: scale(var(--overlay-scale, 1.0));
   transform-origin: top left;
-  background: var(--card-bg, linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%));
-  border: 1px solid var(--card-border, rgba(196, 181, 253, 0.28));
-  border-radius: var(--card-radius, 16px);
-  box-shadow: 
-    0 10px 30px -5px rgba(0, 0, 0, 0.6),
-    0 0 25px -2px var(--card-glow, rgba(167, 139, 250, 0.28)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 10px 24px;
-  color: #ffffff;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.3s ease,
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
+  background: var(--card-bg, #F4F1EA);
+  border: 2px solid var(--card-border, #1A1A1A);
+  color: var(--card-text, #1A1A1A);
+  box-shadow: 3px 3px 0px #1A1A1A;
+  padding: 8px 18px 8px 12px;
   overflow: hidden;
   white-space: nowrap;
+  transition: opacity 75ms steps(1), transform 75ms steps(1);
 }
 
-.redeem-card.theme-purple {
-  --card-bg: linear-gradient(135deg, rgba(28, 16, 48, 0.94) 0%, rgba(18, 10, 32, 0.98) 100%);
-  --card-border: rgba(196, 181, 253, 0.28);
-  --card-glow: rgba(167, 139, 250, 0.28);
-  --card-glow-ambient: rgba(168, 85, 247, 0.35);
-  --card-radius: 16px;
+/* Stepped Multi-Stripe Left Anchor */
+.spine-stripes {
+  display: flex;
+  flex-direction: column;
+  width: 6px;
+  align-self: stretch;
+  margin-right: 14px;
+  border-right: 1px solid var(--card-border, #1A1A1A);
 }
 
-.redeem-card.theme-midnight {
-  --card-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
-  --card-border: rgba(56, 189, 248, 0.3);
-  --card-glow: rgba(56, 189, 248, 0.25);
-  --card-glow-ambient: rgba(56, 189, 248, 0.35);
-  --card-radius: 16px;
+.spine-stripes .stripe {
+  flex: 1;
+  width: 100%;
 }
 
-.redeem-card.theme-cyberpunk {
-  --card-bg: linear-gradient(135deg, rgba(24, 24, 27, 0.95) 0%, rgba(9, 9, 11, 0.98) 100%);
-  --card-border: rgba(244, 63, 94, 0.35);
-  --card-glow: rgba(244, 63, 94, 0.25);
-  --card-glow-ambient: rgba(244, 63, 94, 0.35);
-  --card-radius: 8px;
+.spine-stripes .stripe-red    { background-color: var(--stripe-red, #E63946); }
+.spine-stripes .stripe-orange { background-color: var(--stripe-orange, #F77F00); }
+.spine-stripes .stripe-yellow { background-color: var(--stripe-yellow, #FCBF49); }
+.spine-stripes .stripe-blue   { background-color: var(--stripe-blue, #0096C7); }
+.spine-stripes .stripe-green  { background-color: var(--stripe-green, #2A9D8F); }
+
+/* Theme Presets (1980s Tape Formats) */
+.redeem-card.theme-purple,
+.redeem-card.theme-chrome {
+  --card-bg: #F4F1EA;
+  --card-border: #1A1A1A;
+  --card-text: #1A1A1A;
+  --badge-color: #1A1A1A;
+  --badge-bg: #FCBF49;
 }
 
-.redeem-card.theme-emerald {
-  --card-bg: linear-gradient(135deg, rgba(2, 44, 34, 0.94) 0%, rgba(1, 20, 15, 0.98) 100%);
-  --card-border: rgba(52, 211, 153, 0.35);
-  --card-glow: rgba(16, 185, 129, 0.28);
-  --card-glow-ambient: rgba(16, 185, 129, 0.35);
-  --card-radius: 16px;
+.redeem-card.theme-midnight,
+.redeem-card.theme-metal {
+  --card-bg: #121212;
+  --card-border: #FCBF49;
+  --card-text: #F4F1EA;
+  --badge-color: #FCBF49;
+  --badge-bg: #1A1A1A;
+}
+
+.redeem-card.theme-cyberpunk,
+.redeem-card.theme-ferro {
+  --card-bg: #E2DFD7;
+  --card-border: #E63946;
+  --card-text: #1A1A1A;
+  --badge-color: #FFFFFF;
+  --badge-bg: #E63946;
+}
+
+.redeem-card.theme-emerald,
+.redeem-card.theme-vhs {
+  --card-bg: #121212;
+  --card-border: #2A9D8F;
+  --card-text: #F4F1EA;
+  --badge-color: #2A9D8F;
+  --badge-bg: #1A1A1A;
 }
 
 .redeem-card.theme-sunset {
-  --card-bg: linear-gradient(135deg, rgba(39, 20, 6, 0.94) 0%, rgba(20, 10, 3, 0.98) 100%);
-  --card-border: rgba(251, 191, 36, 0.38);
-  --card-glow: rgba(245, 158, 11, 0.28);
-  --card-glow-ambient: rgba(245, 158, 11, 0.35);
-  --card-radius: 16px;
+  --card-bg: #121212;
+  --card-border: #F77F00;
+  --card-text: #F4F1EA;
+  --badge-color: #F77F00;
+  --badge-bg: #1A1A1A;
 }
 
 .redeem-card.theme-stealth {
-  --card-bg: linear-gradient(135deg, rgba(9, 9, 11, 0.98) 0%, rgba(4, 4, 6, 0.99) 100%);
-  --card-border: rgba(255, 255, 255, 0.16);
-  --card-glow: rgba(255, 255, 255, 0.08);
-  --card-glow-ambient: rgba(255, 255, 255, 0.12);
-  --card-radius: 12px;
+  --card-bg: #121212;
+  --card-border: #5C5A54;
+  --card-text: #F4F1EA;
+  --badge-color: #F4F1EA;
+  --badge-bg: #1A1A1A;
 }
 
-/* Hidden state for smooth entry/exit */
+/* Hidden state */
 .redeem-card.hidden {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-8px) scale(0.98);
   pointer-events: none;
 }
 
-/* Ambient glow orb behind card */
-.card-glow {
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, var(--card-glow-ambient, rgba(168, 85, 247, 0.35)) 0%, rgba(168, 85, 247, 0) 70%);
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(10px);
-  transition: background 0.3s ease;
-}
-
-/* Single Row Content Layout (@user #แต้มที่แลก) */
+/* Single Row Content Layout */
 .card-content-row {
   position: relative;
   z-index: 2;
   display: inline-flex;
-  align-items: baseline;
-  gap: 14px;
-  font-size: calc(1.4rem * var(--overlay-scale, 1.0));
-  line-height: 1.25;
+  align-items: center;
+  gap: 12px;
+  font-size: calc(1.3rem * var(--overlay-scale, 1.0));
+  line-height: 1.2;
+}
+
+/* Monospace Micro-Badge */
+.micro-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--badge-border, #1A1A1A);
+  background: var(--badge-bg, #FCBF49);
+  color: var(--badge-color, #1A1A1A);
 }
 
 .user-chunk {
@@ -138,76 +161,82 @@ html, body {
 }
 
 .prefix-at {
-  font-weight: 700;
-  color: var(--badge-color, #fbbf24);
-  opacity: 0.95;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-weight: 800;
+  color: var(--stripe-red, #E63946);
   margin-right: 1px;
-  font-size: 1.05em;
-  text-shadow: 0 0 8px var(--badge-glow, rgba(251, 191, 36, 0.4));
 }
 
 .viewer-name {
-  font-family: inherit;
+  font-family: var(--font-display, 'Archivo Black', 'Kanit', sans-serif);
   font-weight: 700;
-  color: var(--viewer-color, #ffffff);
+  color: var(--viewer-color, var(--card-text, #1A1A1A));
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  word-break: break-word;
 }
 
 .reward-chunk {
   display: inline-flex;
   align-items: baseline;
   gap: 2px;
+  margin-left: 4px;
 }
 
 .prefix-hash {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   font-weight: 700;
-  color: var(--card-border, #c4b5fd);
-  opacity: 0.85;
+  color: var(--stripe-blue, #0096C7);
   margin-right: 2px;
-  font-size: 1.05em;
-  text-shadow: 0 0 8px var(--card-glow, rgba(168, 85, 247, 0.4));
 }
 
 .reward-title {
-  font-family: inherit;
+  font-family: var(--font-body, 'Inter', 'Kanit', sans-serif);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  color: var(--card-text, #1A1A1A);
+  opacity: 0.9;
 }
 
-/* 1st Redeemer Highlight on Single Row Pill */
+/* 1st Redeemer Highlight */
 .redeem-card.first-redeemer {
-  border-color: var(--badge-color, #fbbf24);
-  box-shadow: 
-    0 10px 30px -5px rgba(0, 0, 0, 0.6),
-    0 0 28px var(--badge-glow, rgba(245, 158, 11, 0.45)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-color: var(--stripe-yellow, #FCBF49);
+  box-shadow: 4px 4px 0px #1A1A1A;
 }
 
-.redeem-card.first-redeemer .prefix-at {
-  color: var(--badge-color, #fbbf24);
-  text-shadow: 0 0 12px var(--badge-color, #fbbf24);
+.redeem-card.first-redeemer .micro-badge {
+  background: var(--stripe-yellow, #FCBF49);
+  color: #121212;
+  border-color: #121212;
 }
 
-/* Pulse animation on new redemption replacement */
+/* Mechanical Finger Cutout / Notch */
+.tape-notch {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 12px;
+  background: #1A1A1A;
+}
+
+/* Pulse / Replacement Animation (Tactile 75ms steps flash) */
 .redeem-card.pulse {
-  animation: redeem-pulse 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: tape-flash 0.4s steps(2);
 }
 
-@keyframes redeem-pulse {
+@keyframes tape-flash {
   0% {
-    transform: scale(0.98);
-    box-shadow: 0 0 0 rgba(167, 139, 250, 0.8);
+    filter: invert(1);
+    transform: scale(1.02);
   }
-  40% {
-    transform: scale(1.03);
-    box-shadow: 0 0 35px rgba(167, 139, 250, 0.6), inset 0 0 15px rgba(196, 181, 253, 0.3);
+  50% {
+    filter: invert(0);
+    transform: scale(1);
+  }
+  75% {
+    filter: invert(1);
   }
   100% {
+    filter: invert(0);
     transform: scale(1);
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px -2px rgba(167, 139, 250, 0.28);
   }
 }
-
