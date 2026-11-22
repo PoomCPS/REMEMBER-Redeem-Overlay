@@ -1184,7 +1184,7 @@ input[type="text"]:focus,
   min-height: 380px !important;
   max-height: 380px !important;
   box-sizing: border-box;
-  background: #282c34;
+  background-color: #121212 !important;
   overflow: hidden;
   border: 2px solid var(--border-color);
   box-shadow: 2px 2px 0px #1A1A1A;
@@ -1195,6 +1195,10 @@ input[type="text"]:focus,
   min-height: 380px !important;
   max-height: 380px !important;
   box-sizing: border-box;
+  background-color: #121212 !important;
+  color: #F4F1EA !important;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+  font-size: 13px !important;
 }
 
 .editor-cm-mount .cm-scroller {
@@ -1202,6 +1206,78 @@ input[type="text"]:focus,
   height: 100% !important;
   max-height: 380px !important;
   box-sizing: border-box;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+}
+
+.editor-cm-mount .cm-content,
+.editor-cm-mount .cm-line {
+  color: #F4F1EA !important;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+}
+
+.editor-cm-mount .cm-line * {
+  color: #F4F1EA;
+}
+
+/* Line Number Gutters */
+.editor-cm-mount .cm-gutters {
+  background-color: #0D0D0D !important;
+  color: #7E7A70 !important;
+  border-right: 1px solid #1A1A1A !important;
+  font-family: 'JetBrains Mono', Consolas, monospace !important;
+}
+
+.editor-cm-mount .cm-activeLineGutter {
+  background-color: #1A1A1A !important;
+  color: #FCBF49 !important;
+  font-weight: bold !important;
+}
+
+.editor-cm-mount .cm-activeLine {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* High-Contrast Token Highlighting */
+.editor-cm-mount .tok-tag,
+.editor-cm-mount [class*="ͼe"],
+.editor-cm-mount [class*="ͼj"] {
+  color: #FF6B6B !important;
+  font-weight: 600 !important;
+}
+
+.editor-cm-mount .tok-attributeName,
+.editor-cm-mount [class*="ͼd"],
+.editor-cm-mount [class*="ͼg"] {
+  color: #FCBF49 !important;
+}
+
+.editor-cm-mount .tok-attributeValue,
+.editor-cm-mount .tok-string,
+.editor-cm-mount [class*="ͼb"] {
+  color: #50FA7B !important;
+}
+
+.editor-cm-mount .tok-property,
+.editor-cm-mount .tok-propertyName,
+.editor-cm-mount [class*="ͼc"] {
+  color: #00F0FF !important;
+}
+
+.editor-cm-mount .tok-comment,
+.editor-cm-mount [class*="ͼm"] {
+  color: #A09E96 !important;
+  font-style: italic !important;
+}
+
+.editor-cm-mount .tok-keyword,
+.editor-cm-mount [class*="ͼk"] {
+  color: #FF79C6 !important;
+  font-weight: bold !important;
+}
+
+.editor-cm-mount .tok-number,
+.editor-cm-mount [class*="ͼa"] {
+  color: #FFB86C !important;
 }
 
 .editor-fallback-textarea {
@@ -1210,8 +1286,8 @@ input[type="text"]:focus,
   min-height: 380px !important;
   max-height: 380px !important;
   box-sizing: border-box;
-  background: #282c34 !important;
-  color: #abb2bf !important;
+  background: #121212 !important;
+  color: #F4F1EA !important;
   font-family: var(--font-mono) !important;
   font-size: 13px !important;
   line-height: 1.5 !important;

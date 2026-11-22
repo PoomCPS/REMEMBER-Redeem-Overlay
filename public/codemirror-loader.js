@@ -7,6 +7,8 @@
 // Layout theme for CodeMirror 6 with 1980s retro hardware geometry and independent scrolling
 const retroLayoutTheme = {
   '&': {
+    color: '#F4F1EA !important',
+    backgroundColor: '#121212 !important',
     height: '380px',
     maxHeight: '380px',
     fontSize: '13px',
@@ -19,12 +21,14 @@ const retroLayoutTheme = {
     fontFamily: "'JetBrains Mono', Consolas, monospace",
   },
   '.cm-content': {
+    color: '#F4F1EA !important',
     caretColor: '#FCBF49',
     fontFamily: "'JetBrains Mono', Consolas, monospace",
     padding: '8px 6px',
     minHeight: '100%',
   },
   '.cm-line': {
+    color: '#F4F1EA !important',
     lineHeight: '1.5',
     fontFamily: "'JetBrains Mono', Consolas, monospace",
   },
@@ -36,11 +40,15 @@ const retroLayoutTheme = {
     backgroundColor: '#3E4451 !important',
   },
   '.cm-gutters': {
-    borderRight: '1px solid #1A1A1A',
+    backgroundColor: '#0D0D0D !important',
+    color: '#7E7A70 !important',
+    borderRight: '1px solid #1A1A1A !important',
     fontFamily: "'JetBrains Mono', Consolas, monospace",
     minHeight: '100%',
   },
   '.cm-activeLineGutter': {
+    backgroundColor: '#1A1A1A !important',
+    color: '#FCBF49 !important',
     fontWeight: 'bold',
   },
   '.cm-activeLine': {
